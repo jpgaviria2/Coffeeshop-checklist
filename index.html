@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trails Coffee - Staff Checklist</title>
+    <title>Trails Coffee - Staff Portal</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         }
         
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             background: white;
             border-radius: 16px;
@@ -49,15 +49,133 @@
             padding: 20px;
         }
         
+        /* Schedule Section */
+        .schedule-section {
+            margin-bottom: 30px;
+        }
+        
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .schedule-header h2 {
+            font-size: 1.2em;
+            color: #333;
+        }
+        
+        .week-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .week-nav button {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .week-nav button:active {
+            transform: scale(0.95);
+        }
+        
+        .week-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .week-info strong {
+            color: #333;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .schedule-grid {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .schedule-day {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .schedule-day:last-child {
+            border-bottom: none;
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .day-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .day-date {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .day-shifts {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .lead-shift {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .helper-shift {
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        .hours-badge {
+            display: inline-block;
+            background: #e8ebf7;
+            color: #667eea;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        /* Auth Section */
         .auth-section {
             text-align: center;
             padding: 20px 10px;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 20px;
         }
         
         .auth-section h2 {
             color: #333;
             margin-bottom: 15px;
-            font-size: 1.3em;
+            font-size: 1.2em;
         }
         
         .auth-section p {
@@ -119,6 +237,9 @@
         
         .checklist-section {
             display: none;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 20px;
+            padding-top: 20px;
         }
         
         .checklist-type {
@@ -236,34 +357,40 @@
             color: #666;
             font-size: 12px;
         }
-        
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.3em;
-            }
-            
-            .checklist-item {
-                padding: 12px;
-            }
-            
-            .checklist-item label {
-                font-size: 13px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>☕ Trails Coffee</h1>
-            <p>Staff Checklist System</p>
+            <p>Staff Portal</p>
         </div>
         
         <div class="content">
+            <!-- Schedule Section -->
+            <div class="schedule-section">
+                <div class="schedule-header">
+                    <h2>📅 This Week</h2>
+                    <div class="week-nav">
+                        <button onclick="changeWeek(-1)">←</button>
+                        <button onclick="changeWeek(1)">→</button>
+                    </div>
+                </div>
+                
+                <div class="week-info" id="weekInfo">
+                    <strong id="weekLabel">Week A</strong>
+                    <span id="dateRange">Feb 9 - Feb 15, 2026</span>
+                </div>
+                
+                <div class="schedule-grid" id="scheduleGrid">
+                    <!-- Schedule will be loaded here -->
+                </div>
+            </div>
+            
             <!-- Authentication Section -->
             <div class="auth-section" id="authSection">
-                <h2>👋 Welcome!</h2>
-                <p>Enter your Nostr private key (nsec) to log in</p>
+                <h2>📋 Submit Checklist</h2>
+                <p>Enter your nsec to submit daily checklists</p>
                 
                 <div class="input-group">
                     <label for="nsecInput">Your nsec key:</label>
@@ -386,6 +513,7 @@
     </div>
     
     <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
+    <script src="schedule-data.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

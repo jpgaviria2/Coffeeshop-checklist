@@ -1,8 +1,9 @@
-// Nostr Checklist App - Mobile-friendly with direct nsec login
+// Nostr Checklist App - Mobile-friendly with direct nsec login + Schedule viewer
 // Using global NostrTools from CDN
 
 let userKeys = null;
 let currentChecklist = 'opening';
+let currentWeekOffset = 0; // 0 = this week, 1 = next week, -1 = last week
 
 // Nostr relay configuration
 const RELAYS = [
@@ -11,8 +12,12 @@ const RELAYS = [
     'wss://relay.nostr.band'
 ];
 
-// Wait for NostrTools to load
+// Load schedule on page load
 window.addEventListener('DOMContentLoaded', () => {
+    // Load schedule
+    loadSchedule(0);
+    
+    // Check for saved login
     if (typeof NostrTools === 'undefined') {
         console.error('NostrTools not loaded');
         showStatus('error', 'Error loading app. Please refresh the page.');
@@ -34,9 +39,87 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Schedule functions
+function changeWeek(direction) {
+    currentWeekOffset += direction;
+    loadSchedule(currentWeekOffset);
+}
+
+function loadSchedule(weekOffset) {
+    const startDate = new Date(SCHEDULE_DATA.startDate);
+    startDate.setDate(startDate.getDate() + (weekOffset * 7));
+    
+    // Calculate which week pattern (A or B)
+    const weeksFromStart = Math.floor((startDate - new Date(SCHEDULE_DATA.startDate)) / (7 * 24 * 60 * 60 * 1000));
+    const weekPattern = weeksFromStart % 2 === 0 ? 'weekA' : 'weekB';
+    const weekData = SCHEDULE_DATA.rotation[weekPattern];
+    
+    // Update week label
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 6);
+    
+    document.getElementById('weekLabel').textContent = weekData.label;
+    document.getElementById('dateRange').textContent = formatDateRange(startDate, endDate);
+    
+    // Generate schedule grid
+    const scheduleGrid = document.getElementById('scheduleGrid');
+    scheduleGrid.innerHTML = '';
+    
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    
+    days.forEach((day, index) => {
+        const dayDate = new Date(startDate);
+        dayDate.setDate(dayDate.getDate() + index);
+        const dateStr = dayDate.toISOString().split('T')[0];
+        
+        const shift = weekData.pattern[day];
+        const exception = SCHEDULE_DATA.exceptions[dateStr];
+        
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'schedule-day';
+        
+        let helpersHtml = '';
+        if (shift.helpers && shift.helpers.length > 0) {
+            helpersHtml = '<br>' + shift.helpers.map(h => 
+                `<span class="helper-shift">+ ${h}</span>`
+            ).join('<br>');
+        }
+        
+        let exceptionHtml = '';
+        if (exception) {
+            exceptionHtml = `<br><span style="color: #dc3545; font-size: 12px;">⚠️ ${exception.note}</span>`;
+        }
+        
+        dayDiv.innerHTML = `
+            <div class="day-header">
+                <span class="day-name">${dayNames[index]}</span>
+                <span class="day-date">${formatDate(dayDate)}</span>
+            </div>
+            <div class="day-shifts">
+                <span class="lead-shift">${shift.lead}</span>
+                <span class="hours-badge">${SCHEDULE_DATA.shopHours}</span>
+                ${helpersHtml}
+                ${exceptionHtml}
+            </div>
+        `;
+        
+        scheduleGrid.appendChild(dayDiv);
+    });
+}
+
+function formatDate(date) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getDate()}`;
+}
+
+function formatDateRange(start, end) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[start.getMonth()]} ${start.getDate()} - ${months[end.getMonth()]} ${end.getDate()}, ${start.getFullYear()}`;
+}
+
 // Show checklist section
 function showChecklistSection() {
-    document.getElementById('authSection').style.display = 'none';
     document.getElementById('checklistSection').style.display = 'block';
 }
 
@@ -240,7 +323,6 @@ function logout() {
     
     // Reset UI
     document.getElementById('checklistSection').style.display = 'none';
-    document.getElementById('authSection').style.display = 'block';
     document.getElementById('loginBtn').disabled = false;
     document.getElementById('loginBtn').textContent = 'Login';
     

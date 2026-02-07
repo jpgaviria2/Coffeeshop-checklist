@@ -46,11 +46,14 @@ function changeWeek(direction) {
 }
 
 function loadSchedule(weekOffset) {
-    const startDate = new Date(SCHEDULE_DATA.startDate);
+    // Parse start date properly (YYYY-MM-DD format)
+    const [year, month, day] = SCHEDULE_DATA.startDate.split('-').map(Number);
+    const startDate = new Date(year, month - 1, day); // month is 0-indexed
     startDate.setDate(startDate.getDate() + (weekOffset * 7));
     
     // Calculate which week pattern (A or B)
-    const weeksFromStart = Math.floor((startDate - new Date(SCHEDULE_DATA.startDate)) / (7 * 24 * 60 * 60 * 1000));
+    const baseDate = new Date(year, month - 1, day);
+    const weeksFromStart = Math.floor((startDate - baseDate) / (7 * 24 * 60 * 60 * 1000));
     const weekPattern = weeksFromStart % 2 === 0 ? 'weekA' : 'weekB';
     const weekData = SCHEDULE_DATA.rotation[weekPattern];
     
@@ -71,7 +74,7 @@ function loadSchedule(weekOffset) {
     days.forEach((day, index) => {
         const dayDate = new Date(startDate);
         dayDate.setDate(dayDate.getDate() + index);
-        const dateStr = dayDate.toISOString().split('T')[0];
+        const dateStr = `${dayDate.getFullYear()}-${String(dayDate.getMonth() + 1).padStart(2, '0')}-${String(dayDate.getDate()).padStart(2, '0')}`;
         
         const shift = weekData.pattern[day];
         const exception = SCHEDULE_DATA.exceptions[dateStr];

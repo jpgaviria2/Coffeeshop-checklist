@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trails Coffee - Staff Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .auth-section {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .auth-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .auth-section p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .checklist-section {
+            display: none;
+        }
+        
+        .checklist-type {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .checklist-type button {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checklist-type button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .checklist {
+            margin-top: 20px;
+        }
+        
+        .checklist-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.2s;
+        }
+        
+        .checklist-item:hover {
+            background: #e9ecef;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 15px;
+            color: #333;
+        }
+        
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .user-info strong {
+            color: #333;
+        }
+        
+        .submit-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ Trails Coffee</h1>
+            <p>Staff Checklist System</p>
+        </div>
+        
+        <div class="content">
+            <!-- Authentication Section -->
+            <div class="auth-section" id="authSection">
+                <h2>👋 Welcome!</h2>
+                <p>
+                    This checklist uses Nostr for secure, decentralized authentication.<br>
+                    You'll need a Nostr browser extension like <strong>Alby</strong> or <strong>nos2x</strong>.
+                </p>
+                <button class="btn" id="loginBtn">Connect with Nostr</button>
+                <p style="margin-top: 20px; font-size: 13px;">
+                    Don't have a Nostr key? Get <a href="https://getalby.com" target="_blank" style="color: #667eea;">Alby</a> or 
+                    <a href="https://chrome.google.com/webstore/detail/nos2x/kpgefcfmnafjgpblomihpgmejjdanjjp" target="_blank" style="color: #667eea;">nos2x</a>
+                </p>
+            </div>
+            
+            <!-- Checklist Section -->
+            <div class="checklist-section" id="checklistSection">
+                <div class="user-info" id="userInfo">
+                    <strong>Logged in as:</strong> <span id="userPubkey"></span>
+                </div>
+                
+                <div class="checklist-type">
+                    <button id="openingBtn" class="active">🌅 Opening Checklist</button>
+                    <button id="closingBtn">🌙 Closing Checklist</button>
+                </div>
+                
+                <div class="checklist" id="openingChecklist">
+                    <h3 style="margin-bottom: 15px; color: #333;">Opening Tasks</h3>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-1">
+                        <label for="opening-1">Disarm alarm</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-2">
+                        <label for="opening-2">Turn on lights</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-3">
+                        <label for="opening-3">Check refrigeration temperature</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-4">
+                        <label for="opening-4">Start espresso machine & grinders</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-5">
+                        <label for="opening-5">Brew coffee</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-6">
+                        <label for="opening-6">Prep food items</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-7">
+                        <label for="opening-7">Fill condiment stations</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-8">
+                        <label for="opening-8">Check cash drawer</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-9">
+                        <label for="opening-9">Review daily specials</label>
+                    </div>
+                </div>
+                
+                <div class="checklist" id="closingChecklist" style="display: none;">
+                    <h3 style="margin-bottom: 15px; color: #333;">Closing Tasks</h3>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-1">
+                        <label for="closing-1">Count cash drawer</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-2">
+                        <label for="closing-2">Clean espresso machine</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-3">
+                        <label for="closing-3">Wipe down surfaces</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-4">
+                        <label for="closing-4">Empty trash</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-5">
+                        <label for="closing-5">Sweep & mop floors</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-6">
+                        <label for="closing-6">Turn off grinders</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-7">
+                        <label for="closing-7">Shut down espresso machine</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-8">
+                        <label for="closing-8">Check refrigeration</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-9">
+                        <label for="closing-9">Lock doors & windows</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-10">
+                        <label for="closing-10">Arm alarm</label>
+                    </div>
+                </div>
+                
+                <div class="submit-section">
+                    <button class="btn" id="submitBtn">Submit Checklist</button>
+                    <div class="status" id="statusMessage"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Powered by Nostr 🟣 | Trails Coffee ☕
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

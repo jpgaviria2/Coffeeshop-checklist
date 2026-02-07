@@ -1,5 +1,5 @@
 // Nostr Checklist App - Mobile-friendly with direct nsec login
-const { nip19, getPublicKey, finalizeEvent, generateSecretKey } = NostrTools;
+// Using global NostrTools from CDN
 
 let userKeys = null;
 let currentChecklist = 'opening';
@@ -11,15 +11,21 @@ const RELAYS = [
     'wss://relay.nostr.band'
 ];
 
-// Check for existing session on load
+// Wait for NostrTools to load
 window.addEventListener('DOMContentLoaded', () => {
+    if (typeof NostrTools === 'undefined') {
+        console.error('NostrTools not loaded');
+        showStatus('error', 'Error loading app. Please refresh the page.');
+        return;
+    }
+    
     const savedNsec = sessionStorage.getItem('nostr_nsec');
     if (savedNsec) {
         try {
-            const decoded = nip19.decode(savedNsec);
+            const decoded = NostrTools.nip19.decode(savedNsec);
             userKeys = {
                 privateKey: decoded.data,
-                publicKey: getPublicKey(decoded.data)
+                publicKey: NostrTools.getPublicKey(decoded.data)
             };
             showChecklistSection();
         } catch (error) {
@@ -48,14 +54,14 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
         document.getElementById('loginBtn').textContent = 'Logging in...';
         
         // Decode nsec to get private key
-        const decoded = nip19.decode(nsecInput);
+        const decoded = NostrTools.nip19.decode(nsecInput);
         
         if (decoded.type !== 'nsec') {
             throw new Error('Invalid nsec key');
         }
         
         const privateKey = decoded.data;
-        const publicKey = getPublicKey(privateKey);
+        const publicKey = NostrTools.getPublicKey(privateKey);
         
         userKeys = { privateKey, publicKey };
         
@@ -150,7 +156,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         };
         
         // Sign event with private key
-        const signedEvent = finalizeEvent(eventTemplate, userKeys.privateKey);
+        const signedEvent = NostrTools.finalizeEvent(eventTemplate, userKeys.privateKey);
         
         // Publish to relays
         await publishToRelays(signedEvent);

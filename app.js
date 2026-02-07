@@ -1,5 +1,7 @@
-// Nostr Checklist App
-let userPubkey = null;
+// Nostr Checklist App - Mobile-friendly with direct nsec login
+const { nip19, getPublicKey, finalizeEvent, generateSecretKey } = NostrTools;
+
+let userKeys = null;
 let currentChecklist = 'opening';
 
 // Nostr relay configuration
@@ -11,55 +13,72 @@ const RELAYS = [
 
 // Check for existing session on load
 window.addEventListener('DOMContentLoaded', () => {
-    const savedPubkey = sessionStorage.getItem('nostr_pubkey');
-    if (savedPubkey) {
-        // Restore session
-        userPubkey = savedPubkey;
-        showChecklistSection();
+    const savedNsec = sessionStorage.getItem('nostr_nsec');
+    if (savedNsec) {
+        try {
+            const decoded = nip19.decode(savedNsec);
+            userKeys = {
+                privateKey: decoded.data,
+                publicKey: getPublicKey(decoded.data)
+            };
+            showChecklistSection();
+        } catch (error) {
+            sessionStorage.removeItem('nostr_nsec');
+        }
     }
 });
 
-// Check for Nostr extension
-async function checkNostrExtension() {
-    if (!window.nostr) {
-        showStatus('error', 'Nostr extension not found. Please install Alby or nos2x.');
-        return false;
-    }
-    return true;
-}
-
-// Show checklist section (shared function)
+// Show checklist section
 function showChecklistSection() {
     document.getElementById('authSection').style.display = 'none';
     document.getElementById('checklistSection').style.display = 'block';
-    
-    // Display shortened pubkey
-    const shortPubkey = userPubkey.substring(0, 8) + '...' + userPubkey.substring(userPubkey.length - 8);
-    document.getElementById('userPubkey').textContent = shortPubkey;
 }
 
-// Login with Nostr
+// Login with nsec
 document.getElementById('loginBtn').addEventListener('click', async () => {
-    if (!await checkNostrExtension()) return;
+    const nsecInput = document.getElementById('nsecInput').value.trim();
+    
+    if (!nsecInput) {
+        showStatus('error', 'Please enter your nsec key');
+        return;
+    }
     
     try {
         document.getElementById('loginBtn').disabled = true;
-        document.getElementById('loginBtn').textContent = 'Connecting...';
+        document.getElementById('loginBtn').textContent = 'Logging in...';
         
-        // Get public key from extension
-        const pubkey = await window.nostr.getPublicKey();
-        userPubkey = pubkey;
+        // Decode nsec to get private key
+        const decoded = nip19.decode(nsecInput);
         
-        // Save to session storage (persists for browser session)
-        sessionStorage.setItem('nostr_pubkey', pubkey);
+        if (decoded.type !== 'nsec') {
+            throw new Error('Invalid nsec key');
+        }
+        
+        const privateKey = decoded.data;
+        const publicKey = getPublicKey(privateKey);
+        
+        userKeys = { privateKey, publicKey };
+        
+        // Save to session storage
+        sessionStorage.setItem('nostr_nsec', nsecInput);
         
         // Show checklist section
         showChecklistSection();
         
+        // Clear input
+        document.getElementById('nsecInput').value = '';
+        
     } catch (error) {
-        showStatus('error', 'Login failed: ' + error.message);
+        showStatus('error', 'Invalid nsec key. Please check and try again.');
         document.getElementById('loginBtn').disabled = false;
-        document.getElementById('loginBtn').textContent = 'Connect with Nostr';
+        document.getElementById('loginBtn').textContent = 'Login';
+    }
+});
+
+// Allow Enter key to login
+document.getElementById('nsecInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('loginBtn').click();
     }
 });
 
@@ -82,7 +101,10 @@ document.getElementById('closingBtn').addEventListener('click', () => {
 
 // Submit checklist
 document.getElementById('submitBtn').addEventListener('click', async () => {
-    if (!await checkNostrExtension()) return;
+    if (!userKeys) {
+        showStatus('error', 'Not logged in');
+        return;
+    }
     
     const checklistDiv = currentChecklist === 'opening' ? 
         document.getElementById('openingChecklist') : 
@@ -109,8 +131,8 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         document.getElementById('submitBtn').textContent = 'Submitting...';
         
         // Create Nostr event
-        const event = {
-            kind: 30078, // Application-specific data (replaceable)
+        const eventTemplate = {
+            kind: 30078,
             created_at: Math.floor(Date.now() / 1000),
             tags: [
                 ['d', `checklist-${currentChecklist}-${new Date().toISOString().split('T')[0]}`],
@@ -127,13 +149,13 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             })
         };
         
-        // Sign with Nostr extension
-        const signedEvent = await window.nostr.signEvent(event);
+        // Sign event with private key
+        const signedEvent = finalizeEvent(eventTemplate, userKeys.privateKey);
         
         // Publish to relays
         await publishToRelays(signedEvent);
         
-        showStatus('success', `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist submitted successfully! (${completedCount}/${items.length} tasks completed)`);
+        showStatus('success', `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist submitted! (${completedCount}/${items.length} tasks completed)`);
         
         // Reset checkboxes after successful submission
         setTimeout(() => {
@@ -207,14 +229,14 @@ function showStatus(type, message) {
 
 // Logout function
 function logout() {
-    sessionStorage.removeItem('nostr_pubkey');
-    userPubkey = null;
+    sessionStorage.removeItem('nostr_nsec');
+    userKeys = null;
     
     // Reset UI
     document.getElementById('checklistSection').style.display = 'none';
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('loginBtn').disabled = false;
-    document.getElementById('loginBtn').textContent = 'Connect with Nostr';
+    document.getElementById('loginBtn').textContent = 'Login';
     
     // Clear checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);

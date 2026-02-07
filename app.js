@@ -9,6 +9,16 @@ const RELAYS = [
     'wss://relay.nostr.band'
 ];
 
+// Check for existing session on load
+window.addEventListener('DOMContentLoaded', () => {
+    const savedPubkey = sessionStorage.getItem('nostr_pubkey');
+    if (savedPubkey) {
+        // Restore session
+        userPubkey = savedPubkey;
+        showChecklistSection();
+    }
+});
+
 // Check for Nostr extension
 async function checkNostrExtension() {
     if (!window.nostr) {
@@ -16,6 +26,16 @@ async function checkNostrExtension() {
         return false;
     }
     return true;
+}
+
+// Show checklist section (shared function)
+function showChecklistSection() {
+    document.getElementById('authSection').style.display = 'none';
+    document.getElementById('checklistSection').style.display = 'block';
+    
+    // Display shortened pubkey
+    const shortPubkey = userPubkey.substring(0, 8) + '...' + userPubkey.substring(userPubkey.length - 8);
+    document.getElementById('userPubkey').textContent = shortPubkey;
 }
 
 // Login with Nostr
@@ -30,13 +50,11 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
         const pubkey = await window.nostr.getPublicKey();
         userPubkey = pubkey;
         
-        // Show checklist section
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('checklistSection').style.display = 'block';
+        // Save to session storage (persists for browser session)
+        sessionStorage.setItem('nostr_pubkey', pubkey);
         
-        // Display shortened pubkey
-        const shortPubkey = pubkey.substring(0, 8) + '...' + pubkey.substring(pubkey.length - 8);
-        document.getElementById('userPubkey').textContent = shortPubkey;
+        // Show checklist section
+        showChecklistSection();
         
     } catch (error) {
         showStatus('error', 'Login failed: ' + error.message);
@@ -185,4 +203,19 @@ function showStatus(type, message) {
             statusEl.style.display = 'none';
         }, 5000);
     }
+}
+
+// Logout function
+function logout() {
+    sessionStorage.removeItem('nostr_pubkey');
+    userPubkey = null;
+    
+    // Reset UI
+    document.getElementById('checklistSection').style.display = 'none';
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('loginBtn').disabled = false;
+    document.getElementById('loginBtn').textContent = 'Connect with Nostr';
+    
+    // Clear checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
 }

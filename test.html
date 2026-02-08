@@ -64,7 +64,14 @@
             await testEvent(privateKey);
             
             // Step 3: Fetch events
-            log('\n📋 Step 3: Fetching recent events...', 'warning');
+            log('\n📋 Step 3: Testing immediate fetch...', 'warning');
+            await fetchEvents(publicKey);
+            
+            // Step 4: Wait and fetch again
+            log('\n⏳ Waiting 3 seconds for relay propagation...', 'warning');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            log('\n📋 Step 4: Fetching after delay...', 'warning');
             await fetchEvents(publicKey);
             
             log('\n✅ Test complete!', 'success');
@@ -197,34 +204,60 @@
         }
         
         async function fetchEvents(pubkey) {
-            const filter = {
-                kinds: [30078],
-                '#shop': ['trails-coffee'],
-                limit: 20
-            };
+            // Try two filter strategies
+            const filters = [
+                {
+                    name: 'With shop tag filter',
+                    filter: {
+                        kinds: [30078],
+                        '#shop': ['trails-coffee'],
+                        limit: 20
+                    }
+                },
+                {
+                    name: 'All kind 30078 events',
+                    filter: {
+                        kinds: [30078],
+                        limit: 50
+                    }
+                }
+            ];
             
-            for (const relayUrl of RELAYS) {
-                try {
-                    const result = await testRelay(relayUrl, async (ws) => {
-                        return new Promise((resolve) => {
-                            let events = [];
-                            const subId = 'fetch-test';
-                            ws.send(JSON.stringify(['REQ', subId, filter]));
-                            
-                            ws.onmessage = (msg) => {
-                                const [type, , event] = JSON.parse(msg.data);
-                                if (type === 'EVENT') {
-                                    events.push(event);
-                                } else if (type === 'EOSE') {
-                                    resolve(events);
-                                }
-                            };
-                        });
-                    }, 5000);
-                    
-                    log(`  ${result.length > 0 ? '✅' : '⚠️ '} ${relayUrl}: ${result.length} events`, result.length > 0 ? 'success' : 'warning');
-                } catch (error) {
-                    log(`  ⚠️  ${relayUrl}: ${error.message}`, 'error');
+            for (const {name, filter} of filters) {
+                log(`\n  Testing: ${name}`, 'warning');
+                
+                for (const relayUrl of RELAYS) {
+                    try {
+                        const result = await testRelay(relayUrl, async (ws) => {
+                            return new Promise((resolve) => {
+                                let events = [];
+                                const subId = 'fetch-test';
+                                ws.send(JSON.stringify(['REQ', subId, filter]));
+                                
+                                ws.onmessage = (msg) => {
+                                    const [type, , event] = JSON.parse(msg.data);
+                                    if (type === 'EVENT') {
+                                        events.push(event);
+                                    } else if (type === 'EOSE') {
+                                        resolve(events);
+                                    }
+                                };
+                            });
+                        }, 6000);
+                        
+                        // Filter for trails-coffee if we got all events
+                        let matchingEvents = result;
+                        if (filter.kinds[0] === 30078 && !filter['#shop']) {
+                            matchingEvents = result.filter(e => {
+                                const shopTag = e.tags.find(t => t[0] === 'shop');
+                                return shopTag && shopTag[1] === 'trails-coffee';
+                            });
+                        }
+                        
+                        log(`    ${matchingEvents.length > 0 ? '✅' : '⚠️ '} ${relayUrl}: ${matchingEvents.length} matching events (${result.length} total)`, matchingEvents.length > 0 ? 'success' : 'warning');
+                    } catch (error) {
+                        log(`    ⚠️  ${relayUrl}: ${error.message}`, 'error');
+                    }
                 }
             }
         }

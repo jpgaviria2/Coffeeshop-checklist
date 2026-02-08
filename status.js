@@ -23,13 +23,35 @@ async function loadSubmissions() {
         // Fetch last 30 days of submissions
         const since = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60);
         
-        const filter = {
+        // Try multiple filter strategies
+        console.log('🔍 Strategy 1: Filter by shop tag');
+        let filter = {
             kinds: [30078],
             '#shop': ['trails-coffee'],
-            since: since
+            since: since,
+            limit: 100
         };
         
-        const events = await fetchEventsFromRelays(filter);
+        let events = await fetchEventsFromRelays(filter);
+        
+        // If no results, try without the shop tag filter
+        if (events.length === 0) {
+            console.log('🔍 Strategy 2: All kind 30078 events');
+            filter = {
+                kinds: [30078],
+                since: since,
+                limit: 100
+            };
+            events = await fetchEventsFromRelays(filter);
+            
+            // Filter manually for trails-coffee
+            events = events.filter(e => {
+                const shopTag = e.tags.find(t => t[0] === 'shop');
+                return shopTag && shopTag[1] === 'trails-coffee';
+            });
+        }
+        
+        console.log(`📊 Final result: ${events.length} events`);
         
         if (events.length === 0) {
             document.getElementById('loading').style.display = 'none';
@@ -48,53 +70,65 @@ async function loadSubmissions() {
         
     } catch (error) {
         console.error('Error loading submissions:', error);
-        document.getElementById('loading').textContent = 'Error loading submissions';
+        document.getElementById('loading').textContent = 'Error loading submissions: ' + error.message;
     }
 }
 
 async function fetchEventsFromRelays(filter) {
     const allEvents = [];
     
+    console.log('🔍 Fetching with filter:', filter);
+    
     for (const relayUrl of RELAYS) {
         try {
+            console.log(`Connecting to ${relayUrl}...`);
             const ws = new WebSocket(relayUrl);
             
             await new Promise((resolve, reject) => {
                 const timeout = setTimeout(() => {
+                    console.warn(`⏱️  Timeout for ${relayUrl}`);
                     ws.close();
                     resolve();
-                }, 5000);
+                }, 8000); // Increased timeout to 8 seconds
                 
                 ws.onopen = () => {
                     const subId = Math.random().toString(36).substring(7);
-                    ws.send(JSON.stringify(['REQ', subId, filter]));
+                    const req = ['REQ', subId, filter];
+                    console.log(`📤 Sending to ${relayUrl}:`, req);
+                    ws.send(JSON.stringify(req));
                     
                     ws.onmessage = (msg) => {
                         const [type, subscriptionId, event] = JSON.parse(msg.data);
                         if (type === 'EVENT') {
+                            console.log(`📨 Received event from ${relayUrl}:`, event.id);
                             // Check if we already have this event
                             if (!allEvents.find(e => e.id === event.id)) {
                                 allEvents.push(event);
                             }
                         } else if (type === 'EOSE') {
+                            console.log(`✅ EOSE from ${relayUrl}, total events: ${allEvents.length}`);
                             clearTimeout(timeout);
                             ws.close();
                             resolve();
+                        } else if (type === 'NOTICE') {
+                            console.warn(`⚠️  Notice from ${relayUrl}:`, event);
                         }
                     };
                 };
                 
-                ws.onerror = () => {
+                ws.onerror = (error) => {
+                    console.error(`❌ Error connecting to ${relayUrl}:`, error);
                     clearTimeout(timeout);
                     resolve();
                 };
             });
         } catch (error) {
-            console.warn(`Relay ${relayUrl} failed:`, error);
+            console.warn(`⚠️  Relay ${relayUrl} failed:`, error);
             continue;
         }
     }
     
+    console.log(`\n📊 Total unique events found: ${allEvents.length}`);
     return allEvents;
 }
 

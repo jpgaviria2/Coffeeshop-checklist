@@ -328,6 +328,60 @@
             float: right;
         }
         
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .checklist-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .checklist-header-bar h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 0;
+        }
+        
+        .close-checklist-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .close-checklist-btn:active {
+            transform: scale(0.95);
+        }
+        
         .submit-section {
             margin-top: 20px;
             text-align: center;
@@ -393,6 +447,12 @@
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
             
+            <!-- Quick Actions (shown when logged in) -->
+            <div class="quick-actions" id="quickActions" style="display: none;">
+                <button class="action-btn" onclick="showChecklist('opening')">📋 Open Opening Checklist</button>
+                <button class="action-btn" onclick="showChecklist('closing')">📋 Open Closing Checklist</button>
+            </div>
+            
             <!-- Schedule Section -->
             <div class="schedule-section">
                 <div class="schedule-header">
@@ -415,6 +475,11 @@
             
             <!-- Checklist Section -->
             <div class="checklist-section" id="checklistSection" style="display: none;">
+                <div class="checklist-header-bar">
+                    <h2 id="checklistTitle">Opening Checklist</h2>
+                    <button class="close-checklist-btn" onclick="closeChecklist()">✕ Close</button>
+                </div>
+                
                 <div class="checklist-type">
                     <button id="openingBtn" class="active">🌅 Opening</button>
                     <button id="closingBtn">🌙 Closing</button>

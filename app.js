@@ -125,7 +125,38 @@ function formatDateRange(start, end) {
 function showLoggedInState() {
     document.getElementById('authSection').style.display = 'none';
     document.getElementById('userInfo').style.display = 'block';
+    document.getElementById('quickActions').style.display = 'flex';
+}
+
+// Show specific checklist
+function showChecklist(type) {
+    currentChecklist = type;
     document.getElementById('checklistSection').style.display = 'block';
+    document.getElementById('quickActions').style.display = 'none';
+    
+    if (type === 'opening') {
+        document.getElementById('checklistTitle').textContent = 'Opening Checklist';
+        document.getElementById('openingBtn').classList.add('active');
+        document.getElementById('closingBtn').classList.remove('active');
+        document.getElementById('openingChecklist').style.display = 'block';
+        document.getElementById('closingChecklist').style.display = 'none';
+    } else {
+        document.getElementById('checklistTitle').textContent = 'Closing Checklist';
+        document.getElementById('closingBtn').classList.add('active');
+        document.getElementById('openingBtn').classList.remove('active');
+        document.getElementById('openingChecklist').style.display = 'none';
+        document.getElementById('closingChecklist').style.display = 'block';
+    }
+    
+    // Scroll to checklist
+    document.getElementById('checklistSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Close checklist
+function closeChecklist() {
+    document.getElementById('checklistSection').style.display = 'none';
+    document.getElementById('quickActions').style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Login with nsec
@@ -133,40 +164,43 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     const nsecInput = document.getElementById('nsecInput').value.trim();
     
     if (!nsecInput) {
-        showStatus('error', 'Please enter your nsec key');
+        alert('Please enter your nsec key');
         return;
     }
     
-    try {
-        document.getElementById('loginBtn').disabled = true;
-        document.getElementById('loginBtn').textContent = 'Logging in...';
-        
-        // Decode nsec to get private key
-        const decoded = NostrTools.nip19.decode(nsecInput);
-        
-        if (decoded.type !== 'nsec') {
-            throw new Error('Invalid nsec key');
+    document.getElementById('loginBtn').disabled = true;
+    document.getElementById('loginBtn').textContent = 'Logging in...';
+    
+    // Small delay to show loading state
+    setTimeout(() => {
+        try {
+            // Decode nsec to get private key
+            const decoded = NostrTools.nip19.decode(nsecInput);
+            
+            if (decoded.type !== 'nsec') {
+                throw new Error('Invalid nsec key');
+            }
+            
+            const privateKey = decoded.data;
+            const publicKey = NostrTools.getPublicKey(privateKey);
+            
+            userKeys = { privateKey, publicKey };
+            
+            // Save to localStorage for persistence across sessions
+            localStorage.setItem('nostr_nsec', nsecInput);
+            
+            // Show logged in state
+            showLoggedInState();
+            
+            // Clear input
+            document.getElementById('nsecInput').value = '';
+            
+        } catch (error) {
+            alert('Invalid nsec key. Please check and try again.');
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'Login';
         }
-        
-        const privateKey = decoded.data;
-        const publicKey = NostrTools.getPublicKey(privateKey);
-        
-        userKeys = { privateKey, publicKey };
-        
-        // Save to localStorage for persistence across sessions
-        localStorage.setItem('nostr_nsec', nsecInput);
-        
-        // Show logged in state
-        showLoggedInState();
-        
-        // Clear input
-        document.getElementById('nsecInput').value = '';
-        
-    } catch (error) {
-        showStatus('error', 'Invalid nsec key. Please check and try again.');
-        document.getElementById('loginBtn').disabled = false;
-        document.getElementById('loginBtn').textContent = 'Login';
-    }
+    }, 500);
 });
 
 // Allow Enter key to login
@@ -179,6 +213,7 @@ document.getElementById('nsecInput').addEventListener('keypress', (e) => {
 // Checklist type switching
 document.getElementById('openingBtn').addEventListener('click', () => {
     currentChecklist = 'opening';
+    document.getElementById('checklistTitle').textContent = 'Opening Checklist';
     document.getElementById('openingBtn').classList.add('active');
     document.getElementById('closingBtn').classList.remove('active');
     document.getElementById('openingChecklist').style.display = 'block';
@@ -187,6 +222,7 @@ document.getElementById('openingBtn').addEventListener('click', () => {
 
 document.getElementById('closingBtn').addEventListener('click', () => {
     currentChecklist = 'closing';
+    document.getElementById('checklistTitle').textContent = 'Closing Checklist';
     document.getElementById('closingBtn').classList.add('active');
     document.getElementById('openingBtn').classList.remove('active');
     document.getElementById('openingChecklist').style.display = 'none';
@@ -329,10 +365,14 @@ function logout() {
     // Reset UI
     document.getElementById('authSection').style.display = 'block';
     document.getElementById('userInfo').style.display = 'none';
+    document.getElementById('quickActions').style.display = 'none';
     document.getElementById('checklistSection').style.display = 'none';
     document.getElementById('loginBtn').disabled = false;
     document.getElementById('loginBtn').textContent = 'Login';
     
     // Clear checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }

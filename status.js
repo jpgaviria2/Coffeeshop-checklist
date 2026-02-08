@@ -1,0 +1,231 @@
+// Status page - Load and display checklist submissions
+const RELAYS = [
+    'wss://relay.damus.io',
+    'wss://nos.lol',
+    'wss://relay.nostr.band'
+];
+
+// Load submissions on page load
+window.addEventListener('DOMContentLoaded', async () => {
+    if (typeof NostrTools === 'undefined') {
+        document.getElementById('loading').textContent = 'Error: NostrTools not loaded';
+        return;
+    }
+    
+    await loadSubmissions();
+});
+
+async function loadSubmissions() {
+    try {
+        // Fetch last 30 days of submissions
+        const since = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60);
+        
+        const filter = {
+            kinds: [30078],
+            '#shop': ['trails-coffee'],
+            since: since
+        };
+        
+        const events = await fetchEventsFromRelays(filter);
+        
+        if (events.length === 0) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+            return;
+        }
+        
+        // Group by date
+        const groupedByDate = groupEventsByDate(events);
+        
+        // Render
+        renderSubmissions(groupedByDate);
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('statusContent').style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error loading submissions:', error);
+        document.getElementById('loading').textContent = 'Error loading submissions';
+    }
+}
+
+async function fetchEventsFromRelays(filter) {
+    const allEvents = [];
+    
+    for (const relayUrl of RELAYS) {
+        try {
+            const ws = new WebSocket(relayUrl);
+            
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    ws.close();
+                    resolve();
+                }, 5000);
+                
+                ws.onopen = () => {
+                    const subId = Math.random().toString(36).substring(7);
+                    ws.send(JSON.stringify(['REQ', subId, filter]));
+                    
+                    ws.onmessage = (msg) => {
+                        const [type, subscriptionId, event] = JSON.parse(msg.data);
+                        if (type === 'EVENT') {
+                            // Check if we already have this event
+                            if (!allEvents.find(e => e.id === event.id)) {
+                                allEvents.push(event);
+                            }
+                        } else if (type === 'EOSE') {
+                            clearTimeout(timeout);
+                            ws.close();
+                            resolve();
+                        }
+                    };
+                };
+                
+                ws.onerror = () => {
+                    clearTimeout(timeout);
+                    resolve();
+                };
+            });
+        } catch (error) {
+            console.warn(`Relay ${relayUrl} failed:`, error);
+            continue;
+        }
+    }
+    
+    return allEvents;
+}
+
+function groupEventsByDate(events) {
+    const grouped = {};
+    
+    events.forEach(event => {
+        const date = new Date(event.created_at * 1000);
+        const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
+        
+        if (!grouped[dateKey]) {
+            grouped[dateKey] = [];
+        }
+        
+        grouped[dateKey].push(event);
+    });
+    
+    // Sort each day's events by time
+    Object.keys(grouped).forEach(dateKey => {
+        grouped[dateKey].sort((a, b) => a.created_at - b.created_at);
+    });
+    
+    return grouped;
+}
+
+function renderSubmissions(groupedByDate) {
+    const container = document.getElementById('statusContent');
+    container.innerHTML = '';
+    
+    // Get dates sorted (newest first)
+    const dates = Object.keys(groupedByDate).sort().reverse();
+    
+    dates.forEach(dateKey => {
+        const events = groupedByDate[dateKey];
+        
+        const dateSection = document.createElement('div');
+        dateSection.className = 'date-section';
+        
+        const dateHeader = document.createElement('div');
+        dateHeader.className = 'date-header';
+        dateHeader.textContent = formatDate(new Date(dateKey));
+        
+        const entriesDiv = document.createElement('div');
+        entriesDiv.className = 'checklist-entries';
+        
+        events.forEach(event => {
+            const entry = createEntryElement(event);
+            entriesDiv.appendChild(entry);
+        });
+        
+        dateSection.appendChild(dateHeader);
+        dateSection.appendChild(entriesDiv);
+        container.appendChild(dateSection);
+    });
+}
+
+function createEntryElement(event) {
+    const entry = document.createElement('div');
+    entry.className = 'checklist-entry';
+    entry.onclick = () => viewDetails(event);
+    
+    const content = JSON.parse(event.content);
+    const checklistType = content.checklist;
+    const timestamp = new Date(event.created_at * 1000);
+    
+    const typeLabels = {
+        'opening': '🌅 Opening Checklist',
+        'closing': '🌙 Closing Checklist',
+        'inventory': '📦 Inventory Handover'
+    };
+    
+    const info = document.createElement('div');
+    info.className = 'entry-info';
+    
+    const type = document.createElement('div');
+    type.className = 'entry-type';
+    type.textContent = typeLabels[checklistType] || checklistType;
+    
+    const time = document.createElement('div');
+    time.className = 'entry-time';
+    time.textContent = formatTime(timestamp);
+    
+    info.appendChild(type);
+    info.appendChild(time);
+    
+    const badge = document.createElement('div');
+    badge.className = `entry-badge badge-${checklistType}`;
+    
+    if (checklistType === 'inventory') {
+        badge.textContent = 'View →';
+    } else {
+        const completionRate = content.completionRate || 'N/A';
+        badge.textContent = completionRate;
+    }
+    
+    entry.appendChild(info);
+    entry.appendChild(badge);
+    
+    return entry;
+}
+
+function viewDetails(event) {
+    // Store event in sessionStorage and navigate to detail page
+    sessionStorage.setItem('checklistDetail', JSON.stringify(event));
+    window.location.href = 'detail.html';
+}
+
+function formatDate(date) {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const dayName = days[date.getDay()];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) {
+        return `Today - ${dayName}, ${month} ${day}`;
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return `Yesterday - ${dayName}, ${month} ${day}`;
+    } else {
+        return `${dayName}, ${month} ${day}, ${year}`;
+    }
+}
+
+function formatTime(date) {
+    const hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    
+    return `${displayHours}:${minutes} ${ampm}`;
+}

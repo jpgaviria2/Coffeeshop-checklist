@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Checklist Status - Trails Coffee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .nav-bar {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .nav-bar a {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav-bar a.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .date-section {
+            margin-bottom: 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .date-header {
+            background: #667eea;
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .checklist-entries {
+            background: #f8f9fa;
+        }
+        
+        .checklist-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .checklist-entry:hover {
+            background: #f8f9fa;
+        }
+        
+        .checklist-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .entry-info {
+            flex: 1;
+        }
+        
+        .entry-type {
+            font-weight: 600;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .entry-time {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .entry-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-opening { background: #ffc107; }
+        .badge-closing { background: #6c757d; }
+        .badge-inventory { background: #28a745; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ Trails Coffee</h1>
+            <p>Checklist Status</p>
+        </div>
+        
+        <div class="nav-bar">
+            <a href="index.html">📋 Checklists</a>
+            <a href="status.html" class="active">📊 Status</a>
+        </div>
+        
+        <div class="content">
+            <div class="loading" id="loading">
+                Loading submissions...
+            </div>
+            
+            <div id="statusContent" style="display: none;">
+                <!-- Submissions will be loaded here -->
+            </div>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📭</div>
+                <p><strong>No submissions found</strong></p>
+                <p style="margin-top: 10px; font-size: 14px;">Checklist submissions will appear here once staff submit them.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
+    <script src="status.js"></script>
+</body>
+</html>

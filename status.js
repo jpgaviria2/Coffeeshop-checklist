@@ -1,8 +1,11 @@
 // Status page - Load and display checklist submissions
 const RELAYS = [
     'wss://relay.damus.io',
+    'wss://relay.primal.net',
+    'wss://relay.anmore.me',
     'wss://nos.lol',
-    'wss://relay.nostr.band'
+    'wss://relay.nostr.band',
+    'wss://nostr.mutinywallet.com'
 ];
 
 // Load submissions on page load

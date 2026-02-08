@@ -8,8 +8,11 @@ let currentWeekOffset = 0; // 0 = this week, 1 = next week, -1 = last week
 // Nostr relay configuration
 const RELAYS = [
     'wss://relay.damus.io',
+    'wss://relay.primal.net',
+    'wss://relay.anmore.me',
     'wss://nos.lol',
-    'wss://relay.nostr.band'
+    'wss://relay.nostr.band',
+    'wss://nostr.mutinywallet.com'
 ];
 
 // Load schedule on page load
@@ -374,9 +377,20 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
 
 // Publish event to Nostr relays
 async function publishToRelays(event) {
+    let successCount = 0;
+    let errors = [];
+    
     const promises = RELAYS.map(relay => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const ws = new WebSocket(relay);
+            
+            const timeout = setTimeout(() => {
+                if (ws.readyState !== WebSocket.CLOSED) {
+                    ws.close();
+                    errors.push(`${relay}: Timeout`);
+                    resolve(false);
+                }
+            }, 5000);
             
             ws.onopen = () => {
                 ws.send(JSON.stringify(['EVENT', event]));
@@ -384,35 +398,53 @@ async function publishToRelays(event) {
             
             ws.onmessage = (msg) => {
                 const response = JSON.parse(msg.data);
-                if (response[0] === 'OK' && response[1] === event.id) {
+                if (response[0] === 'OK') {
+                    const [, eventId, success, message] = response;
+                    clearTimeout(timeout);
                     ws.close();
-                    resolve(relay);
+                    
+                    if (success) {
+                        console.log(`✅ Published to ${relay}`);
+                        successCount++;
+                        resolve(true);
+                    } else {
+                        console.error(`❌ Rejected by ${relay}: ${message}`);
+                        errors.push(`${relay}: ${message}`);
+                        resolve(false);
+                    }
                 } else if (response[0] === 'NOTICE') {
+                    clearTimeout(timeout);
                     ws.close();
-                    reject(new Error(response[1]));
+                    console.error(`⚠️ Notice from ${relay}: ${response[1]}`);
+                    errors.push(`${relay}: ${response[1]}`);
+                    resolve(false);
                 }
             };
             
             ws.onerror = (error) => {
-                reject(error);
+                clearTimeout(timeout);
+                console.error(`⚠️ Connection error: ${relay}`, error);
+                errors.push(`${relay}: Connection failed`);
+                resolve(false);
             };
-            
-            // Timeout after 5 seconds
-            setTimeout(() => {
-                if (ws.readyState !== WebSocket.CLOSED) {
-                    ws.close();
-                    reject(new Error('Timeout'));
-                }
-            }, 5000);
         });
     });
     
-    // Wait for at least one relay to succeed
-    try {
-        await Promise.any(promises);
-    } catch (error) {
-        throw new Error('Failed to publish to any relay');
+    // Wait for all relays to respond
+    await Promise.all(promises);
+    
+    console.log(`\n📊 Results: ${successCount}/${RELAYS.length} relays succeeded`);
+    
+    if (successCount === 0) {
+        console.error('❌ All relays failed:', errors);
+        throw new Error(`Failed to publish to any relay. Errors: ${errors.join('; ')}`);
     }
+    
+    if (errors.length > 0) {
+        console.warn('⚠️  Some relays failed:', errors);
+    }
+    
+    return successCount;
 }
 
 // Show status message

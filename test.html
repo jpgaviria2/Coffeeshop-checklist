@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nostr Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .log { margin: 5px 0; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Nostr Relay Test</h1>
+    <button onclick="runTest()">Run Test</button>
+    <div id="output"></div>
+    
+    <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
+    <script>
+        const RELAYS = [
+            'wss://relay.damus.io',
+            'wss://relay.primal.net',
+            'wss://relay.anmore.me',
+            'wss://nos.lol',
+            'wss://relay.nostr.band',
+            'wss://nostr.mutinywallet.com'
+        ];
+        
+        const nsec = 'nsec1sx7pa7pke75pn02cn3snhk7tde9akd90g7t7tmdnene33pq6fzaqyxa8pd';
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = message;
+            document.getElementById('output').appendChild(div);
+            console.log(message);
+        }
+        
+        async function runTest() {
+            document.getElementById('output').innerHTML = '';
+            log('🔍 Starting Nostr test...', 'success');
+            
+            // Decode nsec
+            const decoded = NostrTools.nip19.decode(nsec);
+            const privateKey = decoded.data;
+            const publicKey = NostrTools.getPublicKey(privateKey);
+            
+            log(`\n📌 Public Key: ${publicKey}`, 'success');
+            
+            // Step 1: Check profile
+            log('\n📋 Step 1: Checking for profile...', 'warning');
+            const hasProfile = await checkProfile(publicKey);
+            
+            if (!hasProfile) {
+                log('⚠️  No profile found. Publishing...', 'warning');
+                await publishProfile(privateKey, publicKey);
+            } else {
+                log('✅ Profile exists', 'success');
+            }
+            
+            // Step 2: Test event
+            log('\n📋 Step 2: Testing checklist event...', 'warning');
+            await testEvent(privateKey);
+            
+            // Step 3: Fetch events
+            log('\n📋 Step 3: Fetching recent events...', 'warning');
+            await fetchEvents(publicKey);
+            
+            log('\n✅ Test complete!', 'success');
+        }
+        
+        async function checkProfile(pubkey) {
+            let found = false;
+            
+            for (const relayUrl of RELAYS) {
+                try {
+                    const result = await testRelay(relayUrl, async (ws) => {
+                        return new Promise((resolve) => {
+                            const subId = 'profile-check';
+                            ws.send(JSON.stringify(['REQ', subId, { kinds: [0], authors: [pubkey], limit: 1 }]));
+                            
+                            ws.onmessage = (msg) => {
+                                const [type] = JSON.parse(msg.data);
+                                if (type === 'EVENT') {
+                                    resolve(true);
+                                } else if (type === 'EOSE') {
+                                    resolve(false);
+                                }
+                            };
+                        });
+                    });
+                    
+                    if (result) {
+                        log(`  ✅ Profile found on ${relayUrl}`, 'success');
+                        found = true;
+                    }
+                } catch (error) {
+                    log(`  ⚠️  ${relayUrl}: ${error.message}`, 'error');
+                }
+            }
+            
+            return found;
+        }
+        
+        async function publishProfile(privateKey, publicKey) {
+            const profileEvent = {
+                kind: 0,
+                created_at: Math.floor(Date.now() / 1000),
+                tags: [],
+                content: JSON.stringify({
+                    name: 'Trails Coffee Staff',
+                    about: 'Staff member at Trails Coffee',
+                    display_name: 'Trails Staff'
+                })
+            };
+            
+            const signedEvent = NostrTools.finalizeEvent(profileEvent, privateKey);
+            let successCount = 0;
+            
+            for (const relayUrl of RELAYS) {
+                try {
+                    const result = await testRelay(relayUrl, async (ws) => {
+                        return new Promise((resolve) => {
+                            ws.send(JSON.stringify(['EVENT', signedEvent]));
+                            
+                            ws.onmessage = (msg) => {
+                                const [type, , success, message] = JSON.parse(msg.data);
+                                if (type === 'OK') {
+                                    resolve({ success, message });
+                                }
+                            };
+                        });
+                    });
+                    
+                    if (result.success) {
+                        log(`  ✅ Profile published to ${relayUrl}`, 'success');
+                        successCount++;
+                    } else {
+                        log(`  ❌ Rejected by ${relayUrl}: ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    log(`  ⚠️  ${relayUrl}: ${error.message}`, 'error');
+                }
+            }
+            
+            log(`\n  📊 Published to ${successCount}/${RELAYS.length} relays`, 'warning');
+        }
+        
+        async function testEvent(privateKey) {
+            const testEvent = {
+                kind: 30078,
+                created_at: Math.floor(Date.now() / 1000),
+                tags: [
+                    ['d', `test-${Date.now()}`],
+                    ['type', 'opening'],
+                    ['shop', 'trails-coffee']
+                ],
+                content: JSON.stringify({
+                    checklist: 'opening',
+                    timestamp: new Date().toISOString(),
+                    test: true,
+                    items: [{ task: 'Test task', completed: true }]
+                })
+            };
+            
+            const signedEvent = NostrTools.finalizeEvent(testEvent, privateKey);
+            let successCount = 0;
+            
+            for (const relayUrl of RELAYS) {
+                try {
+                    const result = await testRelay(relayUrl, async (ws) => {
+                        return new Promise((resolve) => {
+                            ws.send(JSON.stringify(['EVENT', signedEvent]));
+                            
+                            ws.onmessage = (msg) => {
+                                const [type, , success, message] = JSON.parse(msg.data);
+                                if (type === 'OK') {
+                                    resolve({ success, message });
+                                }
+                            };
+                        });
+                    });
+                    
+                    if (result.success) {
+                        log(`  ✅ Event published to ${relayUrl}`, 'success');
+                        successCount++;
+                    } else {
+                        log(`  ❌ Rejected by ${relayUrl}: ${result.message}`, 'error');
+                    }
+                } catch (error) {
+                    log(`  ⚠️  ${relayUrl}: ${error.message}`, 'error');
+                }
+            }
+            
+            log(`\n  📊 Published to ${successCount}/${RELAYS.length} relays`, 'warning');
+        }
+        
+        async function fetchEvents(pubkey) {
+            const filter = {
+                kinds: [30078],
+                '#shop': ['trails-coffee'],
+                limit: 20
+            };
+            
+            for (const relayUrl of RELAYS) {
+                try {
+                    const result = await testRelay(relayUrl, async (ws) => {
+                        return new Promise((resolve) => {
+                            let events = [];
+                            const subId = 'fetch-test';
+                            ws.send(JSON.stringify(['REQ', subId, filter]));
+                            
+                            ws.onmessage = (msg) => {
+                                const [type, , event] = JSON.parse(msg.data);
+                                if (type === 'EVENT') {
+                                    events.push(event);
+                                } else if (type === 'EOSE') {
+                                    resolve(events);
+                                }
+                            };
+                        });
+                    }, 5000);
+                    
+                    log(`  ${result.length > 0 ? '✅' : '⚠️ '} ${relayUrl}: ${result.length} events`, result.length > 0 ? 'success' : 'warning');
+                } catch (error) {
+                    log(`  ⚠️  ${relayUrl}: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        function testRelay(relayUrl, handler, timeout = 3000) {
+            return new Promise((resolve, reject) => {
+                const ws = new WebSocket(relayUrl);
+                const timer = setTimeout(() => {
+                    ws.close();
+                    reject(new Error('Timeout'));
+                }, timeout);
+                
+                ws.onopen = async () => {
+                    try {
+                        const result = await handler(ws);
+                        clearTimeout(timer);
+                        ws.close();
+                        resolve(result);
+                    } catch (error) {
+                        clearTimeout(timer);
+                        ws.close();
+                        reject(error);
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    clearTimeout(timer);
+                    reject(new Error('Connection failed'));
+                };
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check JP's Events</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .log { margin: 5px 0; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px 0; }
+        pre { background: #2a2a2a; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Check JP's Events on Relays</h1>
+    <button onclick="checkEvents()">Check Now</button>
+    <div id="output"></div>
+    
+    <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
+    <script>
+        const RELAYS = [
+            'wss://relay.damus.io',
+            'wss://relay.primal.net',
+            'wss://relay.anmore.me',
+            'wss://nos.lol',
+            'wss://relay.nostr.band',
+            'wss://nostr.mutinywallet.com'
+        ];
+        
+        const JP_PUBKEY = 'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd';
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            
+            if (typeof message === 'object') {
+                const pre = document.createElement('pre');
+                pre.textContent = JSON.stringify(message, null, 2);
+                div.appendChild(pre);
+            } else {
+                div.textContent = message;
+            }
+            
+            document.getElementById('output').appendChild(div);
+            console.log(message);
+        }
+        
+        async function checkEvents() {
+            document.getElementById('output').innerHTML = '';
+            log('🔍 Checking for JP\'s events...', 'success');
+            log(`Pubkey: ${JP_PUBKEY}`, 'warning');
+            
+            const filter = {
+                kinds: [30078],
+                authors: [JP_PUBKEY],
+                limit: 50
+            };
+            
+            log('\nFilter:', 'warning');
+            log(filter);
+            
+            let totalEvents = 0;
+            
+            for (const relayUrl of RELAYS) {
+                log(`\n📡 Checking ${relayUrl}...`, 'warning');
+                
+                try {
+                    const ws = new WebSocket(relayUrl);
+                    
+                    await new Promise((resolve) => {
+                        const timeout = setTimeout(() => {
+                            log(`  ⏱️  Timeout`, 'error');
+                            ws.close();
+                            resolve();
+                        }, 8000);
+                        
+                        ws.onopen = () => {
+                            const subId = 'check-' + Math.random().toString(36).substring(7);
+                            const req = ['REQ', subId, filter];
+                            log(`  📤 Sent: ${JSON.stringify(req)}`);
+                            ws.send(JSON.stringify(req));
+                            
+                            let eventCount = 0;
+                            let events = [];
+                            
+                            ws.onmessage = (msg) => {
+                                const data = JSON.parse(msg.data);
+                                const [type, subIdOrEventId, event] = data;
+                                
+                                if (type === 'EVENT') {
+                                    eventCount++;
+                                    events.push(event);
+                                    log(`  📨 Event ${eventCount}: ${event.id.substring(0, 8)}...`, 'success');
+                                    
+                                    // Parse content
+                                    try {
+                                        const content = JSON.parse(event.content);
+                                        log(`     Type: ${content.checklist}`, 'success');
+                                        log(`     Time: ${new Date(event.created_at * 1000).toLocaleString()}`, 'success');
+                                        
+                                        // Show tags
+                                        const shopTag = event.tags.find(t => t[0] === 'shop');
+                                        const typeTag = event.tags.find(t => t[0] === 'type');
+                                        log(`     Tags: shop=${shopTag?.[1]}, type=${typeTag?.[1]}`, 'success');
+                                    } catch (e) {
+                                        log(`     Content parse error: ${e.message}`, 'error');
+                                    }
+                                    
+                                } else if (type === 'EOSE') {
+                                    clearTimeout(timeout);
+                                    ws.close();
+                                    
+                                    if (eventCount > 0) {
+                                        log(`\n  ✅ Found ${eventCount} events`, 'success');
+                                        totalEvents += eventCount;
+                                        
+                                        // Show full event details
+                                        log(`\n  📋 Full event details:`, 'warning');
+                                        events.forEach((e, i) => {
+                                            log(`\n  Event ${i + 1}:`);
+                                            log(e);
+                                        });
+                                    } else {
+                                        log(`\n  ⚠️  No events found`, 'warning');
+                                    }
+                                    
+                                    resolve();
+                                } else if (type === 'NOTICE') {
+                                    log(`  ⚠️  Notice: ${event}`, 'error');
+                                }
+                            };
+                        };
+                        
+                        ws.onerror = (error) => {
+                            clearTimeout(timeout);
+                            log(`  ❌ Connection failed`, 'error');
+                            resolve();
+                        };
+                    });
+                    
+                } catch (error) {
+                    log(`  ❌ Error: ${error.message}`, 'error');
+                }
+            }
+            
+            log(`\n\n📊 TOTAL: ${totalEvents} events found across all relays`, totalEvents > 0 ? 'success' : 'error');
+            
+            if (totalEvents === 0) {
+                log('\n❌ No events found! This means:', 'error');
+                log('  1. Events were not successfully published, OR', 'error');
+                log('  2. Events were published with different pubkey', 'error');
+                log('  3. Relays have not yet propagated the events', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

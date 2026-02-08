@@ -302,16 +302,19 @@
         }
         
         .user-info {
-            background: #f8f9fa;
+            background: #d4edda;
+            border: 2px solid #28a745;
             padding: 12px;
             border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #155724;
+            text-align: center;
         }
         
         .user-info strong {
-            color: #333;
+            color: #155724;
+            font-size: 15px;
         }
         
         .logout-btn {
@@ -367,6 +370,29 @@
         </div>
         
         <div class="content">
+            <!-- Authentication Section (Moved to Top) -->
+            <div class="auth-section" id="authSection">
+                <h2>🔑 Staff Login</h2>
+                <p>Enter your nsec to access checklists</p>
+                
+                <div class="input-group">
+                    <label for="nsecInput">Your nsec key:</label>
+                    <input type="password" id="nsecInput" placeholder="nsec1..." autocomplete="off">
+                </div>
+                
+                <button class="btn" id="loginBtn">Login</button>
+                
+                <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                    Don't have an nsec? Ask your manager for one.
+                </p>
+            </div>
+            
+            <!-- User Info (shown when logged in) -->
+            <div class="user-info" id="userInfo" style="display: none;">
+                <strong>✅ Logged in</strong>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            
             <!-- Schedule Section -->
             <div class="schedule-section">
                 <div class="schedule-header">
@@ -387,30 +413,8 @@
                 </div>
             </div>
             
-            <!-- Authentication Section -->
-            <div class="auth-section" id="authSection">
-                <h2>📋 Submit Checklist</h2>
-                <p>Enter your nsec to submit daily checklists</p>
-                
-                <div class="input-group">
-                    <label for="nsecInput">Your nsec key:</label>
-                    <input type="password" id="nsecInput" placeholder="nsec1..." autocomplete="off">
-                </div>
-                
-                <button class="btn" id="loginBtn">Login</button>
-                
-                <p style="margin-top: 20px; font-size: 12px; color: #999;">
-                    Don't have an nsec? Ask your manager for one.
-                </p>
-            </div>
-            
             <!-- Checklist Section -->
-            <div class="checklist-section" id="checklistSection">
-                <div class="user-info" id="userInfo">
-                    <strong>Logged in</strong>
-                    <button class="logout-btn" onclick="logout()">Logout</button>
-                </div>
-                
+            <div class="checklist-section" id="checklistSection" style="display: none;">
                 <div class="checklist-type">
                     <button id="openingBtn" class="active">🌅 Opening</button>
                     <button id="closingBtn">🌙 Closing</button>

@@ -17,14 +17,14 @@ window.addEventListener('DOMContentLoaded', () => {
     // Load schedule
     loadSchedule(0);
     
-    // Check for saved login
+    // Check for saved login (now using localStorage for persistence)
     if (typeof NostrTools === 'undefined') {
         console.error('NostrTools not loaded');
         showStatus('error', 'Error loading app. Please refresh the page.');
         return;
     }
     
-    const savedNsec = sessionStorage.getItem('nostr_nsec');
+    const savedNsec = localStorage.getItem('nostr_nsec');
     if (savedNsec) {
         try {
             const decoded = NostrTools.nip19.decode(savedNsec);
@@ -32,9 +32,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 privateKey: decoded.data,
                 publicKey: NostrTools.getPublicKey(decoded.data)
             };
-            showChecklistSection();
+            showLoggedInState();
         } catch (error) {
-            sessionStorage.removeItem('nostr_nsec');
+            localStorage.removeItem('nostr_nsec');
         }
     }
 });
@@ -121,8 +121,10 @@ function formatDateRange(start, end) {
     return `${months[start.getMonth()]} ${start.getDate()} - ${months[end.getMonth()]} ${end.getDate()}, ${start.getFullYear()}`;
 }
 
-// Show checklist section
-function showChecklistSection() {
+// Show logged in state
+function showLoggedInState() {
+    document.getElementById('authSection').style.display = 'none';
+    document.getElementById('userInfo').style.display = 'block';
     document.getElementById('checklistSection').style.display = 'block';
 }
 
@@ -151,11 +153,11 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
         
         userKeys = { privateKey, publicKey };
         
-        // Save to session storage
-        sessionStorage.setItem('nostr_nsec', nsecInput);
+        // Save to localStorage for persistence across sessions
+        localStorage.setItem('nostr_nsec', nsecInput);
         
-        // Show checklist section
-        showChecklistSection();
+        // Show logged in state
+        showLoggedInState();
         
         // Clear input
         document.getElementById('nsecInput').value = '';
@@ -321,10 +323,12 @@ function showStatus(type, message) {
 
 // Logout function
 function logout() {
-    sessionStorage.removeItem('nostr_nsec');
+    localStorage.removeItem('nostr_nsec');
     userKeys = null;
     
     // Reset UI
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('userInfo').style.display = 'none';
     document.getElementById('checklistSection').style.display = 'none';
     document.getElementById('loginBtn').disabled = false;
     document.getElementById('loginBtn').textContent = 'Login';

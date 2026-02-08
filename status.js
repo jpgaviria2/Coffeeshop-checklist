@@ -8,6 +8,18 @@ const RELAYS = [
     'wss://nostr.mutinywallet.com'
 ];
 
+// Staff public keys (hex format)
+const STAFF_PUBKEYS = [
+    'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd', // JP
+    '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f'  // Charlene
+];
+
+// Staff name mapping (for display)
+const STAFF_NAMES = {
+    'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd': 'JP',
+    '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f': 'Charlene'
+};
+
 // Load submissions on page load
 window.addEventListener('DOMContentLoaded', async () => {
     if (typeof NostrTools === 'undefined') {
@@ -20,38 +32,22 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 async function loadSubmissions() {
     try {
-        // Fetch last 30 days of submissions
+        // Fetch last 30 days of submissions from staff members
         const since = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60);
         
-        // Try multiple filter strategies
-        console.log('🔍 Strategy 1: Filter by shop tag');
-        let filter = {
+        console.log('🔍 Fetching checklists from staff members');
+        
+        // Filter by authors (staff pubkeys) - much more reliable!
+        const filter = {
             kinds: [30078],
-            '#shop': ['trails-coffee'],
+            authors: STAFF_PUBKEYS,
             since: since,
             limit: 100
         };
         
-        let events = await fetchEventsFromRelays(filter);
+        const events = await fetchEventsFromRelays(filter);
         
-        // If no results, try without the shop tag filter
-        if (events.length === 0) {
-            console.log('🔍 Strategy 2: All kind 30078 events');
-            filter = {
-                kinds: [30078],
-                since: since,
-                limit: 100
-            };
-            events = await fetchEventsFromRelays(filter);
-            
-            // Filter manually for trails-coffee
-            events = events.filter(e => {
-                const shopTag = e.tags.find(t => t[0] === 'shop');
-                return shopTag && shopTag[1] === 'trails-coffee';
-            });
-        }
-        
-        console.log(`📊 Final result: ${events.length} events`);
+        console.log(`📊 Final result: ${events.length} events from staff`);
         
         if (events.length === 0) {
             document.getElementById('loading').style.display = 'none';

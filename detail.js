@@ -1,5 +1,11 @@
 // Detail page - Show full checklist submission details
 
+// Staff name mapping
+const STAFF_NAMES = {
+    'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd': 'JP',
+    '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f': 'Charlene'
+};
+
 window.addEventListener('DOMContentLoaded', () => {
     const eventData = sessionStorage.getItem('checklistDetail');
     
@@ -17,8 +23,8 @@ function renderDetail(event) {
     const checklistType = content.checklist;
     const timestamp = new Date(event.created_at * 1000);
     
-    // Get submitter public key (first 8 chars)
-    const submitter = event.pubkey.substring(0, 8);
+    // Get submitter name or fallback to pubkey snippet
+    const staffName = STAFF_NAMES[event.pubkey] || event.pubkey.substring(0, 8);
     
     const typeLabels = {
         'opening': '🌅 Opening Checklist',
@@ -34,7 +40,7 @@ function renderDetail(event) {
     const meta = document.getElementById('detailMeta');
     meta.innerHTML = `
         <div><strong>Submitted:</strong> ${formatDateTime(timestamp)}</div>
-        <div><strong>Staff ID:</strong> ${submitter}</div>
+        <div><strong>Staff:</strong> ${staffName}</div>
     `;
     
     // Render content based on type

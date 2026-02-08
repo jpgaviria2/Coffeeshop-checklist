@@ -284,7 +284,10 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             pastries: {
                 hamCheese: parseInt(document.getElementById('inv-ham-cheese').value) || 0,
                 chocolate: parseInt(document.getElementById('inv-chocolate').value) || 0,
-                plain: parseInt(document.getElementById('inv-plain').value) || 0
+                plain: parseInt(document.getElementById('inv-plain').value) || 0,
+                bananaBread: parseInt(document.getElementById('inv-banana-bread').value) || 0,
+                lemonLoaf: parseInt(document.getElementById('inv-lemon-loaf').value) || 0,
+                cinnamonBuns: parseInt(document.getElementById('inv-cinnamon-buns').value) || 0
             }
         };
         

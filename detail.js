@@ -115,7 +115,10 @@ function renderInventoryDetail(content, container) {
         const section = createInventorySection('🥐 Pastries', [
             { label: 'Ham & Cheese', value: inventory.pastries.hamCheese },
             { label: 'Chocolate', value: inventory.pastries.chocolate },
-            { label: 'Plain', value: inventory.pastries.plain }
+            { label: 'Plain', value: inventory.pastries.plain },
+            { label: 'Banana Bread', value: inventory.pastries.bananaBread },
+            { label: 'Lemon Loaf', value: inventory.pastries.lemonLoaf },
+            { label: 'Cinnamon Buns', value: inventory.pastries.cinnamonBuns }
         ]);
         container.appendChild(section);
     }

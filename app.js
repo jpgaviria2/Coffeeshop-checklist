@@ -134,18 +134,28 @@ function showChecklist(type) {
     document.getElementById('checklistSection').style.display = 'block';
     document.getElementById('quickActions').style.display = 'none';
     
+    // Hide all checklists first
+    document.getElementById('openingChecklist').style.display = 'none';
+    document.getElementById('closingChecklist').style.display = 'none';
+    document.getElementById('inventoryChecklist').style.display = 'none';
+    
+    // Remove active from all buttons
+    document.getElementById('openingBtn').classList.remove('active');
+    document.getElementById('closingBtn').classList.remove('active');
+    document.getElementById('inventoryBtn').classList.remove('active');
+    
     if (type === 'opening') {
         document.getElementById('checklistTitle').textContent = 'Opening Checklist';
         document.getElementById('openingBtn').classList.add('active');
-        document.getElementById('closingBtn').classList.remove('active');
         document.getElementById('openingChecklist').style.display = 'block';
-        document.getElementById('closingChecklist').style.display = 'none';
-    } else {
+    } else if (type === 'closing') {
         document.getElementById('checklistTitle').textContent = 'Closing Checklist';
         document.getElementById('closingBtn').classList.add('active');
-        document.getElementById('openingBtn').classList.remove('active');
-        document.getElementById('openingChecklist').style.display = 'none';
         document.getElementById('closingChecklist').style.display = 'block';
+    } else if (type === 'inventory') {
+        document.getElementById('checklistTitle').textContent = 'Inventory Handover';
+        document.getElementById('inventoryBtn').classList.add('active');
+        document.getElementById('inventoryChecklist').style.display = 'block';
     }
     
     // Scroll to checklist
@@ -216,8 +226,10 @@ document.getElementById('openingBtn').addEventListener('click', () => {
     document.getElementById('checklistTitle').textContent = 'Opening Checklist';
     document.getElementById('openingBtn').classList.add('active');
     document.getElementById('closingBtn').classList.remove('active');
+    document.getElementById('inventoryBtn').classList.remove('active');
     document.getElementById('openingChecklist').style.display = 'block';
     document.getElementById('closingChecklist').style.display = 'none';
+    document.getElementById('inventoryChecklist').style.display = 'none';
 });
 
 document.getElementById('closingBtn').addEventListener('click', () => {
@@ -225,35 +237,87 @@ document.getElementById('closingBtn').addEventListener('click', () => {
     document.getElementById('checklistTitle').textContent = 'Closing Checklist';
     document.getElementById('closingBtn').classList.add('active');
     document.getElementById('openingBtn').classList.remove('active');
+    document.getElementById('inventoryBtn').classList.remove('active');
     document.getElementById('openingChecklist').style.display = 'none';
     document.getElementById('closingChecklist').style.display = 'block';
+    document.getElementById('inventoryChecklist').style.display = 'none';
+});
+
+document.getElementById('inventoryBtn').addEventListener('click', () => {
+    currentChecklist = 'inventory';
+    document.getElementById('checklistTitle').textContent = 'Inventory Handover';
+    document.getElementById('inventoryBtn').classList.add('active');
+    document.getElementById('openingBtn').classList.remove('active');
+    document.getElementById('closingBtn').classList.remove('active');
+    document.getElementById('openingChecklist').style.display = 'none';
+    document.getElementById('closingChecklist').style.display = 'none';
+    document.getElementById('inventoryChecklist').style.display = 'block';
 });
 
 // Submit checklist
 document.getElementById('submitBtn').addEventListener('click', async () => {
     if (!userKeys) {
-        showStatus('error', 'Not logged in');
+        alert('Not logged in');
         return;
     }
     
-    const checklistDiv = currentChecklist === 'opening' ? 
-        document.getElementById('openingChecklist') : 
-        document.getElementById('closingChecklist');
+    let items = [];
+    let contentData = {};
     
-    const checkboxes = checklistDiv.querySelectorAll('input[type="checkbox"]');
-    const items = [];
-    let completedCount = 0;
-    
-    checkboxes.forEach(checkbox => {
-        const label = checkbox.nextElementSibling.textContent;
-        const checked = checkbox.checked;
-        items.push({ task: label, completed: checked });
-        if (checked) completedCount++;
-    });
-    
-    if (completedCount === 0) {
-        showStatus('error', 'Please complete at least one task before submitting.');
-        return;
+    if (currentChecklist === 'inventory') {
+        // Handle inventory checklist
+        const inventoryData = {
+            milk: {
+                whole: parseInt(document.getElementById('inv-whole-milk').value) || 0,
+                almond: parseInt(document.getElementById('inv-almond-milk').value) || 0,
+                oat: parseInt(document.getElementById('inv-oat-milk').value) || 0,
+                soy: parseInt(document.getElementById('inv-soy-milk').value) || 0
+            },
+            beans: {
+                regular: parseInt(document.getElementById('inv-beans-regular').value) || 0,
+                decaf: parseInt(document.getElementById('inv-beans-decaf').value) || 0
+            },
+            coffeeBags: parseInt(document.getElementById('inv-coffee-bags').value) || 0,
+            pastries: {
+                hamCheese: parseInt(document.getElementById('inv-ham-cheese').value) || 0,
+                chocolate: parseInt(document.getElementById('inv-chocolate').value) || 0,
+                plain: parseInt(document.getElementById('inv-plain').value) || 0
+            }
+        };
+        
+        contentData = {
+            checklist: 'inventory',
+            timestamp: new Date().toISOString(),
+            inventory: inventoryData
+        };
+        
+    } else {
+        // Handle opening/closing checklist
+        const checklistDiv = currentChecklist === 'opening' ? 
+            document.getElementById('openingChecklist') : 
+            document.getElementById('closingChecklist');
+        
+        const checkboxes = checklistDiv.querySelectorAll('input[type="checkbox"]');
+        let completedCount = 0;
+        
+        checkboxes.forEach(checkbox => {
+            const label = checkbox.nextElementSibling.textContent;
+            const checked = checkbox.checked;
+            items.push({ task: label, completed: checked });
+            if (checked) completedCount++;
+        });
+        
+        if (completedCount === 0) {
+            alert('Please complete at least one task before submitting.');
+            return;
+        }
+        
+        contentData = {
+            checklist: currentChecklist,
+            timestamp: new Date().toISOString(),
+            items: items,
+            completionRate: `${completedCount}/${items.length}`
+        };
     }
     
     try {
@@ -268,16 +332,14 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
                 ['d', `checklist-${currentChecklist}-${new Date().toISOString().split('T')[0]}`],
                 ['type', currentChecklist],
                 ['shop', 'trails-coffee'],
-                ['completed', completedCount.toString()],
-                ['total', items.length.toString()]
             ],
-            content: JSON.stringify({
-                checklist: currentChecklist,
-                timestamp: new Date().toISOString(),
-                items: items,
-                completionRate: `${completedCount}/${items.length}`
-            })
+            content: JSON.stringify(contentData)
         };
+        
+        if (currentChecklist !== 'inventory') {
+            eventTemplate.tags.push(['completed', items.filter(i => i.completed).length.toString()]);
+            eventTemplate.tags.push(['total', items.length.toString()]);
+        }
         
         // Sign event with private key
         const signedEvent = NostrTools.finalizeEvent(eventTemplate, userKeys.privateKey);
@@ -285,11 +347,21 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         // Publish to relays
         await publishToRelays(signedEvent);
         
-        showStatus('success', `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist submitted! (${completedCount}/${items.length} tasks completed)`);
+        const successMsg = currentChecklist === 'inventory' 
+            ? `✅ Inventory handover submitted!`
+            : `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist submitted! (${contentData.completionRate} tasks completed)`;
         
-        // Reset checkboxes after successful submission
+        showStatus('success', successMsg);
+        
+        // Reset after successful submission
         setTimeout(() => {
-            checkboxes.forEach(cb => cb.checked = false);
+            if (currentChecklist === 'inventory') {
+                // Reset inventory inputs
+                document.querySelectorAll('#inventoryChecklist input[type="number"]').forEach(input => input.value = 0);
+            } else {
+                // Reset checkboxes
+                document.querySelectorAll(`#${currentChecklist}Checklist input[type="checkbox"]`).forEach(cb => cb.checked = false);
+            }
         }, 2000);
         
     } catch (error) {

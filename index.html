@@ -382,6 +382,41 @@
             transform: scale(0.95);
         }
         
+        .inventory-section {
+            margin-bottom: 20px;
+        }
+        
+        .inventory-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+        
+        .inventory-item label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .inventory-item input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .inventory-item input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
         .submit-section {
             margin-top: 20px;
             text-align: center;
@@ -451,6 +486,7 @@
             <div class="quick-actions" id="quickActions" style="display: none;">
                 <button class="action-btn" onclick="showChecklist('opening')">📋 Open Opening Checklist</button>
                 <button class="action-btn" onclick="showChecklist('closing')">📋 Open Closing Checklist</button>
+                <button class="action-btn" onclick="showChecklist('inventory')">📦 Inventory Handover</button>
             </div>
             
             <!-- Schedule Section -->
@@ -483,6 +519,7 @@
                 <div class="checklist-type">
                     <button id="openingBtn" class="active">🌅 Opening</button>
                     <button id="closingBtn">🌙 Closing</button>
+                    <button id="inventoryBtn">📦 Inventory</button>
                 </div>
                 
                 <div class="checklist" id="openingChecklist">
@@ -586,6 +623,63 @@
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-12">
                         <label for="closing-12">Lock doors & windows, arm alarm</label>
+                    </div>
+                </div>
+                
+                <div class="checklist" id="inventoryChecklist" style="display: none;">
+                    <h3>Inventory Handover</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Count remaining items at end of shift</p>
+                    
+                    <div class="inventory-section">
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">🥛 Milk Products</h4>
+                        <div class="inventory-item">
+                            <label for="inv-whole-milk">Whole Milk (jugs):</label>
+                            <input type="number" id="inv-whole-milk" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-almond-milk">Almond Milk (jugs):</label>
+                            <input type="number" id="inv-almond-milk" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-oat-milk">Oat Milk (jugs):</label>
+                            <input type="number" id="inv-oat-milk" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-soy-milk">Soy Milk (jugs):</label>
+                            <input type="number" id="inv-soy-milk" min="0" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="inventory-section">
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">☕ Coffee Beans</h4>
+                        <div class="inventory-item">
+                            <label for="inv-beans-regular">Regular Beans (5lb bags):</label>
+                            <input type="number" id="inv-beans-regular" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-beans-decaf">Decaf Beans (5lb bags):</label>
+                            <input type="number" id="inv-beans-decaf" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-coffee-bags">Coffee Bags for Sale (1lb):</label>
+                            <input type="number" id="inv-coffee-bags" min="0" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="inventory-section">
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">🥐 Pastries</h4>
+                        <div class="inventory-item">
+                            <label for="inv-ham-cheese">Ham & Cheese Croissants:</label>
+                            <input type="number" id="inv-ham-cheese" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-chocolate">Chocolate Croissants:</label>
+                            <input type="number" id="inv-chocolate" min="0" value="0">
+                        </div>
+                        <div class="inventory-item">
+                            <label for="inv-plain">Plain Croissants:</label>
+                            <input type="number" id="inv-plain" min="0" value="0">
+                        </div>
                     </div>
                 </div>
                 

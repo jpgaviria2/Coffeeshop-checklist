@@ -274,6 +274,8 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
                 milk35: parseInt(document.getElementById('inv-milk-35').value) || 0,
                 milk2: parseInt(document.getElementById('inv-milk-2').value) || 0,
                 oatMilk1L: parseInt(document.getElementById('inv-oat-milk-1l').value) || 0,
+                soyMilk1L: parseInt(document.getElementById('inv-soy-milk-1l').value) || 0,
+                halfAndHalf: parseInt(document.getElementById('inv-half-and-half').value) || 0,
                 whole: parseInt(document.getElementById('inv-whole-milk').value) || 0,
                 almond: parseInt(document.getElementById('inv-almond-milk').value) || 0,
                 soy: parseInt(document.getElementById('inv-soy-milk').value) || 0

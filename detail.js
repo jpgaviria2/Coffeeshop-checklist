@@ -96,6 +96,8 @@ function renderInventoryDetail(content, container) {
             { label: '3.5% Milk (jugs)', value: inventory.milk.milk35 },
             { label: '2% Milk (jugs)', value: inventory.milk.milk2 },
             { label: 'Oat Milk (1L)', value: inventory.milk.oatMilk1L },
+            { label: 'Soy Milk (1L)', value: inventory.milk.soyMilk1L },
+            { label: 'Half & Half 10% (1L)', value: inventory.milk.halfAndHalf },
             { label: 'Whole Milk', value: inventory.milk.whole },
             { label: 'Almond Milk', value: inventory.milk.almond },
             { label: 'Soy Milk', value: inventory.milk.soy }

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espresso Drinks - Trails Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 1.8em; }
+        h2 { color: #667eea; margin: 25px 0 15px 0; font-size: 1.3em; }
+        .step { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .step-number { color: #667eea; font-weight: 700; font-size: 1.2em; margin-bottom: 10px; }
+        ul { margin-left: 20px; line-height: 1.8; }
+        .important { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .important strong { color: #856404; }
+        .target { background: #d1ecf1; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8; margin: 15px 0; }
+        .target strong { color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='procedures.html'">← Back to Procedures</button>
+            <h1>☕ Espresso Drinks</h1>
+            <p>Extraction, milk steaming & drink assembly</p>
+        </div>
+        
+        <div class="content">
+            <div class="target">
+                <strong>🎯 Perfect Shot:</strong> 38-40 grams output in 20-30 seconds | Tamper at position 11
+            </div>
+            
+            <h2>Daily Calibration</h2>
+            
+            <div class="step">
+                <div class="step-number">Step 1: Machine Warmup</div>
+                <ul>
+                    <li>Turn on La Marzocco espresso machine</li>
+                    <li>Wait for pressure gauge to stabilize</li>
+                    <li>Flush group heads (run water briefly)</li>
+                    <li>Wipe group heads clean</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 2: Grinder Check</div>
+                <ul>
+                    <li>Verify grinder is calibrated (18-19g per shot)</li>
+                    <li>Grind test dose into portafilter</li>
+                    <li>Check grind consistency</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 3: Calibrate Extraction</div>
+                <ul>
+                    <li>Set tamper to <strong>position 11</strong></li>
+                    <li>Place cup on scale, TARE to zero</li>
+                    <li>Grind dose (18-19g) into portafilter</li>
+                    <li>Level grounds, tamp at position 11</li>
+                    <li>Wipe rim clean</li>
+                    <li>Lock into group head</li>
+                    <li>Start extraction immediately</li>
+                    <li><strong>Target: 38-40g in 20-30 seconds</strong></li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 4: Adjust if Needed</div>
+                <ul>
+                    <li><strong>Too fast (under 20 sec)?</strong> Grind finer</li>
+                    <li><strong>Too slow (over 30 sec)?</strong> Grind coarser</li>
+                    <li><strong>Wrong output weight?</strong> Adjust grind dose</li>
+                    <li>Repeat until consistently hitting target</li>
+                </ul>
+            </div>
+            
+            <h2>Milk Steaming</h2>
+            
+            <div class="step">
+                <div class="step-number">Steaming Technique</div>
+                <ul>
+                    <li>Fill pitcher to bottom of spout (for 12oz drink)</li>
+                    <li>Purge steam wand before inserting</li>
+                    <li>Insert wand tip just below milk surface</li>
+                    <li><strong>Texture phase:</strong> Incorporate air (5-7 seconds)
+                        <ul style="margin-top: 5px;">
+                            <li>Keep tip near surface</li>
+                            <li>Hear gentle "tss tss" sound</li>
+                        </ul>
+                    </li>
+                    <li><strong>Heat phase:</strong> Submerge wand deeper
+                        <ul style="margin-top: 5px;">
+                            <li>Create whirlpool motion</li>
+                            <li>Heat to 140-150°F (pitcher hot but touchable)</li>
+                        </ul>
+                    </li>
+                    <li>Stop when pitcher too hot to hold comfortably</li>
+                    <li>Purge and wipe wand immediately</li>
+                    <li>Tap pitcher, swirl to incorporate foam</li>
+                </ul>
+            </div>
+            
+            <h2>Drink Assembly</h2>
+            
+            <div class="step">
+                <div class="step-number">Latte / Cappuccino</div>
+                <ul>
+                    <li>Pull espresso shot(s) directly into cup</li>
+                    <li>Swirl milk pitcher</li>
+                    <li>Pour milk from low height initially</li>
+                    <li><strong>Latte:</strong> More milk, thin foam layer</li>
+                    <li><strong>Cappuccino:</strong> Equal espresso/milk/foam</li>
+                    <li>Optional: latte art</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Americano</div>
+                <ul>
+                    <li>Pull double shot into cup</li>
+                    <li>Add hot water to desired strength</li>
+                    <li>Leave room for cream if requested</li>
+                </ul>
+            </div>
+            
+            <h2>Quality Checks</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Espresso:</strong> Rich crema, tiger striping, smells rich</li>
+                    <li><strong>Milk:</strong> Glossy, microfoam texture (no large bubbles)</li>
+                    <li><strong>Temperature:</strong> Hot but drinkable (140-150°F)</li>
+                    <li><strong>Taste:</strong> Balanced, sweet, not bitter</li>
+                </ul>
+            </div>
+            
+            <div class="important">
+                <strong>📝 Pro Tips:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Purge group heads between shots</li>
+                    <li>Clean steam wand immediately after each use</li>
+                    <li>Pre-heat cups for better temperature</li>
+                    <li>Use freshly ground coffee (never let grounds sit)</li>
+                </ul>
+            </div>
+            
+            <h2>Troubleshooting</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Bitter shot?</strong> Over-extracted (grind coarser, check temp)</li>
+                    <li><strong>Sour shot?</strong> Under-extracted (grind finer)</li>
+                    <li><strong>Weak shot?</strong> Not enough coffee or channeling</li>
+                    <li><strong>Big bubbles in milk?</strong> Too much air incorporated</li>
+                    <li><strong>Flat milk?</strong> Not enough aeration or not hot enough</li>
+                </ul>
+            </div>
+            
+            <h2>Daily Maintenance</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Opening:</strong> Flush groups, calibrate extraction</li>
+                    <li><strong>Throughout day:</strong> Purge groups, clean wand after each use</li>
+                    <li><strong>Closing:</strong> Deep clean groups, install 17g basket, put on standby</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

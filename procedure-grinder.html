@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grinder Setup - Trails Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 1.8em; }
+        h2 { color: #667eea; margin: 25px 0 15px 0; font-size: 1.3em; }
+        .step { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .step-number { color: #667eea; font-weight: 700; font-size: 1.2em; margin-bottom: 10px; }
+        ul { margin-left: 20px; line-height: 1.8; }
+        .important { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .important strong { color: #856404; }
+        .target { background: #d1ecf1; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8; margin: 15px 0; }
+        .target strong { color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='procedures.html'">← Back to Procedures</button>
+            <h1>⚙️ Coffee Grinder Setup</h1>
+            <p>Calibration and daily checks</p>
+        </div>
+        
+        <div class="content">
+            <div class="target">
+                <strong>🎯 Target:</strong> 18-19 grams per 2-second shot
+            </div>
+            
+            <h2>Daily Calibration</h2>
+            
+            <div class="step">
+                <div class="step-number">Step 1: Prepare Scale</div>
+                <ul>
+                    <li>Place portafilter or grinder cup on scale</li>
+                    <li>Press TARE to zero the scale</li>
+                    <li>Ensure grinder hopper has beans</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 2: Test Shot</div>
+                <ul>
+                    <li>Grind for <strong>2 seconds</strong></li>
+                    <li>Check weight on scale</li>
+                    <li><strong>Target: 18-19 grams</strong></li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 3: Adjust if Needed</div>
+                <ul>
+                    <li><strong>Less than 18g?</strong> Grind slightly longer OR adjust grind time dial</li>
+                    <li><strong>More than 19g?</strong> Grind slightly shorter OR adjust grind time dial</li>
+                    <li>Repeat test shot until consistently hitting 18-19g</li>
+                </ul>
+            </div>
+            
+            <h2>Throughout the Day</h2>
+            
+            <div class="step">
+                <div class="step-number">Monitor Consistency</div>
+                <ul>
+                    <li>Check dose weight every hour</li>
+                    <li>Beans settle in hopper → may need minor adjustment</li>
+                    <li>If espresso shots timing changes, recheck grind</li>
+                </ul>
+            </div>
+            
+            <h2>Troubleshooting</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Shots pulling too fast (under 20 sec)?</strong> Grind finer</li>
+                    <li><strong>Shots pulling too slow (over 30 sec)?</strong> Grind coarser</li>
+                    <li><strong>Inconsistent weights?</strong> Clean burrs, check hopper level</li>
+                    <li><strong>Grinder jamming?</strong> Stop, clean burrs, check for foreign objects</li>
+                </ul>
+            </div>
+            
+            <div class="important">
+                <strong>⚠️ Safety:</strong> Never put hands in grinder while running. Turn off before cleaning or adjusting burrs.
+            </div>
+            
+            <h2>Daily Maintenance</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Opening:</strong> Calibrate grinder (18-19g per 2-sec shot)</li>
+                    <li><strong>Midday:</strong> Check calibration, brush out chute</li>
+                    <li><strong>Closing:</strong> Turn off grinder, brush clean, empty grounds bin</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

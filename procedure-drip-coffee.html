@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drip Coffee Procedure - Trails Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 1.8em; }
+        h2 { color: #667eea; margin: 25px 0 15px 0; font-size: 1.3em; }
+        h3 { color: #764ba2; margin: 20px 0 10px 0; font-size: 1.1em; }
+        .step { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .step-number { color: #667eea; font-weight: 700; font-size: 1.2em; margin-bottom: 10px; }
+        ul { margin-left: 20px; line-height: 1.8; }
+        .important { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .important strong { color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='procedures.html'">← Back to Procedures</button>
+            <h1>☕ Drip Coffee Brewing</h1>
+            <p>Commercial brewer setup and operation</p>
+        </div>
+        
+        <div class="content">
+            <div class="important">
+                <strong>⚠️ Important:</strong> The brewer must be unplugged overnight and needs a 20-minute warmup before brewing.
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 1: Prep the Brewer</div>
+                <ul>
+                    <li>Ensure brewer is plugged in and warmed up (20 minutes)</li>
+                    <li>Remove coffee basket and drip container</li>
+                    <li>Top up water reservoir with 200-300ml fresh water</li>
+                    <li>Run flush cycle (no coffee) to clean lines</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 2: Measure Coffee</div>
+                <ul>
+                    <li><strong>Amount:</strong> 70 grams of coffee beans</li>
+                    <li><strong>Water:</strong> 1.9 liters</li>
+                    <li><strong>Batches needed:</strong> 2 batches in the morning</li>
+                    <li>Use scale to weigh beans accurately</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 3: Grind & Brew</div>
+                <ul>
+                    <li>Grind 70g of beans (medium-coarse grind)</li>
+                    <li>Place filter in basket</li>
+                    <li>Add ground coffee to filter basket</li>
+                    <li>Level the grounds (don't compact)</li>
+                    <li>Insert basket into brewer</li>
+                    <li>Start brew cycle</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 4: Quality Check</div>
+                <ul>
+                    <li>Brew time should be approximately 4-5 minutes</li>
+                    <li>Check color: rich, dark brown (not pale)</li>
+                    <li>Taste test for balance</li>
+                    <li>Ensure full pot brewed (1.9L)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 5: Repeat for Second Batch</div>
+                <ul>
+                    <li>Discard used grounds and filter</li>
+                    <li>Rinse basket</li>
+                    <li>Repeat steps 2-4 for second batch</li>
+                    <li>Ensure both batches ready before opening</li>
+                </ul>
+            </div>
+            
+            <h2>Daily Maintenance</h2>
+            <div class="step">
+                <ul>
+                    <li><strong>Morning:</strong> Flush brewer before first batch</li>
+                    <li><strong>Throughout day:</strong> Empty drip container as needed</li>
+                    <li><strong>Closing:</strong> Clean basket, unplug brewer</li>
+                </ul>
+            </div>
+            
+            <div class="important">
+                <strong>📝 Pro Tip:</strong> Brew time too fast? Grind finer. Too slow? Grind coarser. Perfect extraction = 4-5 minutes for full pot.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

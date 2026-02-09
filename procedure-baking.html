@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baking Procedure - Trails Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 1.8em; }
+        h2 { color: #667eea; margin: 25px 0 15px 0; font-size: 1.3em; }
+        .step { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .step-number { color: #667eea; font-weight: 700; font-size: 1.2em; margin-bottom: 10px; }
+        ul { margin-left: 20px; line-height: 1.8; }
+        .important { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .important strong { color: #856404; }
+        .critical { background: #f8d7da; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545; margin: 15px 0; }
+        .critical strong { color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='procedures.html'">← Back to Procedures</button>
+            <h1>🥐 Baking Pastries</h1>
+            <p>Oven setup, egg wash, timing & rotation</p>
+        </div>
+        
+        <div class="content">
+            <div class="critical">
+                <strong>🔥 Critical:</strong> Pastries must be placed on TRAY EDGES overnight (not center) for proper thawing!
+            </div>
+            
+            <h2>Prep (Night Before)</h2>
+            
+            <div class="step">
+                <div class="step-number">Evening Setup</div>
+                <ul>
+                    <li>Remove pastries from freezer</li>
+                    <li><strong>Place on EDGES of trays</strong> (not center!)</li>
+                    <li>Space them apart for even thawing</li>
+                    <li>Place trays in oven (OFF) overnight</li>
+                    <li>Close oven door</li>
+                </ul>
+            </div>
+            
+            <h2>Morning Baking</h2>
+            
+            <div class="step">
+                <div class="step-number">Step 1: Preheat Oven</div>
+                <ul>
+                    <li>Remove pastries from oven</li>
+                    <li>Set oven to <strong>375°F</strong></li>
+                    <li>Wait for indicator light to turn off (oven ready)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 2: Prepare Egg Wash</div>
+                <ul>
+                    <li>Crack one egg into small bowl</li>
+                    <li>Stir/beat with fork until uniform</li>
+                    <li><strong>Do NOT apply yet!</strong> Wait until oven is ready</li>
+                    <li>Use red-tipped brush for application</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 3: Apply Egg Wash</div>
+                <ul>
+                    <li>When oven light turns off, egg wash is ready</li>
+                    <li>Lightly paint each pastry with egg (thin coat)</li>
+                    <li>Cover all exposed surfaces</li>
+                    <li>Don't over-apply (causes burning)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 4: Load Oven</div>
+                <ul>
+                    <li><strong>Use ONLY 2 trays:</strong>
+                        <ul style="margin-top: 5px;">
+                            <li>1st position from bottom</li>
+                            <li>3rd position from bottom</li>
+                        </ul>
+                    </li>
+                    <li>Remove 2nd and top tray (place on top of oven)</li>
+                    <li>Ensure good spacing between trays</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 5: First Bake</div>
+                <ul>
+                    <li>Close oven door</li>
+                    <li>Set timer for <strong>10 minutes</strong></li>
+                    <li><strong>Do NOT open door</strong> during this time</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 6: Rotate & Separate</div>
+                <ul>
+                    <li>After 10 minutes, open door</li>
+                    <li>Shake trays gently to separate pastries from paper</li>
+                    <li>Separate any touching pastries</li>
+                    <li>Rotate both trays 180°</li>
+                    <li>Return to same rack positions</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Step 7: Final Bake</div>
+                <ul>
+                    <li>Set timer for <strong>4-5 minutes</strong></li>
+                    <li>Check at 14 minutes total time</li>
+                    <li><strong>Done when:</strong> Golden brown, puffed up</li>
+                    <li>Remove immediately when ready</li>
+                </ul>
+            </div>
+            
+            <div class="important">
+                <strong>📝 Pro Tip:</strong> Total bake time is usually 14-15 minutes. Check at 14 min - if golden brown, they're done!
+            </div>
+            
+            <h2>Quality Checks</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Color:</strong> Golden brown (not pale, not dark)</li>
+                    <li><strong>Texture:</strong> Flaky layers visible, puffed</li>
+                    <li><strong>Sound:</strong> Should feel crispy when tapped</li>
+                    <li><strong>Bottom:</strong> Check underside - should be golden too</li>
+                </ul>
+            </div>
+            
+            <h2>Troubleshooting</h2>
+            
+            <div class="step">
+                <ul>
+                    <li><strong>Pastries pale after 15 min?</strong> Oven not hot enough, increase 10°F</li>
+                    <li><strong>Burning on edges?</strong> Too much egg wash OR oven too hot</li>
+                    <li><strong>Not puffed?</strong> Didn't thaw properly overnight</li>
+                    <li><strong>Soggy bottom?</strong> Oven not preheated fully OR too crowded</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

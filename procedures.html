@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Training & Procedures - Trails Coffee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .nav-bar {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .nav-bar a {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .nav-bar a.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .procedure-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .procedure-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .procedure-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .procedure-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .procedure-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .procedure-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☕ Trails Coffee</h1>
+            <p>Training & Procedures</p>
+        </div>
+        
+        <div class="nav-bar">
+            <a href="index.html">📋 Checklists</a>
+            <a href="status.html">📊 Status</a>
+            <a href="procedures.html" class="active">📖 Procedures</a>
+        </div>
+        
+        <div class="content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">Training Guides</h2>
+            
+            <div class="procedure-list">
+                <div class="procedure-card" onclick="window.location.href='procedure-drip-coffee.html'">
+                    <div class="procedure-icon">☕</div>
+                    <h3>Drip Coffee Brewing</h3>
+                    <p>Learn how to prepare the perfect batch of drip coffee using our commercial brewer. Includes measurements, timing, and quality checks.</p>
+                </div>
+                
+                <div class="procedure-card" onclick="window.location.href='procedure-grinder.html'">
+                    <div class="procedure-icon">⚙️</div>
+                    <h3>Coffee Grinder Setup</h3>
+                    <p>Step-by-step guide to calibrate the grinder for consistent espresso shots. Covers grind size, dose weight, and daily checks.</p>
+                </div>
+                
+                <div class="procedure-card" onclick="window.location.href='procedure-baking.html'">
+                    <div class="procedure-icon">🥐</div>
+                    <h3>Baking Pastries</h3>
+                    <p>Complete baking procedure from prep to finish. Includes oven settings, egg wash application, timing, and rotation technique.</p>
+                </div>
+                
+                <div class="procedure-card" onclick="window.location.href='procedure-espresso.html'">
+                    <div class="procedure-icon">☕</div>
+                    <h3>Espresso Drinks</h3>
+                    <p>Master espresso extraction and milk steaming. Covers machine calibration, shot timing, milk texturing, and drink assembly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

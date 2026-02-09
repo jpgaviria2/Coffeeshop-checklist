@@ -271,10 +271,15 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         // Handle inventory checklist
         const inventoryData = {
             milk: {
+                milk35: parseInt(document.getElementById('inv-milk-35').value) || 0,
+                milk2: parseInt(document.getElementById('inv-milk-2').value) || 0,
+                oatMilk1L: parseInt(document.getElementById('inv-oat-milk-1l').value) || 0,
                 whole: parseInt(document.getElementById('inv-whole-milk').value) || 0,
                 almond: parseInt(document.getElementById('inv-almond-milk').value) || 0,
-                oat: parseInt(document.getElementById('inv-oat-milk').value) || 0,
                 soy: parseInt(document.getElementById('inv-soy-milk').value) || 0
+            },
+            dairy: {
+                greekYogurt3kg: parseInt(document.getElementById('inv-greek-yogurt').value) || 0
             },
             beans: {
                 regular: parseInt(document.getElementById('inv-beans-regular').value) || 0,

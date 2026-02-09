@@ -90,13 +90,25 @@ function renderChecklistDetail(content, container) {
 function renderInventoryDetail(content, container) {
     const inventory = content.inventory;
     
-    // Milk section
+    // Milk & Dairy section
     if (inventory.milk) {
-        const section = createInventorySection('🥛 Milk Products', [
+        const milkItems = [
+            { label: '3.5% Milk (jugs)', value: inventory.milk.milk35 },
+            { label: '2% Milk (jugs)', value: inventory.milk.milk2 },
+            { label: 'Oat Milk (1L)', value: inventory.milk.oatMilk1L },
             { label: 'Whole Milk', value: inventory.milk.whole },
             { label: 'Almond Milk', value: inventory.milk.almond },
-            { label: 'Oat Milk', value: inventory.milk.oat },
             { label: 'Soy Milk', value: inventory.milk.soy }
+        ];
+        
+        const section = createInventorySection('🥛 Milk & Dairy Products', milkItems);
+        container.appendChild(section);
+    }
+    
+    // Greek Yogurt
+    if (inventory.dairy) {
+        const section = createInventorySection('🥛 Dairy', [
+            { label: 'Greek Yogurt (3kg)', value: inventory.dairy.greekYogurt3kg }
         ]);
         container.appendChild(section);
     }

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Inventory - Feb 8, 2026</title>
+    <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
+</head>
+<body>
+    <h1>Submitting Diana's Inventory for Feb 8, 2026</h1>
+    <div id="status">Processing...</div>
+    
+    <script>
+        const NostrTools = window.NostrTools;
+        const statusDiv = document.getElementById('status');
+        
+        // Diana's nsec key
+        const nsecKey = 'nsec1dghy0nxmz5l8xm0nfq3qlhk8xew54gvhvvjq3e6r5k9m8ps7x4sq8w2e9h';
+        
+        // Decode nsec to get private key
+        const { data: privKey } = NostrTools.nip19.decode(nsecKey);
+        
+        // Get public key
+        const pubKey = NostrTools.getPublicKey(privKey);
+        
+        // Today's inventory data from Diana (Feb 8, 2026 ~5:25 PM PST)
+        const inventoryData = {
+            inventory: {
+                milk: {
+                    milk35: 0,
+                    milk2: 0,
+                    oatMilk1L: 8,  // 3 existing + 5 new = 8 total
+                    soyMilk1L: 1,
+                    halfAndHalf: 1,
+                    whole: 0,
+                    almond: 0,
+                    soy: 0
+                },
+                dairy: {
+                    greekYogurt3kg: 0
+                },
+                beans: {
+                    regular: 0,
+                    decaf: 0
+                },
+                coffeeBags: 0,
+                pastries: {
+                    hamCheese: 0,
+                    chocolate: 0,
+                    plain: 0,
+                    bananaBread: 0,
+                    lemonLoaf: 0,
+                    cinnamonBuns: 0
+                }
+            }
+        };
+        
+        // Create Nostr event
+        const event = {
+            kind: 30078,
+            pubkey: pubKey,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [
+                ['d', `inventory-${Date.now()}`],
+                ['shop', 'trails-coffee'],
+                ['type', 'inventory']
+            ],
+            content: JSON.stringify(inventoryData)
+        };
+        
+        // Sign event
+        const signedEvent = NostrTools.finalizeEvent(event, privKey);
+        
+        console.log('Signed event:', signedEvent);
+        statusDiv.innerHTML = '<p>Event signed. Publishing to relays...</p>';
+        
+        // Relay list
+        const relays = [
+            'wss://relay.damus.io',
+            'wss://relay.primal.net',
+            'wss://relay.anmore.me',
+            'wss://nos.lol'
+        ];
+        
+        // Publish to relays
+        const pool = new NostrTools.SimplePool();
+        let successCount = 0;
+        let failCount = 0;
+        
+        statusDiv.innerHTML += '<p>Publishing to ' + relays.length + ' relays...</p>';
+        
+        Promise.all(relays.map(relayUrl => {
+            return pool.publish([relayUrl], signedEvent)
+                .then(() => {
+                    successCount++;
+                    statusDiv.innerHTML += `<p>✅ Published to ${relayUrl}</p>`;
+                })
+                .catch(err => {
+                    failCount++;
+                    statusDiv.innerHTML += `<p>❌ Failed to publish to ${relayUrl}: ${err.message}</p>`;
+                });
+        })).then(() => {
+            statusDiv.innerHTML += `<h2>Done! Published to ${successCount}/${relays.length} relays</h2>`;
+            statusDiv.innerHTML += `<p><strong>Inventory recorded:</strong> 8x Oat Milk 1L, 1x Soy Milk 1L, 1x Half & Half 10%</p>`;
+            statusDiv.innerHTML += `<p><a href="status.html">View Status Page</a></p>`;
+        });
+    </script>
+</body>
+</html>

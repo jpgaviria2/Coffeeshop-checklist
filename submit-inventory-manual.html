@@ -32,6 +32,7 @@
                     oatMilk1L: 8,  // 3 existing + 5 new = 8 total
                     soyMilk1L: 1,
                     halfAndHalf: 1,
+                    whippingCream: 1,  // 33% whipping cream
                     whole: 0,
                     almond: 0,
                     soy: 0
@@ -101,7 +102,7 @@
                 });
         })).then(() => {
             statusDiv.innerHTML += `<h2>Done! Published to ${successCount}/${relays.length} relays</h2>`;
-            statusDiv.innerHTML += `<p><strong>Inventory recorded:</strong> 8x Oat Milk 1L, 1x Soy Milk 1L, 1x Half & Half 10%</p>`;
+            statusDiv.innerHTML += `<p><strong>Inventory recorded:</strong> 8x Oat Milk 1L, 1x Soy Milk 1L, 1x Half & Half 10%, 1x Whipping Cream 33%</p>`;
             statusDiv.innerHTML += `<p><a href="status.html">View Status Page</a></p>`;
         });
     </script>

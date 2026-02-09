@@ -276,6 +276,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
                 oatMilk1L: parseInt(document.getElementById('inv-oat-milk-1l').value) || 0,
                 soyMilk1L: parseInt(document.getElementById('inv-soy-milk-1l').value) || 0,
                 halfAndHalf: parseInt(document.getElementById('inv-half-and-half').value) || 0,
+                whippingCream: parseInt(document.getElementById('inv-whipping-cream').value) || 0,
                 whole: parseInt(document.getElementById('inv-whole-milk').value) || 0,
                 almond: parseInt(document.getElementById('inv-almond-milk').value) || 0,
                 soy: parseInt(document.getElementById('inv-soy-milk').value) || 0

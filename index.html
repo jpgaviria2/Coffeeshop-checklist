@@ -488,6 +488,19 @@
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
             
+            <!-- Time Clock (shown when logged in) -->
+            <div id="timeClockSection" style="display: none;">
+                <div id="clockedOutView" style="padding: 15px; text-align: center;">
+                    <button id="checkInBtn" onclick="timeClock.checkIn()" style="width:100%;padding:18px;font-size:1.2em;font-weight:700;border:none;border-radius:12px;background:linear-gradient(135deg,#28a745,#20c997);color:white;cursor:pointer;box-shadow:0 4px 15px rgba(40,167,69,0.3);">☀️ Check In</button>
+                </div>
+                <div id="clockedInView" style="display:none;padding:15px;text-align:center;">
+                    <div style="background:#e8f5e9;border-radius:12px;padding:12px;margin-bottom:12px;">
+                        <div style="color:#2e7d32;font-weight:600;">⏱️ Checked in at <span id="checkInTime"></span></div>
+                    </div>
+                    <button id="checkOutBtn" onclick="timeClock.checkOut()" style="width:100%;padding:18px;font-size:1.2em;font-weight:700;border:none;border-radius:12px;background:linear-gradient(135deg,#dc3545,#e83e8c);color:white;cursor:pointer;box-shadow:0 4px 15px rgba(220,53,69,0.3);">👋 Check Out</button>
+                </div>
+            </div>
+
             <!-- Quick Actions (shown when logged in) -->
             <div class="quick-actions" id="quickActions" style="display: none;">
                 <button class="action-btn" onclick="showChecklist('opening')">📋 Open Opening Checklist</button>
@@ -823,6 +836,7 @@
     
     <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
     <script src="event-cache.js"></script>
+    <script src="timeclock.js"></script>
     <script src="schedule-data.js"></script>
     <script src="app.js"></script>
 </body>

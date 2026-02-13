@@ -129,6 +129,8 @@ function showLoggedInState() {
     document.getElementById('authSection').style.display = 'none';
     document.getElementById('userInfo').style.display = 'block';
     document.getElementById('quickActions').style.display = 'flex';
+    // Initialize time clock UI
+    if (typeof timeClock !== 'undefined') timeClock.initUI();
 }
 
 // Show specific checklist

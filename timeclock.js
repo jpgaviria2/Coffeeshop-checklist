@@ -57,7 +57,7 @@ const timeClock = (() => {
         const section = document.getElementById('timeClockSection');
         if (!section) return;
 
-        const nsec = localStorage.getItem('trails-nsec');
+        const nsec = localStorage.getItem('nostr_nsec');
         if (!nsec) {
             section.style.display = 'none';
             return;
@@ -176,7 +176,7 @@ const timeClock = (() => {
 
     // Publish time event to Nostr
     async function publishTimeEvent(type, timestamp) {
-        const nsec = localStorage.getItem('trails-nsec');
+        const nsec = localStorage.getItem('nostr_nsec');
         if (!nsec) throw new Error('Not logged in');
 
         const sk = NostrTools.nip19.decode(nsec).data;

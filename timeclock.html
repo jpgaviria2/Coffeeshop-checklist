@@ -137,7 +137,7 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             // Check admin access
-            const nsec = localStorage.getItem('trails-nsec');
+            const nsec = localStorage.getItem('nostr_nsec');
             if (!nsec) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('accessDenied').style.display = 'block';

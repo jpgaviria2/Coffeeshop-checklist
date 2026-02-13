@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDS Tablet / Printer - Trails Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 1.8em; }
+        h2 { color: #667eea; margin: 25px 0 15px 0; font-size: 1.3em; }
+        .step { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea; }
+        .step-number { color: #667eea; font-weight: 700; font-size: 1.2em; margin-bottom: 10px; }
+        ul { margin-left: 20px; line-height: 1.8; }
+        li { margin-bottom: 5px; }
+        .important { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .important strong { color: #856404; }
+        .critical { background: #f8d7da; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545; margin: 15px 0; }
+        .critical strong { color: #721c24; }
+        .success { background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; margin: 15px 0; }
+        .success strong { color: #155724; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='procedures.html'">← Back to Procedures</button>
+            <h1>🖨️ KDS Tablet & Printer</h1>
+            <p>Morning check, test print & troubleshooting</p>
+        </div>
+        
+        <div class="content">
+            <h2>Morning Check</h2>
+            
+            <div class="step">
+                <div class="step-number">Step 1: Check the Tablet</div>
+                <ul>
+                    <li>The KDS is the <strong>blue iPad tablet</strong> that captures orders</li>
+                    <li>Make sure it's <strong>plugged in and charging</strong></li>
+                    <li>If the screen is off, press the power button to wake it</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <div class="step-number">Step 2: Test the Printer Connection</div>
+                <ul>
+                    <li>On the <strong>Square terminal</strong>, tap <strong>More</strong></li>
+                    <li>Go to <strong>Settings → Hardware</strong></li>
+                    <li>You should see the tablet listed — tap on it</li>
+                    <li>Tap <strong>Print Test</strong></li>
+                    <li>A test receipt should print</li>
+                </ul>
+            </div>
+
+            <div class="success">
+                <strong>✅ If the test prints:</strong> You're good to go!
+            </div>
+
+            <h2>Troubleshooting</h2>
+
+            <div class="critical">
+                <strong>❌ If the printer doesn't show up or test fails:</strong>
+            </div>
+
+            <div class="step">
+                <div class="step-number">Fix 1: Reset the Square Terminal</div>
+                <ul>
+                    <li><strong>Hold the button at the bottom</strong> of the Square terminal</li>
+                    <li>Select <strong>Reset</strong></li>
+                    <li>Wait for it to restart</li>
+                    <li>Try the print test again (More → Settings → Hardware)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <div class="step-number">Fix 2: Tablet is Dead / Off</div>
+                <ul>
+                    <li>If the tablet has shut off due to no battery:</li>
+                    <li><strong>Plug it in</strong> to charge</li>
+                    <li><strong>Turn it on</strong> (hold power button)</li>
+                    <li>To <strong>unlock</strong>: draw a <strong>square pattern</strong> on the keypad — start top-left corner, go around in a square</li>
+                    <li>Open the <strong>KDS app</strong></li>
+                    <li>Then retry the print test from the Square terminal</li>
+                </ul>
+            </div>
+
+            <div class="important">
+                <strong>💡 Tip:</strong> Always make sure the tablet is charging during the day so it doesn't die overnight.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

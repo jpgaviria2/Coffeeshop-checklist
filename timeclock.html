@@ -163,29 +163,36 @@
             await loadTimeEvents();
         });
 
-        async function loadTimeEvents() {
-            // Get all cached events
-            const cached = await EVENT_CACHE.getAllEvents();
-            allTimeEvents = cached.filter(e => {
+        function filterTimeEvents(events) {
+            return events.filter(e => {
                 try {
                     const c = JSON.parse(e.content);
                     return c.timeclock === 'checkin' || c.timeclock === 'checkout';
                 } catch { return false; }
             });
+        }
 
-            console.log(`⏱️ Found ${allTimeEvents.length} time clock events`);
+        async function loadTimeEvents() {
+            // 1. Show cached data INSTANTLY
+            const cached = await EVENT_CACHE.getAllEvents();
+            allTimeEvents = filterTimeEvents(cached);
 
-            // Wait for background fetch to complete
+            if (allTimeEvents.length > 0) {
+                console.log(`⚡ Showing ${allTimeEvents.length} cached time events instantly`);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('timeClockContent').style.display = 'block';
+                renderDay();
+                renderWeeklySummary();
+            }
+
+            // 2. Refresh from relays in background
             await RELAY_FETCHER.fetchFromRelays();
 
-            // Reload from cache
+            // 3. Re-render with fresh data
             const refreshed = await EVENT_CACHE.getAllEvents();
-            allTimeEvents = refreshed.filter(e => {
-                try {
-                    const c = JSON.parse(e.content);
-                    return c.timeclock === 'checkin' || c.timeclock === 'checkout';
-                } catch { return false; }
-            });
+            allTimeEvents = filterTimeEvents(refreshed);
+
+            console.log(`🔄 Refreshed: ${allTimeEvents.length} total time events`);
 
             document.getElementById('loading').style.display = 'none';
             document.getElementById('timeClockContent').style.display = 'block';

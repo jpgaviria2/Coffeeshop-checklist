@@ -94,8 +94,11 @@ function groupEventsByDate(events) {
     
     events.forEach(event => {
         try {
-            // Validate event has parseable content
-            JSON.parse(event.content);
+            const content = JSON.parse(event.content);
+            // Skip timeclock events — only show checklists
+            if (content.timeclock) return;
+            // Must have a checklist type
+            if (!content.checklist) return;
         } catch (e) {
             return; // Skip invalid events
         }

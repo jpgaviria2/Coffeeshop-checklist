@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trails Coffee - Storage Map</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.5em; margin-bottom: 5px; }
+        .header p { opacity: 0.9; font-size: 0.9em; }
+        .nav { display: flex; border-bottom: 2px solid #eee; background: white; flex-wrap: wrap; }
+        .nav a { flex: 1; padding: 15px; text-align: center; text-decoration: none; color: #666; font-weight: 600; min-width: 80px; }
+        .nav a.active { color: #667eea; border-bottom: 3px solid #667eea; }
+        .content { padding: 15px; }
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-bar:focus { border-color: #667eea; }
+        .drawer-card {
+            background: #f8f9ff;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            border: 1px solid #e8eaf6;
+            transition: box-shadow 0.2s;
+        }
+        .drawer-card.highlight { box-shadow: 0 0 0 2px #667eea; }
+        .drawer-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .drawer-header:active { background: #eef0ff; }
+        .drawer-emoji { font-size: 1.6em; }
+        .drawer-title { flex: 1; }
+        .drawer-title strong { display: block; font-size: 1.05em; color: #333; }
+        .drawer-title span { font-size: 0.85em; color: #888; }
+        .drawer-arrow { font-size: 1.2em; color: #999; transition: transform 0.2s; }
+        .drawer-card.open .drawer-arrow { transform: rotate(90deg); }
+        .drawer-contents {
+            display: none;
+            padding: 0 16px 16px;
+        }
+        .drawer-card.open .drawer-contents { display: block; }
+        .drawer-contents ul { list-style: none; }
+        .drawer-contents li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e8eaf6;
+            color: #444;
+            font-size: 0.95em;
+        }
+        .drawer-contents li:last-child { border-bottom: none; }
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Storage Map</h1>
+            <p>What's in each drawer</p>
+        </div>
+        <div class="nav">
+            <a href="index.html">📋 Checklists</a>
+            <a href="status.html">📊 Status</a>
+            <a href="procedures.html">📖 Procedures</a>
+            <a href="storage.html" class="active">📦 Storage</a>
+        </div>
+        <div class="content">
+            <input type="text" class="search-bar" placeholder="🔍 Search items..." id="searchBar" oninput="filterDrawers()">
+            
+            <div id="drawers">
+                <div class="drawer-card open" data-items="spin mop bucket, spray bottles, reusable bags, cleaning supplies">
+                    <div class="drawer-header" onclick="toggleDrawer(this)">
+                        <div class="drawer-emoji">🧹</div>
+                        <div class="drawer-title">
+                            <strong>Drawer 1</strong>
+                            <span>Cleaning supplies</span>
+                        </div>
+                        <div class="drawer-arrow">›</div>
+                    </div>
+                    <div class="drawer-contents">
+                        <ul>
+                            <li>🪣 Spin mop bucket</li>
+                            <li>🧴 Spray bottles</li>
+                            <li>♻️ Reusable bags</li>
+                            <li>🧽 Cleaning supplies</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="drawer-card" data-items="kraft paper cup sleeves, clear plastic lids, dome, flat, white foam clamshell containers, paper towel rolls, scott napkin boxes, stir sticks, straws, takeout containers">
+                    <div class="drawer-header" onclick="toggleDrawer(this)">
+                        <div class="drawer-emoji">🥡</div>
+                        <div class="drawer-title">
+                            <strong>Drawer 2</strong>
+                            <span>Disposables &amp; paper goods</span>
+                        </div>
+                        <div class="drawer-arrow">›</div>
+                    </div>
+                    <div class="drawer-contents">
+                        <ul>
+                            <li>☕ Kraft paper cup sleeves</li>
+                            <li>🔵 Clear plastic lids (dome &amp; flat)</li>
+                            <li>📦 White foam clamshell containers</li>
+                            <li>🧻 Paper towel rolls</li>
+                            <li>🧻 Scott napkin boxes ×2</li>
+                            <li>🥤 Stir sticks / straws</li>
+                            <li>🥡 Takeout containers (10-pack)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="drawer-card" data-items="clear plastic cups 16oz 473ml cafe express 100ct, smaller clear cups, white lids 99mm 50ct, kraft cup sleeves, forest cutlery box 560pc, white plastic bags">
+                    <div class="drawer-header" onclick="toggleDrawer(this)">
+                        <div class="drawer-emoji">🥤</div>
+                        <div class="drawer-title">
+                            <strong>Drawer 3</strong>
+                            <span>Cups, lids &amp; cutlery</span>
+                        </div>
+                        <div class="drawer-arrow">›</div>
+                    </div>
+                    <div class="drawer-contents">
+                        <ul>
+                            <li>🥤 Clear plastic cups 16oz/473ml (Café Express 100ct)</li>
+                            <li>🥤 Smaller clear cups (multiple sleeves)</li>
+                            <li>⚪ White lids (99mm, 50ct)</li>
+                            <li>☕ Kraft cup sleeves</li>
+                            <li>🍴 Forest cutlery box (560pc)</li>
+                            <li>🛍️ White plastic bags</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="drawer-card" data-items="compostable 12oz 354ml cups 100ct eco brand, scotties napkins, kirkland dining napkins, bulk cups lids box">
+                    <div class="drawer-header" onclick="toggleDrawer(this)">
+                        <div class="drawer-emoji">🌱</div>
+                        <div class="drawer-title">
+                            <strong>Drawer 4</strong>
+                            <span>Compostable cups &amp; napkins</span>
+                        </div>
+                        <div class="drawer-arrow">›</div>
+                    </div>
+                    <div class="drawer-contents">
+                        <ul>
+                            <li>🌱 Compostable 12oz/354ml cups (100ct, Eco brand, multiple packs)</li>
+                            <li>🧻 Scotties napkins</li>
+                            <li>🧻 Kirkland dining napkins</li>
+                            <li>📦 Bulk cups/lids box</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="drawer-card" data-items="cafe express dome sip lids pp 500ct fits 8-20oz, compostable 12oz cups, kraft napkins, guatemala espresso coffee bag">
+                    <div class="drawer-header" onclick="toggleDrawer(this)">
+                        <div class="drawer-emoji">🔝</div>
+                        <div class="drawer-title">
+                            <strong>Drawer 5</strong>
+                            <span>Lids &amp; bulk stock</span>
+                        </div>
+                        <div class="drawer-arrow">›</div>
+                    </div>
+                    <div class="drawer-contents">
+                        <ul>
+                            <li>🔵 Café Express Dome Sip Lids PP 500ct ×3 (fits 8–20oz)</li>
+                            <li>🌱 Compostable 12oz cups</li>
+                            <li>🧻 Kraft napkins</li>
+                            <li>☕ Guatemala Espresso coffee bag</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="drawer-card" data-items="jysk lundeborg hardware, gluten free bin, wire rack, blue bar clamp, caulk gun, cardboard tube, amber bottle">
+                    <div class="drawer-header" onclick="toggleDrawer(this)">
+                        <div class="drawer-emoji">🔧</div>
+                        <div class="drawer-title">
+                            <strong>Drawer 6</strong>
+                            <span>Misc &amp; tools</span>
+                        </div>
+                        <div class="drawer-arrow">›</div>
+                    </div>
+                    <div class="drawer-contents">
+                        <ul>
+                            <li>🔩 JYSK Lundeborg hardware</li>
+                            <li>🏷️ "Gluten Free" bin</li>
+                            <li>🗄️ Wire rack</li>
+                            <li>🔧 Blue bar clamp</li>
+                            <li>🔫 Caulk gun</li>
+                            <li>📦 Cardboard tube</li>
+                            <li>🧴 Amber bottle</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-results" id="noResults">
+                😕 No items found
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDrawer(header) {
+            header.closest('.drawer-card').classList.toggle('open');
+        }
+
+        function filterDrawers() {
+            const query = document.getElementById('searchBar').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.drawer-card');
+            let anyVisible = false;
+
+            cards.forEach(card => {
+                if (!query) {
+                    card.style.display = '';
+                    card.classList.remove('highlight');
+                    anyVisible = true;
+                    return;
+                }
+                const items = card.getAttribute('data-items').toLowerCase();
+                const title = card.querySelector('.drawer-title').textContent.toLowerCase();
+                const match = items.includes(query) || title.includes(query);
+                card.style.display = match ? '' : 'none';
+                card.classList.toggle('highlight', match);
+                if (match) {
+                    card.classList.add('open');
+                    anyVisible = true;
+                }
+            });
+
+            document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

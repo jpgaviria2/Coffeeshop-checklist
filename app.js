@@ -131,6 +131,65 @@ function showLoggedInState() {
     document.getElementById('quickActions').style.display = 'flex';
     // Initialize time clock UI
     if (typeof timeClock !== 'undefined') timeClock.initUI();
+    // Load today's activity
+    loadTodaysActivity();
+}
+
+// Load and display today's submissions
+async function loadTodaysActivity() {
+    const container = document.getElementById('todaysActivity');
+    if (!container || !userKeys) return;
+
+    try {
+        const allEvents = await EVENT_CACHE.getAllEvents();
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStart = Math.floor(new Date(todayStr).getTime() / 1000);
+        const todayEnd = todayStart + 86400;
+
+        const myTodayEvents = allEvents.filter(e => 
+            e.pubkey === userKeys.publicKey && 
+            e.created_at >= todayStart && 
+            e.created_at < todayEnd
+        );
+
+        if (myTodayEvents.length === 0) {
+            container.innerHTML = '<div style="padding:12px;color:#999;text-align:center;font-size:13px;">No submissions yet today</div>';
+            container.style.display = 'block';
+            return;
+        }
+
+        let html = '';
+        const icons = { opening: '🌅', closing: '🌙', inventory: '📦', checkin: '☀️', checkout: '👋' };
+        
+        myTodayEvents.forEach(e => {
+            try {
+                const content = JSON.parse(e.content);
+                const time = new Date(e.created_at * 1000);
+                const timeStr = time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                
+                if (content.timeclock) {
+                    const type = content.timeclock;
+                    html += `<div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
+                        <span>${icons[type] || '📋'} ${type === 'checkin' ? 'Check In' : 'Check Out'}</span>
+                        <span style="color:#28a745;font-size:13px;">${timeStr} ✅</span>
+                    </div>`;
+                } else if (content.checklist) {
+                    const type = content.checklist;
+                    const label = type.charAt(0).toUpperCase() + type.slice(1);
+                    const rate = content.completionRate ? ` (${content.completionRate})` : '';
+                    html += `<div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
+                        <span>${icons[type] || '📋'} ${label}${rate}</span>
+                        <span style="color:#28a745;font-size:13px;">${timeStr} ✅</span>
+                    </div>`;
+                }
+            } catch (err) {}
+        });
+
+        container.innerHTML = html || '<div style="padding:12px;color:#999;text-align:center;font-size:13px;">No submissions yet today</div>';
+        container.style.display = 'block';
+    } catch (err) {
+        console.error('Error loading today\'s activity:', err);
+    }
 }
 
 // Show specific checklist
@@ -361,13 +420,24 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         const signedEvent = NostrTools.finalizeEvent(eventTemplate, userKeys.privateKey);
         
         // Publish to relays
-        await publishToRelays(signedEvent);
+        const relayCount = await publishToRelays(signedEvent);
+        
+        // Cache locally immediately
+        if (typeof EVENT_CACHE !== 'undefined') {
+            await EVENT_CACHE.storeEvents([signedEvent]);
+        }
         
         const successMsg = currentChecklist === 'inventory' 
-            ? `✅ Inventory handover submitted!`
-            : `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist submitted! (${contentData.completionRate} tasks completed)`;
+            ? `✅ Inventory handover published to ${relayCount}/${RELAYS.length} relays!`
+            : `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist published to ${relayCount}/${RELAYS.length} relays! (${contentData.completionRate} tasks completed)`;
         
         showStatus('success', successMsg);
+        
+        // Refresh today's activity
+        loadTodaysActivity();
+        
+        // Verify event on relay in background
+        verifyEventOnRelay(signedEvent.id);
         
         // Reset after successful submission
         setTimeout(() => {
@@ -450,7 +520,15 @@ async function publishToRelays(event) {
     
     if (successCount === 0) {
         console.error('❌ All relays failed:', errors);
-        throw new Error(`Failed to publish to any relay. Errors: ${errors.join('; ')}`);
+        showStatus('error', `❌ Failed to publish to any relay! Please check your connection and try again.`);
+        // Add retry button
+        const statusEl = document.getElementById('statusMessage');
+        const retryBtn = document.createElement('button');
+        retryBtn.textContent = '🔄 Retry';
+        retryBtn.style.cssText = 'margin-top:10px;padding:8px 20px;background:#dc3545;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;';
+        retryBtn.onclick = () => document.getElementById('submitBtn').click();
+        statusEl.appendChild(retryBtn);
+        throw new Error(`Failed to publish to any relay`);
     }
     
     if (errors.length > 0) {
@@ -458,6 +536,43 @@ async function publishToRelays(event) {
     }
     
     return successCount;
+}
+
+// Verify event was stored on at least one relay
+async function verifyEventOnRelay(eventId) {
+    const statusEl = document.getElementById('statusMessage');
+    for (const relay of RELAYS) {
+        try {
+            const verified = await new Promise((resolve) => {
+                const ws = new WebSocket(relay);
+                const timeout = setTimeout(() => { ws.close(); resolve(false); }, 5000);
+                ws.onopen = () => {
+                    const subId = 'verify-' + Math.random().toString(36).substring(7);
+                    ws.send(JSON.stringify(['REQ', subId, { ids: [eventId], limit: 1 }]));
+                };
+                ws.onmessage = (msg) => {
+                    const data = JSON.parse(msg.data);
+                    if (data[0] === 'EVENT' && data[2] && data[2].id === eventId) {
+                        clearTimeout(timeout); ws.close(); resolve(true);
+                    } else if (data[0] === 'EOSE') {
+                        clearTimeout(timeout); ws.close(); resolve(false);
+                    }
+                };
+                ws.onerror = () => { clearTimeout(timeout); resolve(false); };
+            });
+            if (verified) {
+                if (statusEl && statusEl.style.display !== 'none') {
+                    statusEl.textContent += ' — ✅ Verified on relay';
+                }
+                console.log(`✅ Event verified on ${relay}`);
+                return true;
+            }
+        } catch (e) {}
+    }
+    if (statusEl && statusEl.style.display !== 'none') {
+        statusEl.textContent += ' — ⚠️ Could not verify on relays';
+    }
+    return false;
 }
 
 // Show status message

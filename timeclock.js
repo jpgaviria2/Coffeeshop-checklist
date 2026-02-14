@@ -56,7 +56,7 @@ const timeClock = (() => {
         localStorage.removeItem('trails-clock-state');
     }
 
-    // Initialize UI based on current state
+    // Initialize UI based on current state, with relay recovery
     function initUI() {
         const section = document.getElementById('timeClockSection');
         if (!section) return;
@@ -71,10 +71,11 @@ const timeClock = (() => {
         const state = getClockState();
         
         if (state && state.type === 'checkin') {
-            // Currently checked in
             showCheckedInView(state.time);
         } else {
             showCheckedOutView();
+            // Try to recover state from cache/relays
+            recoverClockState();
         }
 
         // Show admin nav link if admin
@@ -85,6 +86,46 @@ const timeClock = (() => {
                 addAdminNavLink();
             }
         } catch (e) {}
+    }
+
+    // Recover clock state from IndexedDB cache and relays
+    async function recoverClockState() {
+        try {
+            const nsec = localStorage.getItem('nostr_nsec');
+            if (!nsec) return;
+            const sk = NostrTools.nip19.decode(nsec).data;
+            const pk = NostrTools.getPublicKey(sk);
+
+            if (typeof EVENT_CACHE === 'undefined') return;
+
+            const allEvents = await EVENT_CACHE.getAllEvents();
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayStart = Math.floor(new Date(todayStr).getTime() / 1000);
+            const todayEnd = todayStart + 86400;
+
+            // Get today's timeclock events for this user, sorted by time
+            const todayEvents = allEvents
+                .filter(e => e.pubkey === pk && e.created_at >= todayStart && e.created_at < todayEnd)
+                .filter(e => {
+                    try { const c = JSON.parse(e.content); return c.timeclock === 'checkin' || c.timeclock === 'checkout'; } catch { return false; }
+                })
+                .sort((a, b) => a.created_at - b.created_at);
+
+            if (todayEvents.length === 0) return;
+
+            const lastEvent = todayEvents[todayEvents.length - 1];
+            const lastContent = JSON.parse(lastEvent.content);
+
+            if (lastContent.timeclock === 'checkin') {
+                // They're checked in but localStorage lost it
+                const checkInTime = lastContent.timestamp || new Date(lastEvent.created_at * 1000).toISOString();
+                setClockState({ type: 'checkin', time: checkInTime });
+                showCheckedInView(checkInTime);
+                console.log('🔄 Recovered check-in state from cache');
+            }
+        } catch (e) {
+            console.warn('Could not recover clock state:', e);
+        }
     }
 
     function showCheckedInView(checkInTime) {
@@ -220,12 +261,47 @@ const timeClock = (() => {
         }
 
         if (published === 0) throw new Error('Could not publish to any relay');
-        console.log(`📡 Published ${type} to ${published} relays`);
+        console.log(`📡 Published ${type} to ${published}/${RELAYS.length} relays`);
 
         // Also cache it locally
         if (typeof EVENT_CACHE !== 'undefined') {
             await EVENT_CACHE.storeEvents([signedEvent]);
         }
+
+        // Show confirmation with relay count
+        const confirmDiv = document.getElementById('timeClockSection');
+        if (confirmDiv) {
+            const msg = document.createElement('div');
+            msg.style.cssText = 'padding:8px 12px;margin:8px 15px;border-radius:8px;text-align:center;font-size:13px;font-weight:600;' +
+                'background:#d4edda;color:#155724;border:1px solid #c3e6cb;';
+            msg.textContent = `✅ ${type === 'checkin' ? 'Check-in' : 'Check-out'} published to ${published}/${RELAYS.length} relays`;
+            confirmDiv.appendChild(msg);
+            setTimeout(() => msg.remove(), 5000);
+        }
+
+        // Verify in background
+        verifyTimeEvent(signedEvent.id);
+    }
+
+    // Verify time event on relay
+    async function verifyTimeEvent(eventId) {
+        for (const relay of RELAYS) {
+            try {
+                const ok = await new Promise((resolve) => {
+                    const ws = new WebSocket(relay);
+                    const t = setTimeout(() => { ws.close(); resolve(false); }, 5000);
+                    ws.onopen = () => ws.send(JSON.stringify(['REQ', 'v' + Math.random().toString(36).slice(2,8), { ids: [eventId], limit: 1 }]));
+                    ws.onmessage = (m) => {
+                        const d = JSON.parse(m.data);
+                        if (d[0] === 'EVENT' && d[2]?.id === eventId) { clearTimeout(t); ws.close(); resolve(true); }
+                        else if (d[0] === 'EOSE') { clearTimeout(t); ws.close(); resolve(false); }
+                    };
+                    ws.onerror = () => { clearTimeout(t); resolve(false); };
+                });
+                if (ok) { console.log(`✅ Time event verified on ${relay}`); return; }
+            } catch (e) {}
+        }
+        console.warn('⚠️ Could not verify time event on any relay');
     }
 
     function publishToRelay(relayUrl, event) {

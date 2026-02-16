@@ -357,6 +357,14 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
                 bananaBread: parseInt(document.getElementById('inv-banana-bread').value) || 0,
                 lemonLoaf: parseInt(document.getElementById('inv-lemon-loaf').value) || 0,
                 cinnamonBuns: parseInt(document.getElementById('inv-cinnamon-buns').value) || 0
+            },
+            freezer: {
+                hamCheese: parseInt(document.getElementById('inv-freezer-ham-cheese').value) || 0,
+                chocolate: parseInt(document.getElementById('inv-freezer-chocolate').value) || 0,
+                plain: parseInt(document.getElementById('inv-freezer-plain').value) || 0,
+                cinnamonBuns: parseInt(document.getElementById('inv-freezer-cinnamon').value) || 0,
+                bananaBread: parseInt(document.getElementById('inv-freezer-banana').value) || 0,
+                lemonLoaf: parseInt(document.getElementById('inv-freezer-lemon').value) || 0
             }
         };
         

@@ -463,7 +463,7 @@
             <a href="status.html" style="flex: 1; min-width: 0; padding: 10px 4px; text-align: center; text-decoration: none; color: #666; font-weight: 600; font-size: 12px; white-space: nowrap;">📊 Status</a>
             <a href="procedures.html" style="flex: 1; min-width: 0; padding: 10px 4px; text-align: center; text-decoration: none; color: #666; font-weight: 600; font-size: 12px; white-space: nowrap;">📖 Procedures</a>
             <a href="storage.html" style="flex: 1; min-width: 0; padding: 10px 4px; text-align: center; text-decoration: none; color: #666; font-weight: 600; font-size: 12px; white-space: nowrap;">📦 Storage</a>
-            <a href="timeclock.html" style="flex: 1; min-width: 0; padding: 10px 4px; text-align: center; text-decoration: none; color: #666; font-weight: 600; font-size: 12px; white-space: nowrap;">⏱️ Hours</a>
+            <!-- Hours tab removed — use Square Team app for clock in/out and schedule -->
         </div>
         
         <div class="content">
@@ -490,17 +490,10 @@
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
             
-            <!-- Time Clock (shown when logged in) -->
-            <div id="timeClockSection" style="display: none;">
-                <div id="clockedOutView" style="padding: 15px; text-align: center;">
-                    <button id="checkInBtn" onclick="timeClock.checkIn()" style="width:100%;padding:18px;font-size:1.2em;font-weight:700;border:none;border-radius:12px;background:linear-gradient(135deg,#28a745,#20c997);color:white;cursor:pointer;box-shadow:0 4px 15px rgba(40,167,69,0.3);">☀️ Check In</button>
-                </div>
-                <div id="clockedInView" style="display:none;padding:15px;text-align:center;">
-                    <div style="background:#e8f5e9;border-radius:12px;padding:12px;margin-bottom:12px;">
-                        <div style="color:#2e7d32;font-weight:600;">⏱️ Checked in at <span id="checkInTime"></span></div>
-                    </div>
-                    <button id="checkOutBtn" onclick="timeClock.checkOut()" style="width:100%;padding:18px;font-size:1.2em;font-weight:700;border:none;border-radius:12px;background:linear-gradient(135deg,#dc3545,#e83e8c);color:white;cursor:pointer;box-shadow:0 4px 15px rgba(220,53,69,0.3);">👋 Check Out</button>
-                </div>
+            <!-- Square Team App Notice -->
+            <div id="squareNotice" style="display:none; padding:15px; text-align:center; background:#e8ebf7; border-radius:12px; margin-bottom:15px;">
+                <div style="font-size:1.1em; font-weight:600; color:#667eea; margin-bottom:8px;">⏱️ Hours & Schedule</div>
+                <div style="color:#555; font-size:0.9em; line-height:1.6;">Clock in/out and view your schedule in the <strong>Square Team app</strong>.<br>Download it from the App Store or Google Play.</div>
             </div>
 
             <!-- Today's Activity (shown when logged in) -->
@@ -515,25 +508,7 @@
                 <button class="action-btn" onclick="showChecklist('inventory')">📦 Inventory Handover</button>
             </div>
             
-            <!-- Schedule Section -->
-            <div class="schedule-section">
-                <div class="schedule-header">
-                    <h2>📅 This Week</h2>
-                    <div class="week-nav">
-                        <button onclick="changeWeek(-1)">←</button>
-                        <button onclick="changeWeek(1)">→</button>
-                    </div>
-                </div>
-                
-                <div class="week-info" id="weekInfo">
-                    <strong id="weekLabel">Week A</strong>
-                    <span id="dateRange">Feb 9 - Feb 15, 2026</span>
-                </div>
-                
-                <div class="schedule-grid" id="scheduleGrid">
-                    <!-- Schedule will be loaded here -->
-                </div>
-            </div>
+            <!-- Schedule removed — managed via Square Team app -->
             
             <!-- Checklist Section -->
             <div class="checklist-section" id="checklistSection" style="display: none;">
@@ -887,8 +862,7 @@
     
     <script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
     <script src="event-cache.js"></script>
-    <script src="timeclock.js"></script>
-    <script src="schedule-data.js"></script>
+    <!-- timeclock.js and schedule-data.js removed — Square Team app handles clock in/out and schedule -->
     <script src="app.js"></script>
 </body>
 </html>

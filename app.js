@@ -15,10 +15,8 @@ const RELAYS = [
     'wss://nostr.mutinywallet.com'
 ];
 
-// Load schedule on page load
+// Page load
 window.addEventListener('DOMContentLoaded', () => {
-    // Load schedule
-    loadSchedule(0);
     
     // Check for saved login (now using localStorage for persistence)
     if (typeof NostrTools === 'undefined') {
@@ -42,95 +40,20 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Schedule functions
-function changeWeek(direction) {
-    currentWeekOffset += direction;
-    loadSchedule(currentWeekOffset);
-}
+// Schedule functions (deprecated — Square Team app handles this now)
+function changeWeek(direction) { return; }
+function loadSchedule(weekOffset) { return; }
 
-function loadSchedule(weekOffset) {
-    // Parse start date properly (YYYY-MM-DD format)
-    const [year, month, day] = SCHEDULE_DATA.startDate.split('-').map(Number);
-    const startDate = new Date(year, month - 1, day); // month is 0-indexed
-    startDate.setDate(startDate.getDate() + (weekOffset * 7));
-    
-    // Calculate which week pattern (A or B)
-    const baseDate = new Date(year, month - 1, day);
-    const weeksFromStart = Math.floor((startDate - baseDate) / (7 * 24 * 60 * 60 * 1000));
-    const weekPattern = weeksFromStart % 2 === 0 ? 'weekA' : 'weekB';
-    const weekData = SCHEDULE_DATA.rotation[weekPattern];
-    
-    // Update week label
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + 6);
-    
-    document.getElementById('weekLabel').textContent = weekData.label;
-    document.getElementById('dateRange').textContent = formatDateRange(startDate, endDate);
-    
-    // Generate schedule grid
-    const scheduleGrid = document.getElementById('scheduleGrid');
-    scheduleGrid.innerHTML = '';
-    
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    
-    days.forEach((day, index) => {
-        const dayDate = new Date(startDate);
-        dayDate.setDate(dayDate.getDate() + index);
-        const dateStr = `${dayDate.getFullYear()}-${String(dayDate.getMonth() + 1).padStart(2, '0')}-${String(dayDate.getDate()).padStart(2, '0')}`;
-        
-        const shift = weekData.pattern[day];
-        const exception = SCHEDULE_DATA.exceptions[dateStr];
-        
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'schedule-day';
-        
-        let helpersHtml = '';
-        if (shift.helpers && shift.helpers.length > 0) {
-            helpersHtml = '<br>' + shift.helpers.map(h => 
-                `<span class="helper-shift">+ ${h}</span>`
-            ).join('<br>');
-        }
-        
-        let exceptionHtml = '';
-        if (exception) {
-            exceptionHtml = `<br><span style="color: #dc3545; font-size: 12px;">⚠️ ${exception.note}</span>`;
-        }
-        
-        dayDiv.innerHTML = `
-            <div class="day-header">
-                <span class="day-name">${dayNames[index]}</span>
-                <span class="day-date">${formatDate(dayDate)}</span>
-            </div>
-            <div class="day-shifts">
-                <span class="lead-shift">${shift.lead}</span>
-                <span class="hours-badge">${SCHEDULE_DATA.shopHours}</span>
-                ${helpersHtml}
-                ${exceptionHtml}
-            </div>
-        `;
-        
-        scheduleGrid.appendChild(dayDiv);
-    });
-}
-
-function formatDate(date) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${months[date.getMonth()]} ${date.getDate()}`;
-}
-
-function formatDateRange(start, end) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${months[start.getMonth()]} ${start.getDate()} - ${months[end.getMonth()]} ${end.getDate()}, ${start.getFullYear()}`;
-}
+// Old schedule rendering and formatting functions removed
 
 // Show logged in state
 function showLoggedInState() {
     document.getElementById('authSection').style.display = 'none';
     document.getElementById('userInfo').style.display = 'block';
     document.getElementById('quickActions').style.display = 'flex';
-    // Initialize time clock UI
-    if (typeof timeClock !== 'undefined') timeClock.initUI();
+    // Show Square Team app notice
+    const squareNotice = document.getElementById('squareNotice');
+    if (squareNotice) squareNotice.style.display = 'block';
     // Load today's activity
     loadTodaysActivity();
 }

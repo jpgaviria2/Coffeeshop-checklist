@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Trails Coffee</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+        .nav-bar { display: flex; background: #f8f9fa; border-bottom: 2px solid #e0e0e0; }
+        .nav-bar a { flex: 1; min-width: 0; padding: 10px 4px; text-align: center; text-decoration: none; color: #666; font-weight: 600; font-size: 12px; white-space: nowrap; }
+        .nav-bar a.active { color: #667eea; border-bottom: 3px solid #667eea; background: white; }
+        .container { max-width: 600px; margin: 0 auto; padding: 12px; }
+        h1 { font-size: 20px; margin-bottom: 12px; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h2 { font-size: 15px; color: #667eea; margin-bottom: 10px; }
+        .card h3 { font-size: 13px; color: #999; margin: 10px 0 6px; text-transform: uppercase; }
+        .stat { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .stat:last-child { border-bottom: none; }
+        .stat .val { font-weight: 700; }
+        .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 12px; margin-bottom: 8px; border-radius: 4px; font-size: 13px; }
+        .alert.danger { background: #f8d7da; border-left-color: #dc3545; }
+        .bar-row { display: flex; align-items: center; margin-bottom: 4px; font-size: 12px; }
+        .bar-label { width: 40px; text-align: right; margin-right: 8px; color: #888; }
+        .bar { height: 20px; background: #667eea; border-radius: 3px; min-width: 2px; transition: width 0.3s; }
+        .bar-val { margin-left: 6px; font-weight: 600; font-size: 11px; }
+        .empty-state { text-align: center; padding: 40px 20px; color: #999; }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .week-card { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 4px; }
+        .week-day { flex: 0 0 auto; width: 80px; text-align: center; padding: 8px 4px; background: #f8f9fa; border-radius: 8px; font-size: 12px; }
+        .week-day .day-name { font-weight: 600; color: #667eea; }
+        .week-day .day-rev { font-size: 16px; font-weight: 700; margin: 4px 0; }
+        .updated { text-align: center; font-size: 11px; color: #bbb; margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="index.html">📋 Checklists</a>
+        <a href="status.html">📊 Status</a>
+        <a href="procedures.html">📖 Procedures</a>
+        <a href="storage.html">📦 Storage</a>
+        <a href="dashboard.html" class="active">📈 Dashboard</a>
+    </div>
+    <div class="container">
+        <h1>☕ Sales Dashboard</h1>
+        <div id="content">
+            <div class="empty-state">
+                <div class="icon">⏳</div>
+                <p>Loading...</p>
+            </div>
+        </div>
+        <div class="updated" id="updated"></div>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html>

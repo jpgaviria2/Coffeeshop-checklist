@@ -1,0 +1,15 @@
+{
+  "thresholds": {
+    "Cinnamon Bun": { "displayMin": 3, "freezerMin": 6 },
+    "Banana Bread": { "displayMin": 2, "freezerMin": 4 },
+    "Ham & Cheese Croissant": { "displayMin": 4, "freezerMin": 8 },
+    "Chocolate Croissant": { "displayMin": 3, "freezerMin": 6 },
+    "Plain Croissant": { "displayMin": 2, "freezerMin": 4 },
+    "Lemon Loaf": { "displayMin": 2, "freezerMin": 4 }
+  },
+  "supplies": {
+    "milk_liters_per_latte": 0.24,
+    "milk_liters_per_cappuccino": 0.18,
+    "beans_grams_per_shot": 18
+  }
+}

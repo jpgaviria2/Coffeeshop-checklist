@@ -1,0 +1,26 @@
+name: Square Data Sync
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 6 AM UTC = 10 PM PST (after closing)
+    - cron: '0 15 * * *'  # 3 PM UTC = 7 AM PST (before opening)
+  workflow_dispatch: {}
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: node scripts/sync-square.mjs
+        env:
+          SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}
+          SQUARE_LOCATION_ID: ${{ secrets.SQUARE_LOCATION_ID }}
+      - run: node scripts/generate-forecast.mjs
+      - run: |
+          git config user.name "Brewie Bot"
+          git config user.email "bot@trailscoffee.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "📊 Square sync $(date -u +%Y-%m-%d)"
+          git push

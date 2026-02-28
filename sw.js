@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2.2.0';
+const CACHE_VERSION = 'v3.0.0';
 const CACHE_NAME = `trails-coffee-${CACHE_VERSION}`;
 const BASE_PATH = '/Coffeeshop-checklist';
 
@@ -18,6 +18,10 @@ const urlsToCache = [
   `${BASE_PATH}/prep.js`,
   `${BASE_PATH}/detail.html`,
   `${BASE_PATH}/detail.js`,
+  `${BASE_PATH}/reports.html`,
+  `${BASE_PATH}/reports.js`,
+  `${BASE_PATH}/waste.html`,
+  `${BASE_PATH}/waste.js`,
   // Procedure pages
   `${BASE_PATH}/procedure-baking.html`,
   `${BASE_PATH}/procedure-cinnamon-buns.html`,

@@ -1,0 +1,89 @@
+{
+  "generated": "2026-02-28T20:35:02.347Z",
+  "forecast": {
+    "2026-02-28": {
+      "tempMax": 7.8,
+      "tempMin": 3.2,
+      "precipitation": 0,
+      "weatherCode": 3,
+      "condition": "Overcast",
+      "isRainy": false,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "⛅"
+    },
+    "2026-03-01": {
+      "tempMax": 11.7,
+      "tempMin": 2.6,
+      "precipitation": 0,
+      "weatherCode": 3,
+      "condition": "Overcast",
+      "isRainy": false,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "⛅"
+    },
+    "2026-03-02": {
+      "tempMax": 10.5,
+      "tempMin": 4.3,
+      "precipitation": 0,
+      "weatherCode": 3,
+      "condition": "Overcast",
+      "isRainy": false,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "⛅"
+    },
+    "2026-03-03": {
+      "tempMax": 8,
+      "tempMin": 4.3,
+      "precipitation": 17.8,
+      "weatherCode": 80,
+      "condition": "Light showers",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "🌦️"
+    },
+    "2026-03-04": {
+      "tempMax": 8.2,
+      "tempMin": 5.6,
+      "precipitation": 13,
+      "weatherCode": 81,
+      "condition": "Showers",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "🌦️"
+    },
+    "2026-03-05": {
+      "tempMax": 5.7,
+      "tempMin": 2.8,
+      "precipitation": 4.9,
+      "weatherCode": 53,
+      "condition": "Drizzle",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "☁️"
+    },
+    "2026-03-06": {
+      "tempMax": 5.3,
+      "tempMin": 3.1,
+      "precipitation": 1.4,
+      "weatherCode": 51,
+      "condition": "Light drizzle",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "☁️"
+    }
+  }
+}

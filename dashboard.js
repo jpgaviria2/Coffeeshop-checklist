@@ -2,6 +2,8 @@
  * Dashboard — fetches forecast + daily sales data and renders.
  * Pure vanilla JS, no dependencies.
  *
+ * Phase 3: Morning Briefing, Evening Wrap-up, Weather, Reorder Alerts.
+ *
  * KEY LOGIC: Freezer pulls happen at CLOSING (night before).
  * - Tonight's alerts = based on TOMORROW's forecast
  * - Morning alerts = arrange thawed pastries, check display counts
@@ -20,18 +22,12 @@
   }
 
   function yesterday() {
-    const d = new Date();
-    d.setDate(d.getDate() - 1);
+    const d = new Date(); d.setDate(d.getDate() - 1);
     return d.toISOString().substring(0, 10);
   }
-
-  function today() {
-    return new Date().toISOString().substring(0, 10);
-  }
-
+  function today() { return new Date().toISOString().substring(0, 10); }
   function tomorrow() {
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
+    const d = new Date(); d.setDate(d.getDate() + 1);
     return d.toISOString().substring(0, 10);
   }
 
@@ -42,6 +38,123 @@
         <p><strong>Connect Square to see sales data</strong></p>
         <p style="margin-top:8px;font-size:13px;">Once Square is connected, you'll see daily sales, forecasts, and inventory alerts here.</p>
       </div>`;
+  }
+
+  function renderMorningBriefing(forecast, config, weather, alerts) {
+    const hour = new Date().getHours();
+    if (hour >= 12) return ''; // Show evening wrap-up instead
+
+    const todayFc = forecast?.forecast?.[today()];
+    const weatherToday = weather?.forecast?.[today()];
+
+    let html = `<div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e8f5e9);border-left:4px solid #4caf50;">`;
+    html += `<h2>☕ Morning Briefing</h2>`;
+
+    // Weather
+    if (weatherToday) {
+      html += `<div style="font-size:14px;margin-bottom:8px;">${weatherToday.emoji} ${weatherToday.tempMax}°C today — ${weatherToday.condition}`;
+      if (weatherToday.precipitation > 0) html += ` (${weatherToday.precipitation}mm rain)`;
+      html += `</div>`;
+    }
+
+    // Predicted revenue
+    if (todayFc && !todayFc.noData) {
+      html += `<div class="stat"><span>Predicted revenue</span><span class="val">$${todayFc.totalRevenue.predicted}</span></div>`;
+
+      // Top 5 items
+      const topItems = Object.entries(todayFc.items).sort((a, b) => b[1].predicted - a[1].predicted).slice(0, 5);
+      if (topItems.length > 0) {
+        html += `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#666;">Top items to watch:</div>`;
+        for (const [name, data] of topItems) {
+          if (data.predicted > 0) {
+            html += `<div style="font-size:13px;padding:2px 0;">• ${name}: ~${data.predicted} expected</div>`;
+          }
+        }
+      }
+    }
+
+    // Reorder alerts
+    if (alerts?.reorder?.length > 0) {
+      const urgent = alerts.reorder.filter(a => a.urgency === 'high');
+      if (urgent.length > 0) {
+        html += `<div style="margin-top:8px;padding:8px;background:#fff3cd;border-radius:6px;font-size:13px;">`;
+        html += `⚠️ <strong>Reorder needed:</strong><br>`;
+        for (const a of urgent) {
+          html += `• ${a.item} — order ${a.orderBy}<br>`;
+        }
+        html += `</div>`;
+      }
+    }
+
+    // Pastry prep from last night's forecast
+    if (todayFc && !todayFc.noData && config?.thresholds) {
+      const pastries = [];
+      for (const [item, thresh] of Object.entries(config.thresholds)) {
+        const predicted = todayFc.items?.[item]?.predicted || 0;
+        if (predicted > 0) pastries.push({ name: item, qty: predicted });
+      }
+      if (pastries.length > 0) {
+        html += `<div style="margin-top:8px;font-size:13px;color:#666;">🥐 Pastries to arrange: `;
+        html += pastries.map(p => `${p.qty} ${p.name}`).join(', ');
+        html += `</div>`;
+      }
+    }
+
+    html += `</div>`;
+    return html;
+  }
+
+  function renderEveningWrapup(forecast, dailyToday, weather) {
+    const hour = new Date().getHours();
+    if (hour < 12) return '';
+
+    const tomorrowFc = forecast?.forecast?.[tomorrow()];
+    const weatherTomorrow = weather?.forecast?.[tomorrow()];
+
+    let html = `<div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e8eaf6);border-left:4px solid #5c6bc0;">`;
+    html += `<h2>🌙 Evening Wrap-up</h2>`;
+
+    // Today's actuals
+    if (dailyToday) {
+      html += `<div class="stat"><span>Today's revenue</span><span class="val">$${dailyToday.totalRevenue}</span></div>`;
+      html += `<div class="stat"><span>Orders</span><span class="val">${dailyToday.orderCount}</span></div>`;
+    } else {
+      html += `<div style="font-size:13px;color:#999;">Today's sales not synced yet.</div>`;
+    }
+
+    // Tomorrow's prep
+    if (tomorrowFc && !tomorrowFc.noData) {
+      html += `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#666;">Tomorrow's prep:</div>`;
+      html += `<div class="stat"><span>Expected revenue</span><span class="val">$${tomorrowFc.totalRevenue.predicted}</span></div>`;
+
+      const topItems = Object.entries(tomorrowFc.items).sort((a, b) => b[1].predicted - a[1].predicted).slice(0, 5);
+      for (const [name, data] of topItems) {
+        if (data.predicted > 0) {
+          html += `<div style="font-size:13px;padding:2px 0;">• Pull ${data.predicted} ${name} from freezer</div>`;
+        }
+      }
+    }
+
+    // Weather tomorrow
+    if (weatherTomorrow) {
+      html += `<div style="margin-top:8px;font-size:14px;">${weatherTomorrow.emoji} Tomorrow: ${weatherTomorrow.tempMax}°C — ${weatherTomorrow.condition}</div>`;
+    }
+
+    html += `</div>`;
+    return html;
+  }
+
+  function renderReorderAlerts(alerts) {
+    if (!alerts?.reorder?.length) return '';
+
+    let html = `<div class="card"><h2>📦 Reorder Alerts</h2>`;
+    for (const a of alerts.reorder) {
+      const cls = a.urgency === 'high' ? 'danger' : '';
+      const icon = a.urgency === 'high' ? '🔴' : '🟡';
+      html += `<div class="alert ${cls}">${icon} <strong>${a.item}</strong> — ~${a.daysOfSupply} days supply, order by ${a.orderBy}</div>`;
+    }
+    html += `</div>`;
+    return html;
   }
 
   function renderAlerts(forecast, config) {
@@ -56,14 +169,11 @@
     let freezerAlerts = '';
     let hotAlerts = '';
 
-    // Morning alerts: arrange thawed pastries based on TODAY's forecast
     if (todayFc && !todayFc.noData) {
       const todayItems = [];
       for (const [item, thresh] of Object.entries(config.thresholds)) {
         const predicted = todayFc.items?.[item]?.predicted || 0;
-        if (predicted > 0) {
-          todayItems.push({ name: item, predicted, displayMin: thresh.displayMin });
-        }
+        if (predicted > 0) todayItems.push({ name: item, predicted, displayMin: thresh.displayMin });
       }
       if (todayItems.length > 0) {
         morningAlerts += `<div class="alert" style="background:#e8f5e9;border-left:4px solid #4caf50;">🌅 <strong>Morning:</strong> Arrange thawed pastries on display</div>`;
@@ -71,8 +181,6 @@
           morningAlerts += `<div class="alert" style="background:#f1f8e9;">📦 <strong>${item.name}</strong> — expected ${item.predicted} today, display ${item.displayMin}+</div>`;
         }
       }
-
-      // Hot sellers today
       for (const [item, thresh] of Object.entries(config.thresholds)) {
         const predicted = todayFc.items?.[item]?.predicted || 0;
         if (predicted >= thresh.freezerMin) {
@@ -81,15 +189,12 @@
       }
     }
 
-    // Tonight's freezer alerts: based on TOMORROW's forecast
     if (tomorrowFc && !tomorrowFc.noData) {
       for (const [item, thresh] of Object.entries(config.thresholds)) {
         const predicted = tomorrowFc.items?.[item]?.predicted || 0;
         if (predicted === 0) continue;
-
         const totalNeeded = predicted + thresh.displayMin;
         const pullFromFreezer = Math.max(0, Math.ceil(totalNeeded * 0.6));
-
         if (pullFromFreezer > 0) {
           const action = bakeable.includes(item) ? '🧊→🍞' : '🧊';
           freezerAlerts += `<div class="alert">${action} Tonight: Pull <strong>${pullFromFreezer} ${item}</strong> from freezer for ${tomorrowDay}</div>`;
@@ -120,11 +225,18 @@
 
     let items = Object.entries(fc.items).sort((a, b) => b[1].predicted - a[1].predicted);
     let html = `<div class="card"><h2>📊 Today's Forecast — ${fc.dayOfWeek}</h2>`;
+
+    // Weather badge
+    if (fc.weather) {
+      html += `<div style="font-size:13px;color:#666;margin-bottom:8px;">${fc.weather.emoji} ${fc.weather.temp}°C — ${fc.weather.condition}</div>`;
+    }
+
     html += `<div class="stat"><span>Predicted Revenue</span><span class="val">$${fc.totalRevenue.predicted}</span></div>`;
     html += '<h3>Top Items</h3>';
     for (const [name, data] of items.slice(0, 10)) {
       if (data.predicted === 0) continue;
-      html += `<div class="stat"><span>${name}</span><span class="val">${data.predicted} <span style="color:#999;font-weight:400;">(avg ${data.avgLastMonth})</span></span></div>`;
+      const weatherBadge = data.weatherAdjusted ? ' 🌤️' : '';
+      html += `<div class="stat"><span>${name}${weatherBadge}</span><span class="val">${data.predicted} <span style="color:#999;font-weight:400;">(avg ${data.avgLastMonth})</span></span></div>`;
     }
     html += '</div>';
     return html;
@@ -135,12 +247,10 @@
     let html = `<div class="card"><h2>📋 Yesterday — ${daily.date}</h2>`;
     html += `<div class="stat"><span>Orders</span><span class="val">${daily.orderCount}</span></div>`;
     html += `<div class="stat"><span>Revenue</span><span class="val">$${daily.totalRevenue}</span></div>`;
-
     html += '<h3>Sales by Item</h3>';
     for (const item of (daily.items || []).slice(0, 12)) {
       html += `<div class="stat"><span>${item.name}</span><span class="val">${item.quantity} — $${item.revenue.toFixed(0)}</span></div>`;
     }
-
     if (daily.byHour && Object.keys(daily.byHour).length > 0) {
       html += '<h3>Sales by Hour</h3>';
       const maxOrders = Math.max(...Object.values(daily.byHour).map(h => h.orders));
@@ -155,7 +265,6 @@
         </div>`;
       }
     }
-
     html += '</div>';
     return html;
   }
@@ -169,9 +278,11 @@
     for (const date of dates) {
       const fc = forecast.forecast[date];
       const shortDate = date.substring(5);
+      const weatherEmoji = fc.weather?.emoji || '';
       html += `<div class="week-day">
         <div class="day-name">${fc.dayOfWeek.substring(0, 3)}</div>
         <div style="color:#999;">${shortDate}</div>
+        <div style="font-size:14px;">${weatherEmoji}</div>
         <div class="day-rev">$${fc.totalRevenue?.predicted || 0}</div>
       </div>`;
     }
@@ -180,10 +291,13 @@
   }
 
   async function render() {
-    const [forecast, dailyYesterday, config] = await Promise.all([
+    const [forecast, dailyYesterday, dailyToday, config, weather, alerts] = await Promise.all([
       fetchJSON('data/forecast.json'),
       fetchJSON(`data/daily/${yesterday()}.json`),
-      fetchJSON('data/config.json')
+      fetchJSON(`data/daily/${today()}.json`),
+      fetchJSON('data/config.json'),
+      fetchJSON('data/weather.json'),
+      fetchJSON('data/alerts.json')
     ]);
 
     if (!forecast && !dailyYesterday) {
@@ -192,6 +306,10 @@
     }
 
     let html = '';
+    // Morning briefing or evening wrap-up
+    html += renderMorningBriefing(forecast, config, weather, alerts);
+    html += renderEveningWrapup(forecast, dailyToday, weather);
+    html += renderReorderAlerts(alerts);
     html += renderAlerts(forecast, config);
     html += renderForecastToday(forecast);
     html += renderYesterday(dailyYesterday);

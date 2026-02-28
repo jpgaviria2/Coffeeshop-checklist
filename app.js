@@ -123,6 +123,80 @@ async function loadTodaysActivity() {
     }
 }
 
+// Load dynamic freezer pulls for closing checklist (based on TOMORROW's forecast)
+async function loadClosingFreezerPulls() {
+    const container = document.getElementById('closingFreezerPulls');
+    if (!container) return;
+    try {
+        const [fcRes, cfgRes] = await Promise.all([fetch('data/forecast.json'), fetch('data/config.json')]);
+        if (!fcRes.ok || !cfgRes.ok) return;
+        const fcData = await fcRes.json();
+        const cfgData = await cfgRes.json();
+        const d = new Date(); d.setDate(d.getDate() + 1);
+        const tomorrowKey = d.toISOString().substring(0, 10);
+        const tomorrowFc = fcData.forecast?.[tomorrowKey];
+        if (!tomorrowFc || !cfgData.thresholds) {
+            container.innerHTML = '<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-bottom:15px;"><strong>⚠️ No forecast for tomorrow</strong> — check with manager for freezer pull quantities.</div>';
+            return;
+        }
+        const tomorrowDay = tomorrowFc.dayOfWeek || '';
+        let pulls = [];
+        const bakeable = ['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant'];
+        for (const [name, thresh] of Object.entries(cfgData.thresholds)) {
+            const predicted = tomorrowFc.items?.[name]?.predicted || 0;
+            if (predicted === 0) continue;
+            const totalNeeded = predicted + thresh.displayMin;
+            const pullQty = Math.max(0, Math.ceil(totalNeeded * 0.6));
+            if (pullQty > 0) {
+                pulls.push({ name, qty: pullQty, needsBaking: bakeable.includes(name), predicted });
+            }
+        }
+        if (pulls.length === 0) {
+            container.innerHTML = '<div style="background:#e8f5e9;border:2px solid #4caf50;border-radius:10px;padding:12px;margin-bottom:15px;">✅ No freezer pulls needed for tomorrow.</div>';
+            return;
+        }
+        pulls.sort((a, b) => b.qty - a.qty);
+        let html = `<div style="background:#e3f2fd;border:2px solid #2196f3;border-radius:10px;padding:12px;margin-bottom:15px;">`;
+        html += `<div style="font-weight:700;color:#1565c0;font-size:15px;margin-bottom:8px;">🧊 Freezer Pulls for ${tomorrowDay} (${tomorrowKey})</div>`;
+        html += `<p style="font-size:12px;color:#555;margin-bottom:10px;">Based on tomorrow's forecast — pull these from freezer and place on rack to thaw overnight</p>`;
+        for (const p of pulls) {
+            const bakeIcon = p.needsBaking ? ' · 🔥 bake in AM' : '';
+            html += `<div class="checklist-item" style="background:white;"><input type="checkbox" id="freezer-pull-${p.name.replace(/\s+/g,'-')}"><label for="freezer-pull-${p.name.replace(/\s+/g,'-')}">Pull <strong>${p.qty} ${p.name}</strong> from freezer${bakeIcon}</label></div>`;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+    } catch (e) { console.error('Error loading freezer pulls:', e); }
+}
+
+// Load dynamic opening pastry info (what was prepped last night = today's forecast)
+async function loadOpeningPastryInfo() {
+    const container = document.getElementById('openingPastryInfo');
+    if (!container) return;
+    try {
+        const [fcRes, cfgRes] = await Promise.all([fetch('data/forecast.json'), fetch('data/config.json')]);
+        if (!fcRes.ok || !cfgRes.ok) return;
+        const fcData = await fcRes.json();
+        const cfgData = await cfgRes.json();
+        const todayKey = new Date().toISOString().substring(0, 10);
+        const todayFc = fcData.forecast?.[todayKey];
+        if (!todayFc || !cfgData.thresholds) return;
+        let items = [];
+        for (const [name, thresh] of Object.entries(cfgData.thresholds)) {
+            const predicted = todayFc.items?.[name]?.predicted || 0;
+            if (predicted > 0) items.push({ name, predicted, displayMin: thresh.displayMin });
+        }
+        if (items.length === 0) return;
+        items.sort((a, b) => b.predicted - a.predicted);
+        let html = `<div style="background:#e8f5e9;border:2px solid #4caf50;border-radius:10px;padding:12px;margin-bottom:15px;">`;
+        html += `<div style="font-weight:700;color:#2e7d32;font-size:14px;margin-bottom:6px;">📦 Expected Today (arrange thawed pastries)</div>`;
+        for (const item of items) {
+            html += `<div style="font-size:13px;padding:3px 0;">• <strong>${item.predicted}</strong> ${item.name} (display ${item.displayMin}+)</div>`;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+    } catch (e) { /* optional */ }
+}
+
 // Show specific checklist
 function showChecklist(type) {
     currentChecklist = type;
@@ -143,10 +217,12 @@ function showChecklist(type) {
         document.getElementById('checklistTitle').textContent = 'Opening Checklist';
         document.getElementById('openingBtn').classList.add('active');
         document.getElementById('openingChecklist').style.display = 'block';
+        loadOpeningPastryInfo();
     } else if (type === 'closing') {
         document.getElementById('checklistTitle').textContent = 'Closing Checklist';
         document.getElementById('closingBtn').classList.add('active');
         document.getElementById('closingChecklist').style.display = 'block';
+        loadClosingFreezerPulls();
     } else if (type === 'inventory') {
         document.getElementById('checklistTitle').textContent = 'Inventory Handover';
         document.getElementById('inventoryBtn').classList.add('active');
@@ -199,7 +275,7 @@ async function loadInventoryPredictions() {
                 const hint = document.createElement('span');
                 hint.className = 'pred-hint';
                 hint.style.cssText = 'font-size:11px;color:#667eea;display:block;margin-top:2px;';
-                hint.textContent = `📊 ~${predicted} predicted today`;
+                hint.textContent = `📊 ~${predicted} predicted sales today`;
                 item.querySelector('label').appendChild(hint);
             }
         }

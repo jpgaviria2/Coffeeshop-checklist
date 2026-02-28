@@ -1,6 +1,11 @@
 /**
  * Prep List — Smart prep lists, supply calculator, freezer alerts.
  * Reads forecast.json + config.json to generate actionable prep guidance.
+ *
+ * KEY LOGIC: Freezer pulls happen at CLOSING (night before).
+ * Pastries thaw overnight and are ready for the next morning.
+ * - "Tonight's prep" = based on TOMORROW's forecast
+ * - "Today's display" = based on TODAY's forecast (what was prepped last night)
  */
 (function () {
   let forecast = null;
@@ -14,6 +19,12 @@
 
   function today() { return new Date().toISOString().substring(0, 10); }
 
+  function tomorrow() {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().substring(0, 10);
+  }
+
   async function fetchJSON(path) {
     try { const r = await fetch(path); return r.ok ? r.json() : null; } catch { return null; }
   }
@@ -26,7 +37,14 @@
     });
   };
 
-  // --- Get today's forecast (fallback to first available day) ---
+  // --- Get forecast for a specific date (fallback to first available) ---
+  function getForecastForDate(dateKey) {
+    if (!forecast?.forecast) return null;
+    if (forecast.forecast[dateKey]) return { date: dateKey, ...forecast.forecast[dateKey] };
+    return null;
+  }
+
+  // --- Get today's forecast ---
   function getTodayForecast() {
     if (!forecast?.forecast) return null;
     const todayKey = today();
@@ -36,18 +54,20 @@
     return null;
   }
 
+  // --- Get tomorrow's forecast ---
+  function getTomorrowForecast() {
+    return getForecastForDate(tomorrow());
+  }
+
   // --- Pastry prep calculations ---
   function getPastryPrep(fc) {
     if (!fc?.items || !config?.thresholds) return [];
     const items = [];
     for (const [name, thresh] of Object.entries(config.thresholds)) {
       const predicted = fc.items[name]?.predicted || 0;
-      // How many to have on display
       const displayTarget = Math.max(thresh.displayMin, Math.ceil(predicted * 0.4));
-      // How many to pull from freezer (need predicted + buffer for display)
       const totalNeeded = predicted + thresh.displayMin;
       const pullFromFreezer = Math.max(0, Math.ceil(totalNeeded * 0.6));
-      // Does it need baking?
       const needsBaking = ['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant'].includes(name);
 
       items.push({
@@ -97,104 +117,107 @@
     };
   }
 
-  // --- Generate freezer alerts ---
-  function generateAlerts(pastryPrep) {
-    const alerts = [];
-    for (const item of pastryPrep) {
-      if (item.predicted === 0) continue;
-
-      if (item.needsBaking && item.pullFromFreezer > 0) {
-        alerts.push({
-          type: 'freezer',
-          text: `🧊→🍞 Pull ${item.pullFromFreezer} ${item.name} from freezer before opening`,
-          urgency: 'before'
-        });
-      } else if (item.pullFromFreezer > 0) {
-        alerts.push({
-          type: 'freezer',
-          text: `🧊 Pull ${item.pullFromFreezer} ${item.name} from freezer`,
-          urgency: 'before'
-        });
-      }
-
-      if (item.predicted >= item.freezerMin) {
-        alerts.push({
-          type: 'hot',
-          text: `🔥 ${item.name} selling fast — predicted ${item.predicted} today, ensure ${item.displayMin}+ on display`,
-          urgency: 'mid'
-        });
-      }
-    }
-    return alerts;
-  }
-
   // --- Render today view ---
   function renderToday() {
-    const fc = getTodayForecast();
-    if (!fc) {
+    const todayFc = getTodayForecast();
+    const tomorrowFc = getTomorrowForecast();
+
+    if (!todayFc && !tomorrowFc) {
       $todayView.innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>No forecast data available.</p></div>';
       return;
     }
 
-    const dayName = fc.dayOfWeek || '';
-    $dateLabel.textContent = `${dayName} — ${fc.date}`;
-
-    const pastryPrep = getPastryPrep(fc);
-    const alerts = generateAlerts(pastryPrep);
-    const supplies = calcSupplies(fc);
+    const dayName = todayFc?.dayOfWeek || '';
+    $dateLabel.textContent = `${dayName} — ${todayFc?.date || today()}`;
 
     let html = '';
 
-    // Alerts card
-    if (alerts.length > 0) {
-      html += '<div class="card"><h2>🚨 Action Items</h2>';
-      // Group by urgency
-      const beforeAlerts = alerts.filter(a => a.urgency === 'before');
-      const midAlerts = alerts.filter(a => a.urgency === 'mid');
+    // === SECTION 1: Today's Display (what was prepped last night) ===
+    if (todayFc) {
+      const todayPrep = getPastryPrep(todayFc);
+      const supplies = calcSupplies(todayFc);
 
-      if (beforeAlerts.length > 0) {
-        html += '<h3><span class="time-badge time-before">Before Opening</span></h3>';
-        for (const a of beforeAlerts) {
-          html += `<div class="alert alert-${a.type}">${a.text}</div>`;
-        }
-      }
-      if (midAlerts.length > 0) {
-        html += '<h3><span class="time-badge time-mid">Mid-Morning Check</span></h3>';
-        for (const a of midAlerts) {
-          html += `<div class="alert alert-${a.type}">${a.text}</div>`;
-        }
-      }
-      html += '</div>';
-    }
+      // Morning display guidance
+      html += '<div class="card"><h2>🌅 Today\'s Display</h2>';
+      html += '<p style="font-size:12px;color:#888;margin-bottom:10px;">Based on today\'s forecast — arrange thawed pastries on display</p>';
 
-    // Pastry prep card
-    if (pastryPrep.length > 0) {
-      html += '<div class="card"><h2>🥐 Pastry Prep</h2>';
-      for (const item of pastryPrep) {
+      for (const item of todayPrep) {
         if (item.predicted === 0 && item.pullFromFreezer === 0) continue;
         html += `<div class="prep-item">
           <div>
             <div class="prep-name">${item.name}</div>
-            <div class="prep-detail">Predicted: ${item.predicted} · Display: ${item.displayMin}+ · ${item.needsBaking ? '🔥 Bake' : '🧊 Thaw'}</div>
+            <div class="prep-detail">Expected sales: ${item.predicted} · Display min: ${item.displayMin}+ · ${item.needsBaking ? '🔥 Bake' : '📦 Display'}</div>
           </div>
           <div class="prep-qty">
-            <div class="big">${item.pullFromFreezer}</div>
-            <div class="unit">from freezer</div>
+            <div class="big">${item.predicted}</div>
+            <div class="unit">expected today</div>
           </div>
         </div>`;
       }
+
+      // Mid-morning alerts
+      const hotItems = todayPrep.filter(item => item.predicted >= item.freezerMin && item.predicted > 0);
+      if (hotItems.length > 0) {
+        html += '<h3><span class="time-badge time-mid">Mid-Morning Check</span></h3>';
+        for (const item of hotItems) {
+          html += `<div class="alert alert-hot">🔥 ${item.name} selling fast — predicted ${item.predicted} today, ensure ${item.displayMin}+ on display</div>`;
+        }
+      }
       html += '</div>';
+
+      // Quick supply snapshot
+      if (supplies) {
+        html += '<div class="card"><h2>📦 Supply Snapshot</h2>';
+        html += `<div class="supply-row"><span>🥛 Milk needed</span><span class="supply-val">${supplies.milkLiters}L <span class="supply-sub">(~${supplies.milkJugs} jugs)</span></span></div>`;
+        html += `<div class="supply-row"><span>☕ Beans needed</span><span class="supply-val">${supplies.totalBeansG}g <span class="supply-sub">(~${supplies.beansBags} 5lb bags)</span></span></div>`;
+        html += `<div class="supply-row"><span>💉 Espresso shots</span><span class="supply-val">${supplies.totalShots}</span></div>`;
+        if (supplies.chocolateOz > 0) {
+          html += `<div class="supply-row"><span>🍫 Chocolate</span><span class="supply-val">${supplies.chocolateOz} oz</span></div>`;
+        }
+        html += '</div>';
+      }
     }
 
-    // Quick supply snapshot
-    if (supplies) {
-      html += '<div class="card"><h2>📦 Supply Snapshot</h2>';
-      html += `<div class="supply-row"><span>🥛 Milk needed</span><span class="supply-val">${supplies.milkLiters}L <span class="supply-sub">(~${supplies.milkJugs} jugs)</span></span></div>`;
-      html += `<div class="supply-row"><span>☕ Beans needed</span><span class="supply-val">${supplies.totalBeansG}g <span class="supply-sub">(~${supplies.beansBags} 5lb bags)</span></span></div>`;
-      html += `<div class="supply-row"><span>💉 Espresso shots</span><span class="supply-val">${supplies.totalShots}</span></div>`;
-      if (supplies.chocolateOz > 0) {
-        html += `<div class="supply-row"><span>🍫 Chocolate</span><span class="supply-val">${supplies.chocolateOz} oz</span></div>`;
+    // === SECTION 2: Tonight's Closing Prep (for tomorrow) ===
+    if (tomorrowFc) {
+      const tomorrowPrep = getPastryPrep(tomorrowFc);
+      const tomorrowDay = tomorrowFc.dayOfWeek || '';
+
+      html += '<div class="card" style="border: 2px solid #2196f3; background: #f8fbff;">';
+      html += `<h2>🧊 Tonight's Closing Prep <span style="font-size:12px;font-weight:400;color:#888;">(for ${tomorrowDay} ${tomorrowFc.date})</span></h2>`;
+      html += '<p style="font-size:12px;color:#1565c0;margin-bottom:10px;">Pull these from freezer tonight — they need to thaw overnight</p>';
+
+      const freezerItems = tomorrowPrep.filter(item => item.pullFromFreezer > 0);
+      if (freezerItems.length > 0) {
+        for (const item of freezerItems) {
+          const bakeNote = item.needsBaking ? ' · 🔥 Bake in morning' : ' · Thaw only';
+          html += `<div class="alert alert-freezer">🧊 Pull <strong>${item.pullFromFreezer} ${item.name}</strong> from freezer tonight${bakeNote}</div>`;
+        }
+      } else {
+        html += '<div class="alert alert-ok">✅ No freezer pulls needed for tomorrow</div>';
       }
+
+      // Summary table
+      if (freezerItems.length > 0) {
+        html += '<div style="margin-top:10px;">';
+        for (const item of freezerItems) {
+          html += `<div class="prep-item">
+            <div>
+              <div class="prep-name">${item.name}</div>
+              <div class="prep-detail">Tomorrow's predicted: ${item.predicted} · ${item.needsBaking ? '🔥 Bake' : '🧊 Thaw'}</div>
+            </div>
+            <div class="prep-qty">
+              <div class="big">${item.pullFromFreezer}</div>
+              <div class="unit">from freezer</div>
+            </div>
+          </div>`;
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    } else {
+      html += '<div class="card"><h2>🧊 Tonight\'s Closing Prep</h2>';
+      html += '<div class="alert alert-warn">⚠️ No forecast available for tomorrow — check with manager for freezer pull quantities</div>';
       html += '</div>';
     }
 
@@ -213,9 +236,9 @@
 
     // Weekly pastry overview
     let html = '<div class="card"><h2>📅 Week Pastry Needs</h2>';
+    html += '<p style="font-size:11px;color:#888;margin-bottom:8px;">💡 Freezer pulls happen at closing for the NEXT day</p>';
     html += '<div style="overflow-x:auto;">';
 
-    // Header row
     html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
     html += '<thead><tr><th style="text-align:left;padding:6px 4px;">Item</th>';
     for (const date of dates) {
@@ -225,7 +248,6 @@
     }
     html += '</tr></thead><tbody>';
 
-    // Rows for each threshold item
     if (config?.thresholds) {
       for (const [name] of Object.entries(config.thresholds)) {
         html += `<tr><td style="padding:6px 4px;font-weight:600;white-space:nowrap;">${name}</td>`;
@@ -269,7 +291,6 @@
     const dates = Object.keys(forecast.forecast).sort();
     let html = '';
 
-    // Per-day supply breakdown
     html += '<div class="card"><h2>🥛 Daily Milk & Beans Forecast</h2>';
     for (const date of dates) {
       const fc = forecast.forecast[date];
@@ -285,7 +306,6 @@
     }
     html += '</div>';
 
-    // Weekly totals
     let weekMilk = 0, weekBeans = 0, weekShots = 0;
     for (const date of dates) {
       const fc = forecast.forecast[date];
@@ -303,13 +323,12 @@
     html += `<div class="supply-row"><span>💉 Total Shots</span><span class="supply-val">${weekShots}</span></div>`;
     html += '</div>';
 
-    // Days-of-supply estimate
     html += '<div class="card"><h2>📦 Days of Supply</h2>';
     html += '<p style="font-size:12px;color:#999;margin-bottom:10px;">Based on closing checklist targets: 5 milk jugs, 2 five-pound bean bags</p>';
     const avgDailyMilk = weekMilk / dates.length;
     const avgDailyBeans = weekBeans / dates.length;
-    const milkStock = 5 * (config.ingredients?.milk_jug_liters || 4); // 5 jugs
-    const beansStock = 2 * (config.ingredients?.beans_per_5lb_bag_g || 2268); // 2 bags
+    const milkStock = 5 * (config.ingredients?.milk_jug_liters || 4);
+    const beansStock = 2 * (config.ingredients?.beans_per_5lb_bag_g || 2268);
     const milkDays = avgDailyMilk > 0 ? Math.round(milkStock / avgDailyMilk * 10) / 10 : '∞';
     const beansDays = avgDailyBeans > 0 ? Math.round(beansStock / avgDailyBeans * 10) / 10 : '∞';
 

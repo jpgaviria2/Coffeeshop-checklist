@@ -1,16 +1,16 @@
 {
   "thresholds": {
-    "Cinnamon Bun": { "displayMin": 3, "freezerMin": 6 },
-    "Banana Bread": { "displayMin": 2, "freezerMin": 4 },
-    "Ham and Cheese Croissant": { "displayMin": 4, "freezerMin": 8 },
-    "Chocolate Croissant": { "displayMin": 3, "freezerMin": 6 },
-    "Plain Croissant": { "displayMin": 2, "freezerMin": 4 },
-    "Lemon cake": { "displayMin": 2, "freezerMin": 4 },
-    "Cookie": { "displayMin": 3, "freezerMin": 6 },
-    "GF Mini Doughnut": { "displayMin": 2, "freezerMin": 4 },
-    "GF VEGAN brownie": { "displayMin": 1, "freezerMin": 3 },
-    "Gluten Free Cheddar Scone": { "displayMin": 1, "freezerMin": 3 },
-    "Spinach Feta Croissant": { "displayMin": 1, "freezerMin": 3 }
+    "Cinnamon Bun": { "displayMin": 3, "freezerMin": 6, "prepTime": "closing" },
+    "Banana Bread": { "displayMin": 2, "freezerMin": 4, "prepTime": "closing" },
+    "Ham and Cheese Croissant": { "displayMin": 4, "freezerMin": 8, "prepTime": "closing" },
+    "Chocolate Croissant": { "displayMin": 3, "freezerMin": 6, "prepTime": "closing" },
+    "Plain Croissant": { "displayMin": 2, "freezerMin": 4, "prepTime": "closing" },
+    "Lemon cake": { "displayMin": 2, "freezerMin": 4, "prepTime": "closing" },
+    "Cookie": { "displayMin": 3, "freezerMin": 6, "prepTime": "closing" },
+    "GF Mini Doughnut": { "displayMin": 2, "freezerMin": 4, "prepTime": "closing" },
+    "GF VEGAN brownie": { "displayMin": 1, "freezerMin": 3, "prepTime": "closing" },
+    "Gluten Free Cheddar Scone": { "displayMin": 1, "freezerMin": 3, "prepTime": "closing" },
+    "Spinach Feta Croissant": { "displayMin": 1, "freezerMin": 3, "prepTime": "closing" }
   },
   "recipes": {
     "Latte": { "milk_ml": 240, "shots": 2 },
@@ -46,8 +46,10 @@
     "beans_grams_per_shot": 18
   },
   "prepSchedule": {
-    "beforeOpening": ["Pull pastries from freezer to rack", "Bake croissants & cinnamon buns", "Set out display items"],
-    "midMorning": ["Check display levels — replenish from baked stock", "Start second bake if needed"],
-    "afternoon": ["Count remaining display items", "Prep freezer pull for tomorrow's close"]
-  }
+    "closing": ["Pull pastries from freezer for tomorrow (based on forecast)", "Place on rack to thaw overnight", "Mist pastries, add hot water tray for humidity"],
+    "opening": ["Arrange thawed pastries on display", "Bake croissants & cinnamon buns", "Count and message Manager with pastry counts"],
+    "midMorning": ["Check display levels — replenish from baked stock", "Start second bake if needed"]
+  },
+  "thawMethod": "overnight",
+  "thawNotes": "Pastries pulled from freezer at closing need overnight thaw on rack with humidity tray"
 }

@@ -4,6 +4,9 @@ on:
     - cron: '0 6 * * *'   # 6 AM UTC = 10 PM PST (after closing)
     - cron: '0 15 * * *'  # 3 PM UTC = 7 AM PST (before opening)
   workflow_dispatch: {}
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest

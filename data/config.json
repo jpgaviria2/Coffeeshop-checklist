@@ -2,14 +2,52 @@
   "thresholds": {
     "Cinnamon Bun": { "displayMin": 3, "freezerMin": 6 },
     "Banana Bread": { "displayMin": 2, "freezerMin": 4 },
-    "Ham & Cheese Croissant": { "displayMin": 4, "freezerMin": 8 },
+    "Ham and Cheese Croissant": { "displayMin": 4, "freezerMin": 8 },
     "Chocolate Croissant": { "displayMin": 3, "freezerMin": 6 },
     "Plain Croissant": { "displayMin": 2, "freezerMin": 4 },
-    "Lemon Loaf": { "displayMin": 2, "freezerMin": 4 }
+    "Lemon cake": { "displayMin": 2, "freezerMin": 4 },
+    "Cookie": { "displayMin": 3, "freezerMin": 6 },
+    "GF Mini Doughnut": { "displayMin": 2, "freezerMin": 4 },
+    "GF VEGAN brownie": { "displayMin": 1, "freezerMin": 3 },
+    "Gluten Free Cheddar Scone": { "displayMin": 1, "freezerMin": 3 },
+    "Spinach Feta Croissant": { "displayMin": 1, "freezerMin": 3 }
+  },
+  "recipes": {
+    "Latte": { "milk_ml": 240, "shots": 2 },
+    "Cappuccino": { "milk_ml": 180, "shots": 2 },
+    "Flat White": { "milk_ml": 160, "shots": 2 },
+    "Americano": { "milk_ml": 0, "shots": 2 },
+    "Iced Americano": { "milk_ml": 0, "shots": 2 },
+    "Mocha": { "milk_ml": 240, "shots": 2, "chocolate_oz": 1 },
+    "Cortado": { "milk_ml": 60, "shots": 2 },
+    "Macchiato": { "milk_ml": 30, "shots": 2 },
+    "Espresso": { "milk_ml": 0, "shots": 1 },
+    "Espresso (Double Shot)": { "milk_ml": 0, "shots": 2 },
+    "Iced Latte": { "milk_ml": 240, "shots": 2 },
+    "Hot Chocolate": { "milk_ml": 300, "shots": 0, "chocolate_oz": 2 },
+    "Chai Latte": { "milk_ml": 240, "shots": 0 },
+    "London Fog Latte": { "milk_ml": 240, "shots": 0 },
+    "Steamed Milk": { "milk_ml": 300, "shots": 0 },
+    "Drip Coffee": { "milk_ml": 0, "shots": 0, "beans_g": 12 },
+    "Iced Coffee": { "milk_ml": 0, "shots": 0, "beans_g": 12 },
+    "Iced Vanilla Matcha": { "milk_ml": 240, "shots": 0 },
+    "Vanilla Matcha": { "milk_ml": 240, "shots": 0 },
+    "Hot Pure Matcha": { "milk_ml": 0, "shots": 0 },
+    "Iced Pure Matcha": { "milk_ml": 0, "shots": 0 }
+  },
+  "ingredients": {
+    "beans_per_shot_g": 18,
+    "milk_jug_liters": 4,
+    "beans_per_5lb_bag_g": 2268
   },
   "supplies": {
     "milk_liters_per_latte": 0.24,
     "milk_liters_per_cappuccino": 0.18,
     "beans_grams_per_shot": 18
+  },
+  "prepSchedule": {
+    "beforeOpening": ["Pull pastries from freezer to rack", "Bake croissants & cinnamon buns", "Set out display items"],
+    "midMorning": ["Check display levels — replenish from baked stock", "Start second bake if needed"],
+    "afternoon": ["Count remaining display items", "Prep freezer pull for tomorrow's close"]
   }
 }

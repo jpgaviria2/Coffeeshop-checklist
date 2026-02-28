@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Prep List — Trails Coffee</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+        .nav-bar { display: flex; background: #f8f9fa; border-bottom: 2px solid #e0e0e0; }
+        .nav-bar a { flex: 1; min-width: 0; padding: 10px 4px; text-align: center; text-decoration: none; color: #666; font-weight: 600; font-size: 12px; }
+        .nav-bar a.active { color: #667eea; border-bottom: 3px solid #667eea; background: white; }
+        .container { max-width: 600px; margin: 0 auto; padding: 12px; }
+        h1 { font-size: 20px; margin-bottom: 4px; }
+        .subtitle { font-size: 13px; color: #999; margin-bottom: 12px; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h2 { font-size: 15px; color: #667eea; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .card h3 { font-size: 13px; color: #999; margin: 12px 0 6px; text-transform: uppercase; }
+
+        .alert { padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; font-size: 13px; line-height: 1.4; }
+        .alert-freezer { background: #e3f2fd; border-left: 4px solid #2196f3; }
+        .alert-hot { background: #fff3e0; border-left: 4px solid #ff9800; }
+        .alert-warn { background: #fce4ec; border-left: 4px solid #e91e63; }
+        .alert-ok { background: #e8f5e9; border-left: 4px solid #4caf50; }
+
+        .prep-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .prep-item:last-child { border-bottom: none; }
+        .prep-name { font-size: 14px; font-weight: 600; }
+        .prep-detail { font-size: 12px; color: #888; margin-top: 2px; }
+        .prep-qty { text-align: right; }
+        .prep-qty .big { font-size: 20px; font-weight: 700; color: #667eea; }
+        .prep-qty .unit { font-size: 11px; color: #999; }
+
+        .supply-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .supply-row:last-child { border-bottom: none; }
+        .supply-val { font-weight: 700; }
+        .supply-sub { font-size: 12px; color: #999; }
+
+        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .week-cell { text-align: center; padding: 6px 2px; background: #f8f9fa; border-radius: 6px; font-size: 11px; }
+        .week-cell .day { font-weight: 600; color: #667eea; }
+        .week-cell .count { font-size: 14px; font-weight: 700; margin: 2px 0; }
+        .week-cell.today { background: #e8ebf7; border: 2px solid #667eea; }
+
+        .time-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .time-before { background: #e3f2fd; color: #1565c0; }
+        .time-mid { background: #fff8e1; color: #f57f17; }
+        .time-after { background: #f3e5f5; color: #7b1fa2; }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: #999; }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .updated { text-align: center; font-size: 11px; color: #bbb; margin-top: 16px; }
+
+        .tab-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+        .tab-bar button { flex: 1; padding: 10px; border: 2px solid #e0e0e0; background: white; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .tab-bar button.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="index.html">📋 Checklists</a>
+        <a href="status.html">📊 Status</a>
+        <a href="procedures.html">📖 Procs</a>
+        <a href="prep.html" class="active">📝 Prep</a>
+        <a href="dashboard.html">📈 Dash</a>
+    </div>
+    <div class="container">
+        <h1>📝 Today's Prep List</h1>
+        <div class="subtitle" id="dateLabel"></div>
+
+        <div class="tab-bar">
+            <button class="active" id="tabToday" onclick="showTab('today')">Today</button>
+            <button id="tabWeek" onclick="showTab('week')">Week</button>
+            <button id="tabSupplies" onclick="showTab('supplies')">Supplies</button>
+        </div>
+
+        <div id="todayView"></div>
+        <div id="weekView" style="display:none;"></div>
+        <div id="suppliesView" style="display:none;"></div>
+
+        <div class="updated" id="updated"></div>
+    </div>
+    <script src="prep.js"></script>
+</body>
+</html>

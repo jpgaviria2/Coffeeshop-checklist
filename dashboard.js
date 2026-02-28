@@ -39,16 +39,36 @@
     const todayFc = forecast.forecast?.[today()];
     if (!todayFc || todayFc.noData) return '';
 
-    let html = '';
+    const bakeable = ['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant'];
+    let freezerAlerts = '';
+    let hotAlerts = '';
+
     for (const [item, thresh] of Object.entries(config.thresholds)) {
       const predicted = todayFc.items?.[item]?.predicted || 0;
-      if (predicted > 0 && predicted >= thresh.freezerMin) {
-        html += `<div class="alert danger">⚠️ <strong>${item}</strong>: predicted ${predicted} today — ensure ${thresh.freezerMin}+ in freezer</div>`;
-      } else if (predicted > 0 && predicted >= thresh.displayMin) {
-        html += `<div class="alert">📋 <strong>${item}</strong>: predicted ${predicted} — have ${thresh.displayMin}+ on display</div>`;
+      if (predicted === 0) continue;
+
+      const totalNeeded = predicted + thresh.displayMin;
+      const pullFromFreezer = Math.max(0, Math.ceil(totalNeeded * 0.6));
+
+      if (pullFromFreezer > 0) {
+        const action = bakeable.includes(item) ? '🧊→🍞' : '🧊';
+        const time = bakeable.includes(item) ? 'before 8 AM' : 'this morning';
+        freezerAlerts += `<div class="alert">${action} Pull <strong>${pullFromFreezer} ${item}</strong> from freezer ${time}</div>`;
+      }
+
+      if (predicted >= thresh.freezerMin) {
+        hotAlerts += `<div class="alert danger">🔥 <strong>${item}</strong> selling fast — predicted ${predicted} today, ensure ${thresh.displayMin}+ on display</div>`;
       }
     }
-    return html ? `<div class="card"><h2>🚨 Inventory Alerts</h2>${html}</div>` : '';
+
+    let html = '';
+    if (freezerAlerts || hotAlerts) {
+      html = `<div class="card"><h2>🚨 Prep Alerts</h2>`;
+      html += freezerAlerts + hotAlerts;
+      html += `<div style="text-align:center;margin-top:8px;"><a href="prep.html" style="color:#667eea;font-weight:600;font-size:13px;">📝 Open Full Prep List →</a></div>`;
+      html += '</div>';
+    }
+    return html;
   }
 
   function renderForecastToday(forecast) {

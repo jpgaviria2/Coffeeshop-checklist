@@ -151,6 +151,8 @@ function showChecklist(type) {
         document.getElementById('checklistTitle').textContent = 'Inventory Handover';
         document.getElementById('inventoryBtn').classList.add('active');
         document.getElementById('inventoryChecklist').style.display = 'block';
+        // Show predicted usage hints
+        loadInventoryPredictions();
     }
     
     // Scroll to checklist
@@ -162,6 +164,46 @@ function closeChecklist() {
     document.getElementById('checklistSection').style.display = 'none';
     document.getElementById('quickActions').style.display = 'flex';
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Load forecast predictions into inventory form
+async function loadInventoryPredictions() {
+    try {
+        const res = await fetch('data/forecast.json');
+        if (!res.ok) return;
+        const fcData = await res.json();
+        const todayKey = new Date().toISOString().substring(0, 10);
+        const todayFc = fcData.forecast?.[todayKey];
+        if (!todayFc) return;
+
+        // Add prediction hints to pastry section
+        const hints = {
+            'inv-ham-cheese': 'Ham and Cheese Croissant',
+            'inv-chocolate': 'Chocolate Croissant',
+            'inv-plain': 'Plain Croissant',
+            'inv-banana-bread': 'Banana Bread',
+            'inv-lemon-loaf': 'Lemon cake',
+            'inv-cinnamon-buns': 'Cinnamon Bun'
+        };
+
+        for (const [inputId, fcName] of Object.entries(hints)) {
+            const input = document.getElementById(inputId);
+            if (!input) continue;
+            const predicted = todayFc.items?.[fcName]?.predicted || 0;
+            const item = input.closest('.inventory-item');
+            if (!item) continue;
+            // Remove existing hint
+            const existing = item.querySelector('.pred-hint');
+            if (existing) existing.remove();
+            if (predicted > 0) {
+                const hint = document.createElement('span');
+                hint.className = 'pred-hint';
+                hint.style.cssText = 'font-size:11px;color:#667eea;display:block;margin-top:2px;';
+                hint.textContent = `📊 ~${predicted} predicted today`;
+                item.querySelector('label').appendChild(hint);
+            }
+        }
+    } catch (e) { /* optional enhancement */ }
 }
 
 // Login with nsec
@@ -299,10 +341,39 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             }
         };
         
+        // Calculate variance from forecast predictions
+        let varianceData = null;
+        try {
+          const fcRes = await fetch('data/forecast.json');
+          if (fcRes.ok) {
+            const fcData = await fcRes.json();
+            const todayKey = new Date().toISOString().substring(0, 10);
+            const todayFc = fcData.forecast?.[todayKey];
+            if (todayFc) {
+              varianceData = {
+                predictedSales: {},
+                date: todayKey
+              };
+              const pastryMap = {
+                'hamCheese': 'Ham and Cheese Croissant',
+                'chocolate': 'Chocolate Croissant',
+                'plain': 'Plain Croissant',
+                'bananaBread': 'Banana Bread',
+                'lemonLoaf': 'Lemon cake',
+                'cinnamonBuns': 'Cinnamon Bun'
+              };
+              for (const [key, fcName] of Object.entries(pastryMap)) {
+                varianceData.predictedSales[key] = todayFc.items?.[fcName]?.predicted || 0;
+              }
+            }
+          }
+        } catch (e) { /* variance is optional */ }
+
         contentData = {
             checklist: 'inventory',
             timestamp: new Date().toISOString(),
-            inventory: inventoryData
+            inventory: inventoryData,
+            variance: varianceData
         };
         
     } else {

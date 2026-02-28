@@ -9,7 +9,7 @@
 
   async function fetchJSON(path) {
     try {
-      const res = await fetch(`${BASE}/${path}`);
+      const res = await fetch(path);
       if (!res.ok) return null;
       return await res.json();
     } catch { return null; }

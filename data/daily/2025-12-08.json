@@ -1,0 +1,33 @@
+{
+  "date": "2025-12-08",
+  "orderCount": 6,
+  "totalRevenue": 185.85,
+  "items": [
+    {
+      "name": "Coffee Beans Holiday Blend",
+      "variations": {
+        "1LB": 6
+      },
+      "quantity": 6,
+      "revenue": 180
+    }
+  ],
+  "byHour": {
+    "0": {
+      "orders": 1,
+      "revenue": 31.5
+    },
+    "1": {
+      "orders": 1,
+      "revenue": 31.5
+    },
+    "2": {
+      "orders": 3,
+      "revenue": 91.35
+    },
+    "3": {
+      "orders": 1,
+      "revenue": 31.5
+    }
+  }
+}

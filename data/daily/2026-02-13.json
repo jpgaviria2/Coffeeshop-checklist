@@ -1,0 +1,229 @@
+{
+  "date": "2026-02-13",
+  "orderCount": 42,
+  "totalRevenue": 445.54,
+  "items": [
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Large": 5,
+        "Medium": 11
+      },
+      "quantity": 16,
+      "revenue": 59.25
+    },
+    {
+      "name": "Latte",
+      "variations": {
+        "Large": 5,
+        "Medium": 5
+      },
+      "quantity": 10,
+      "revenue": 51.25
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 2,
+        "Large": 3
+      },
+      "quantity": 5,
+      "revenue": 24.25
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 20
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 14
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 18
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Medium": 4
+      },
+      "quantity": 4,
+      "revenue": 20
+    },
+    {
+      "name": "eGift Card",
+      "variations": {},
+      "quantity": 3,
+      "revenue": 30
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 13.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 1,
+        "Vanilla Glazed": 2
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 15
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 18.25
+    },
+    {
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 13.5
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 18
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.9
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 5.75
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.25
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.75
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 5.65
+    },
+    {
+      "name": "Hot Tea",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Caprese Panini",
+      "variations": {
+        "Half": 1
+      },
+      "quantity": 1,
+      "revenue": 9
+    },
+    {
+      "name": "Iced Pure Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 6
+    }
+  ],
+  "byHour": {
+    "6": {
+      "orders": 3,
+      "revenue": 30
+    },
+    "16": {
+      "orders": 7,
+      "revenue": 68.33999999999999
+    },
+    "17": {
+      "orders": 9,
+      "revenue": 74.30000000000001
+    },
+    "18": {
+      "orders": 5,
+      "revenue": 56.239999999999995
+    },
+    "20": {
+      "orders": 4,
+      "revenue": 35.34
+    },
+    "21": {
+      "orders": 3,
+      "revenue": 46.16
+    },
+    "22": {
+      "orders": 6,
+      "revenue": 64.48
+    },
+    "23": {
+      "orders": 5,
+      "revenue": 70.68
+    }
+  }
+}

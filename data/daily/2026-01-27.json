@@ -1,0 +1,199 @@
+{
+  "date": "2026-01-27",
+  "orderCount": 29,
+  "totalRevenue": 326.35,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Medium": 8,
+        "Regular": 1
+      },
+      "quantity": 9,
+      "revenue": 45
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Medium": 4,
+        "Regular": 1
+      },
+      "quantity": 5,
+      "revenue": 18.75
+    },
+    {
+      "name": "Vegan Gluten Free Chocolate Chunk Banana Muffin",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 19
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Kids": 3
+      },
+      "quantity": 3,
+      "revenue": 10.5
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 3
+      },
+      "quantity": 3,
+      "revenue": 17.25
+    },
+    {
+      "name": "Gluten Free Cheddar Scone",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 3
+      },
+      "quantity": 3,
+      "revenue": 12.75
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12
+    },
+    {
+      "name": "Caprese Panini",
+      "variations": {
+        "Half": 3
+      },
+      "quantity": 3,
+      "revenue": 22.5
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.5
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 10.5
+    },
+    {
+      "name": "Salami & Provolone",
+      "variations": {
+        "Half": 2
+      },
+      "quantity": 2,
+      "revenue": 16
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Vanilla Glazed": 1
+      },
+      "quantity": 1,
+      "revenue": 5.5
+    },
+    {
+      "name": "Yogurt and Granola Bowl",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 6.5
+    },
+    {
+      "name": "Iced Americano",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.5
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.25
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.5
+    },
+    {
+      "name": "Buntzen Blend // Signature House Blend",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 30
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.25
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 4.5
+    }
+  ],
+  "byHour": {
+    "16": {
+      "orders": 2,
+      "revenue": 22.619999999999997
+    },
+    "17": {
+      "orders": 6,
+      "revenue": 58.32
+    },
+    "18": {
+      "orders": 3,
+      "revenue": 46.89
+    },
+    "19": {
+      "orders": 2,
+      "revenue": 14.969999999999999
+    },
+    "20": {
+      "orders": 10,
+      "revenue": 119.73000000000002
+    },
+    "21": {
+      "orders": 5,
+      "revenue": 59.12
+    },
+    "23": {
+      "orders": 1,
+      "revenue": 4.7
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "date": "2025-12-10",
+  "orderCount": 3,
+  "totalRevenue": 328.5,
+  "items": [
+    {
+      "name": "Coffee Beans Holiday Blend (Friends and Family)",
+      "variations": {
+        "1LB": 7
+      },
+      "quantity": 7,
+      "revenue": 178.5
+    },
+    {
+      "name": "Coffee Beans Holiday Blend",
+      "variations": {
+        "1LB": 5
+      },
+      "quantity": 5,
+      "revenue": 150
+    }
+  ],
+  "byHour": {
+    "3": {
+      "orders": 3,
+      "revenue": 328.5
+    }
+  }
+}

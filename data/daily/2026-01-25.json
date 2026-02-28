@@ -1,0 +1,33 @@
+{
+  "date": "2026-01-25",
+  "orderCount": 8,
+  "totalRevenue": 8,
+  "items": [
+    {
+      "name": "test reward",
+      "variations": {
+        "$1.00": 8
+      },
+      "quantity": 8,
+      "revenue": 8
+    }
+  ],
+  "byHour": {
+    "0": {
+      "orders": 1,
+      "revenue": 1
+    },
+    "1": {
+      "orders": 4,
+      "revenue": 4
+    },
+    "2": {
+      "orders": 2,
+      "revenue": 2
+    },
+    "18": {
+      "orders": 1,
+      "revenue": 1
+    }
+  }
+}

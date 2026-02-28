@@ -1,0 +1,301 @@
+{
+  "date": "2026-02-16",
+  "orderCount": 89,
+  "totalRevenue": 1251.78,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Medium": 13,
+        "Large": 12
+      },
+      "quantity": 25,
+      "revenue": 130.5
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Medium": 10,
+        "Large": 6
+      },
+      "quantity": 16,
+      "revenue": 59
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 15
+      },
+      "quantity": 15,
+      "revenue": 69.75
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 15
+      },
+      "quantity": 15,
+      "revenue": 75
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 10,
+        "Large": 2
+      },
+      "quantity": 12,
+      "revenue": 52.5
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 12
+      },
+      "quantity": 12,
+      "revenue": 50
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 11
+      },
+      "quantity": 11,
+      "revenue": 43.45
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Large": 3,
+        "Medium": 8
+      },
+      "quantity": 11,
+      "revenue": 60.75
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 5,
+        "Large": 4
+      },
+      "quantity": 9,
+      "revenue": 48
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 2,
+        "Medium": 7
+      },
+      "quantity": 9,
+      "revenue": 42.25
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 8
+      },
+      "quantity": 8,
+      "revenue": 36
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 7,
+        "Large": 1
+      },
+      "quantity": 8,
+      "revenue": 46.5
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Medium 12oz": 8
+      },
+      "quantity": 8,
+      "revenue": 40
+    },
+    {
+      "name": "Caprese Panini",
+      "variations": {
+        "Half": 7
+      },
+      "quantity": 7,
+      "revenue": 67.5
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "kids": 3,
+        "Medium": 3
+      },
+      "quantity": 6,
+      "revenue": 24.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Vanilla Glazed": 5,
+        "Cream Cheese Icing": 1
+      },
+      "quantity": 6,
+      "revenue": 33
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Medium": 3,
+        "Large": 2
+      },
+      "quantity": 5,
+      "revenue": 22.75
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 2,
+        "Small": 2
+      },
+      "quantity": 5,
+      "revenue": 28
+    },
+    {
+      "name": "Vegan Gluten Free Everything Bagel",
+      "variations": {
+        "with Cream Cheese": 4
+      },
+      "quantity": 4,
+      "revenue": 20
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Medium": 4
+      },
+      "quantity": 4,
+      "revenue": 23.25
+    },
+    {
+      "name": "Water Bottle",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 7.5
+    },
+    {
+      "name": "GF VEGAN brownie",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12.75
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 10.5
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 10
+    },
+    {
+      "name": "Steamed Milk",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8.25
+    },
+    {
+      "name": "Yogurt and Granola Bowl",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 13.75
+    },
+    {
+      "name": "Ceramics cup",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 10
+    },
+    {
+      "name": "Ceramics vase ",
+      "variations": {
+        "Small": 1
+      },
+      "quantity": 1,
+      "revenue": 15
+    },
+    {
+      "name": "Iced Coffee",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    },
+    {
+      "name": "Bagel",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 4.75
+    },
+    {
+      "name": "Iced Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    }
+  ],
+  "byHour": {
+    "16": {
+      "orders": 2,
+      "revenue": 26.77
+    },
+    "17": {
+      "orders": 6,
+      "revenue": 75.93
+    },
+    "18": {
+      "orders": 15,
+      "revenue": 202.1
+    },
+    "19": {
+      "orders": 16,
+      "revenue": 317.45
+    },
+    "20": {
+      "orders": 15,
+      "revenue": 186.30999999999995
+    },
+    "21": {
+      "orders": 17,
+      "revenue": 208.48
+    },
+    "22": {
+      "orders": 14,
+      "revenue": 175.5
+    },
+    "23": {
+      "orders": 4,
+      "revenue": 59.239999999999995
+    }
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "date": "2026-02-07",
+  "orderCount": 56,
+  "totalRevenue": 738.06,
+  "items": [
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Medium": 15,
+        "Large": 3
+      },
+      "quantity": 18,
+      "revenue": 65.25
+    },
+    {
+      "name": "Latte",
+      "variations": {
+        "Large": 8,
+        "Medium": 7
+      },
+      "quantity": 15,
+      "revenue": 77.5
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 10
+      },
+      "quantity": 10,
+      "revenue": 50
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 7,
+        "Large": 2
+      },
+      "quantity": 9,
+      "revenue": 41.5
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 9
+      },
+      "quantity": 9,
+      "revenue": 40.5
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 2,
+        "Medium": 5
+      },
+      "quantity": 7,
+      "revenue": 34
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 35
+    },
+    {
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 27
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Medium": 5
+      },
+      "quantity": 5,
+      "revenue": 24.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 5
+      },
+      "quantity": 5,
+      "revenue": 27.5
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 16
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 15
+    },
+    {
+      "name": "Espresso",
+      "variations": {
+        "Single Shot": 2,
+        "Double Shot": 1
+      },
+      "quantity": 3,
+      "revenue": 8.5
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 9.75
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Gluten Free Cheddar Scone",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 10.5
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 10.5
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 2
+      },
+      "quantity": 2,
+      "revenue": 60
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 5.65
+    },
+    {
+      "name": "Iced Pure Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.25
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "250g": 1
+      },
+      "quantity": 1,
+      "revenue": 8
+    },
+    {
+      "name": "Granola",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 9
+    },
+    {
+      "name": "Yogurt and Granola Bowl",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 7.25
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 5.5
+    }
+  ],
+  "byHour": {
+    "0": {
+      "orders": 2,
+      "revenue": 34.33
+    },
+    "16": {
+      "orders": 5,
+      "revenue": 33.36
+    },
+    "17": {
+      "orders": 9,
+      "revenue": 122.56
+    },
+    "18": {
+      "orders": 9,
+      "revenue": 110.44
+    },
+    "19": {
+      "orders": 11,
+      "revenue": 181.62
+    },
+    "20": {
+      "orders": 8,
+      "revenue": 123.34
+    },
+    "21": {
+      "orders": 6,
+      "revenue": 67.35
+    },
+    "22": {
+      "orders": 3,
+      "revenue": 40.21
+    },
+    "23": {
+      "orders": 3,
+      "revenue": 24.849999999999998
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "date": "2025-12-12",
+  "orderCount": 2,
+  "totalRevenue": 55.92,
+  "items": [
+    {
+      "name": "Coffee Beans Holiday Blend",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 30
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 28.8
+    }
+  ],
+  "byHour": {
+    "18": {
+      "orders": 2,
+      "revenue": 55.92
+    }
+  }
+}

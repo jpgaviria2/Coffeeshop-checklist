@@ -1,0 +1,19 @@
+{
+  "date": "2025-12-21",
+  "orderCount": 2,
+  "totalRevenue": 2.1,
+  "items": [
+    {
+      "name": "Unknown",
+      "variations": {},
+      "quantity": 2,
+      "revenue": 2
+    }
+  ],
+  "byHour": {
+    "18": {
+      "orders": 2,
+      "revenue": 2.1
+    }
+  }
+}

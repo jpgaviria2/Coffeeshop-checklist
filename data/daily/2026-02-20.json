@@ -1,0 +1,287 @@
+{
+  "date": "2026-02-20",
+  "orderCount": 56,
+  "totalRevenue": 780.57,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Large": 9,
+        "Medium": 13
+      },
+      "quantity": 22,
+      "revenue": 108.75
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 17
+      },
+      "quantity": 17,
+      "revenue": 85
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 12
+      },
+      "quantity": 12,
+      "revenue": 63
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Medium": 8,
+        "kids": 1
+      },
+      "quantity": 9,
+      "revenue": 41.5
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 22.75
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 31.5
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 5,
+        "Medium": 2
+      },
+      "quantity": 7,
+      "revenue": 37.75
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Medium": 6,
+        "Large": 1
+      },
+      "quantity": 7,
+      "revenue": 25
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 4,
+        "Large": 2
+      },
+      "quantity": 6,
+      "revenue": 27
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Large": 2,
+        "Medium": 2
+      },
+      "quantity": 4,
+      "revenue": 23.25
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 16
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 13.5
+    },
+    {
+      "name": "GF VEGAN brownie",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8.5
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.75
+    },
+    {
+      "name": "Trails Coffee T-Shirt",
+      "variations": {
+        "Green": 1,
+        "Tan": 1
+      },
+      "quantity": 2,
+      "revenue": 50
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 1,
+        "Large": 1
+      },
+      "quantity": 2,
+      "revenue": 12
+    },
+    {
+      "name": "Yogurt and Granola Bowl",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 13
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.9
+    },
+    {
+      "name": "Caprese Panini",
+      "variations": {
+        "Half": 2
+      },
+      "quantity": 2,
+      "revenue": 15.75
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Large": 1,
+        "Medium": 1
+      },
+      "quantity": 2,
+      "revenue": 10.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 2
+      },
+      "quantity": 2,
+      "revenue": 11
+    },
+    {
+      "name": "Iced Pure Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.25
+    },
+    {
+      "name": "Water Bottle",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 2.5
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Medium 12oz": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "250g": 1
+      },
+      "quantity": 1,
+      "revenue": 9
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 6.5
+    },
+    {
+      "name": "Iced Americano",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Hot Tea",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    }
+  ],
+  "byHour": {
+    "15": {
+      "orders": 1,
+      "revenue": 64.58
+    },
+    "16": {
+      "orders": 8,
+      "revenue": 98.07
+    },
+    "17": {
+      "orders": 11,
+      "revenue": 188.42
+    },
+    "18": {
+      "orders": 3,
+      "revenue": 44.019999999999996
+    },
+    "19": {
+      "orders": 6,
+      "revenue": 81.88
+    },
+    "20": {
+      "orders": 6,
+      "revenue": 56.760000000000005
+    },
+    "21": {
+      "orders": 6,
+      "revenue": 69.47
+    },
+    "22": {
+      "orders": 5,
+      "revenue": 49.89
+    },
+    "23": {
+      "orders": 10,
+      "revenue": 127.47999999999999
+    }
+  }
+}

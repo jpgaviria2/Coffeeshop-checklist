@@ -1,0 +1,320 @@
+{
+  "date": "2026-02-14",
+  "orderCount": 91,
+  "totalRevenue": 1232.28,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Large": 12,
+        "Medium": 10
+      },
+      "quantity": 22,
+      "revenue": 113.25
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 10,
+        "Large": 4
+      },
+      "quantity": 14,
+      "revenue": 63.25
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 7,
+        "Large": 5
+      },
+      "quantity": 12,
+      "revenue": 69.75
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 9
+      },
+      "quantity": 10,
+      "revenue": 50
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Large": 3,
+        "Medium": 7
+      },
+      "quantity": 10,
+      "revenue": 37.25
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Large": 3,
+        "Medium": 6
+      },
+      "quantity": 9,
+      "revenue": 46.5
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 9
+      },
+      "quantity": 9,
+      "revenue": 29.25
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 8
+      },
+      "quantity": 8,
+      "revenue": 32
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Medium": 6,
+        "kids": 2
+      },
+      "quantity": 8,
+      "revenue": 35
+    },
+    {
+      "name": "Iced Vanilla Matcha",
+      "variations": {
+        "Medium": 8
+      },
+      "quantity": 8,
+      "revenue": 34.5
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 2,
+        "Medium": 6
+      },
+      "quantity": 8,
+      "revenue": 45
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 8
+      },
+      "quantity": 8,
+      "revenue": 36.75
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 7,
+      "revenue": 24.5
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 1,
+        "Medium": 6
+      },
+      "quantity": 7,
+      "revenue": 32.75
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 30
+    },
+    {
+      "name": "GF VEGAN brownie",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 25.5
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 27
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 33.150000000000006
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 5,
+      "revenue": 19.75
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Medium": 3,
+        "Large": 2
+      },
+      "quantity": 5,
+      "revenue": 30
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 4,
+        "Vanilla Glazed": 1
+      },
+      "quantity": 5,
+      "revenue": 27.5
+    },
+    {
+      "name": "Espresso",
+      "variations": {
+        "Single Shot": 2,
+        "Double Shot": 2
+      },
+      "quantity": 4,
+      "revenue": 12
+    },
+    {
+      "name": "Iced Pure Matcha",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Large": 2,
+        "Medium": 1
+      },
+      "quantity": 3,
+      "revenue": 16
+    },
+    {
+      "name": "Steamed Milk",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.5
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 28.8
+    },
+    {
+      "name": "Espresso (Double Shot)",
+      "variations": {},
+      "quantity": 1,
+      "revenue": 3.5
+    },
+    {
+      "name": "Anne",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 110
+    },
+    {
+      "name": "Box Mini Doughnuts 4",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 20
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Iced Americano",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Kids Juice Box",
+      "variations": {
+        "Kids": 1
+      },
+      "quantity": 1,
+      "revenue": 2
+    }
+  ],
+  "byHour": {
+    "1": {
+      "orders": 3,
+      "revenue": 41.870000000000005
+    },
+    "2": {
+      "orders": 1,
+      "revenue": 0
+    },
+    "3": {
+      "orders": 1,
+      "revenue": 0
+    },
+    "16": {
+      "orders": 1,
+      "revenue": 7.04
+    },
+    "17": {
+      "orders": 12,
+      "revenue": 256.88
+    },
+    "18": {
+      "orders": 11,
+      "revenue": 188.12
+    },
+    "19": {
+      "orders": 12,
+      "revenue": 223.7
+    },
+    "20": {
+      "orders": 15,
+      "revenue": 152.34
+    },
+    "21": {
+      "orders": 15,
+      "revenue": 165.76999999999995
+    },
+    "22": {
+      "orders": 9,
+      "revenue": 98.45000000000002
+    },
+    "23": {
+      "orders": 11,
+      "revenue": 98.11000000000001
+    }
+  }
+}

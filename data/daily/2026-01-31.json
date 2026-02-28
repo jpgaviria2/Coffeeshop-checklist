@@ -1,0 +1,230 @@
+{
+  "date": "2026-01-31",
+  "orderCount": 53,
+  "totalRevenue": 885.66,
+  "items": [
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Kids": 21,
+        "Medium": 1,
+        "Large": 1
+      },
+      "quantity": 23,
+      "revenue": 94.25
+    },
+    {
+      "name": "Latte",
+      "variations": {
+        "Regular": 2,
+        "Medium": 12,
+        "Large": 5
+      },
+      "quantity": 19,
+      "revenue": 97
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 13,
+        "Large": 5
+      },
+      "quantity": 18,
+      "revenue": 81
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 8
+      },
+      "quantity": 8,
+      "revenue": 40
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Medium": 4,
+        "Large": 3
+      },
+      "quantity": 7,
+      "revenue": 33.75
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 23.25
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 20
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 3,
+        "Large": 1
+      },
+      "quantity": 4,
+      "revenue": 22.5
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Medium": 3,
+        "Large": 1
+      },
+      "quantity": 4,
+      "revenue": 21.75
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 16
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Medium": 4
+      },
+      "quantity": 4,
+      "revenue": 18.5
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 4
+      },
+      "quantity": 4,
+      "revenue": 120
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 10.5
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Large": 1,
+        "Medium": 1
+      },
+      "quantity": 2,
+      "revenue": 11
+    },
+    {
+      "name": "Trails Coffee Hat",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 30
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "250g": 2
+      },
+      "quantity": 2,
+      "revenue": 16
+    },
+    {
+      "name": "Iced Tea",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 8.5
+    },
+    {
+      "name": "Espresso",
+      "variations": {
+        "Single Shot": 1
+      },
+      "quantity": 1,
+      "revenue": 2.5
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.25
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 3.5
+    },
+    {
+      "name": "Iced Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Trails Coffee T-Shirt",
+      "variations": {
+        "Tan": 1
+      },
+      "quantity": 1,
+      "revenue": 25
+    },
+    {
+      "name": "Granola",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 9
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5.75
+    }
+  ],
+  "byHour": {
+    "17": {
+      "orders": 2,
+      "revenue": 35.07
+    },
+    "18": {
+      "orders": 18,
+      "revenue": 271.40000000000003
+    },
+    "19": {
+      "orders": 26,
+      "revenue": 492.86
+    },
+    "20": {
+      "orders": 6,
+      "revenue": 38.629999999999995
+    },
+    "21": {
+      "orders": 1,
+      "revenue": 47.7
+    }
+  }
+}

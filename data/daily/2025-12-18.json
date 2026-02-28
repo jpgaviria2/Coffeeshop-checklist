@@ -1,0 +1,12 @@
+{
+  "date": "2025-12-18",
+  "orderCount": 1,
+  "totalRevenue": 0,
+  "items": [],
+  "byHour": {
+    "6": {
+      "orders": 1,
+      "revenue": 0
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "date": "2025-12-07",
+  "orderCount": 1,
+  "totalRevenue": 5.25,
+  "items": [
+    {
+      "name": "Give to PAC 100% pass through ",
+      "variations": {
+        "5": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    }
+  ],
+  "byHour": {
+    "21": {
+      "orders": 1,
+      "revenue": 5.25
+    }
+  }
+}

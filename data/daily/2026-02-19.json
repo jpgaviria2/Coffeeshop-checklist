@@ -1,0 +1,233 @@
+{
+  "date": "2026-02-19",
+  "orderCount": 53,
+  "totalRevenue": 673.21,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Large": 9,
+        "Medium": 8
+      },
+      "quantity": 17,
+      "revenue": 89.25
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 36.5
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 31.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 6,
+        "Vanilla Glazed": 1
+      },
+      "quantity": 7,
+      "revenue": 38.5
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Large": 2,
+        "Medium": 4
+      },
+      "quantity": 6,
+      "revenue": 22
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Medium": 5,
+        "Large": 1
+      },
+      "quantity": 6,
+      "revenue": 28.25
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 19.5
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Medium": 4,
+        "Large": 2
+      },
+      "quantity": 6,
+      "revenue": 34.5
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 25
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 3,
+        "Large": 1
+      },
+      "quantity": 4,
+      "revenue": 21.75
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 3,
+        "Large": 1
+      },
+      "quantity": 4,
+      "revenue": 21
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Large": 1,
+        "Medium": 3
+      },
+      "quantity": 4,
+      "revenue": 17.75
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Large": 2,
+        "Medium": 1,
+        "kids": 1
+      },
+      "quantity": 4,
+      "revenue": 19
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12
+    },
+    {
+      "name": "Caprese Panini",
+      "variations": {
+        "Half": 3
+      },
+      "quantity": 3,
+      "revenue": 25.5
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 11.850000000000001
+    },
+    {
+      "name": "Sourdough Bread",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 14
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 9
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Medium 12oz": 1,
+        "Large 16oz": 1
+      },
+      "quantity": 2,
+      "revenue": 12
+    },
+    {
+      "name": "Trails Coffee T-Shirt",
+      "variations": {
+        "Green": 1,
+        "Tan": 1
+      },
+      "quantity": 2,
+      "revenue": 50
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.5
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 30
+    }
+  ],
+  "byHour": {
+    "0": {
+      "orders": 1,
+      "revenue": 6.25
+    },
+    "16": {
+      "orders": 2,
+      "revenue": 10.71
+    },
+    "17": {
+      "orders": 6,
+      "revenue": 62.989999999999995
+    },
+    "18": {
+      "orders": 1,
+      "revenue": 22.12
+    },
+    "19": {
+      "orders": 10,
+      "revenue": 141.32
+    },
+    "20": {
+      "orders": 8,
+      "revenue": 117.69
+    },
+    "21": {
+      "orders": 7,
+      "revenue": 65.98
+    },
+    "22": {
+      "orders": 9,
+      "revenue": 82.46
+    },
+    "23": {
+      "orders": 9,
+      "revenue": 163.69
+    }
+  }
+}

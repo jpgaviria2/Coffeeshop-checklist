@@ -1,0 +1,198 @@
+{
+  "date": "2026-01-26",
+  "orderCount": 17,
+  "totalRevenue": 276.35,
+  "items": [
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 20
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Vanilla Glazed": 4
+      },
+      "quantity": 4,
+      "revenue": 22
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 13.5
+    },
+    {
+      "name": "Latte",
+      "variations": {
+        "Regular": 2,
+        "Medium": 1
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "250g": 2
+      },
+      "quantity": 2,
+      "revenue": 16
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Kids": 2
+      },
+      "quantity": 2,
+      "revenue": 7
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 11.25
+    },
+    {
+      "name": "Hot Tea",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 8.5
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 9.25
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 9
+    },
+    {
+      "name": "Salami & Provolone",
+      "variations": {
+        "Half": 2
+      },
+      "quantity": 2,
+      "revenue": 16
+    },
+    {
+      "name": "Iced Tea",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.75
+    },
+    {
+      "name": "Vegan Gluten Free Everything Bagel",
+      "variations": {
+        "Plain": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    },
+    {
+      "name": "Vegan Gluten Free Chocolate Chunk Banana Muffin",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Trails Coffee T-Shirt",
+      "variations": {
+        "Tan": 1
+      },
+      "quantity": 1,
+      "revenue": 25
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Gluten Free Cheddar Scone",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    }
+  ],
+  "byHour": {
+    "16": {
+      "orders": 1,
+      "revenue": 9.92
+    },
+    "17": {
+      "orders": 1,
+      "revenue": 21
+    },
+    "18": {
+      "orders": 5,
+      "revenue": 57.459999999999994
+    },
+    "19": {
+      "orders": 2,
+      "revenue": 26.78
+    },
+    "20": {
+      "orders": 5,
+      "revenue": 117.24000000000001
+    },
+    "21": {
+      "orders": 2,
+      "revenue": 38.75
+    },
+    "22": {
+      "orders": 1,
+      "revenue": 5.2
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "date": "2026-01-30",
+  "orderCount": 2,
+  "totalRevenue": 20.27,
+  "items": [
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 10.75
+    },
+    {
+      "name": "Latte",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.5
+    }
+  ],
+  "byHour": {
+    "17": {
+      "orders": 1,
+      "revenue": 6.72
+    },
+    "18": {
+      "orders": 1,
+      "revenue": 13.55
+    }
+  }
+}

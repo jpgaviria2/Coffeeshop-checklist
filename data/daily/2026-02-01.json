@@ -1,0 +1,317 @@
+{
+  "date": "2026-02-01",
+  "orderCount": 96,
+  "totalRevenue": 2149.1,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Medium": 13,
+        "Large": 6,
+        "Regular": 2
+      },
+      "quantity": 21,
+      "revenue": 109.5
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Kids": 11,
+        "Medium": 4
+      },
+      "quantity": 15,
+      "revenue": 57.25
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 11,
+        "Large": 3
+      },
+      "quantity": 14,
+      "revenue": 61.75
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Large": 4,
+        "Medium": 9
+      },
+      "quantity": 13,
+      "revenue": 47.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Vanilla Glazed": 12
+      },
+      "quantity": 12,
+      "revenue": 66
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 8,
+        "5LB": 3
+      },
+      "quantity": 11,
+      "revenue": 630
+    },
+    {
+      "name": "Coffee Beans (PAC)",
+      "variations": {
+        "1LB": 10
+      },
+      "quantity": 10,
+      "revenue": 300
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 5,
+        "Medium": 3
+      },
+      "quantity": 8,
+      "revenue": 39.25
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 24.5
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 22.75
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 30
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 27.75
+    },
+    {
+      "name": "Coffee Beans Holiday Blend (Friends and Family)",
+      "variations": {
+        "1LB": 6
+      },
+      "quantity": 6,
+      "revenue": 153
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 25
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 4,
+        "Large": 1
+      },
+      "quantity": 5,
+      "revenue": 29.25
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Small": 1,
+        "Medium": 3
+      },
+      "quantity": 4,
+      "revenue": 22
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 2,
+        "Large": 2
+      },
+      "quantity": 4,
+      "revenue": 22.5
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 16
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Large": 2,
+        "Medium": 2
+      },
+      "quantity": 4,
+      "revenue": 22.5
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "1LB": 4
+      },
+      "quantity": 4,
+      "revenue": 115.2
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 17.25
+    },
+    {
+      "name": "Gluten Free Cheddar Scone",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12
+    },
+    {
+      "name": "test reward",
+      "variations": {
+        "$1.00": 3
+      },
+      "quantity": 3,
+      "revenue": 3
+    },
+    {
+      "name": "Coffee Beans (Friends and Family)",
+      "variations": {
+        "1LB": 3
+      },
+      "quantity": 3,
+      "revenue": 81
+    },
+    {
+      "name": "Hot Tea",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 8.5
+    },
+    {
+      "name": "Coffee Beans Holiday Blend",
+      "variations": {
+        "1LB": 2
+      },
+      "quantity": 2,
+      "revenue": 60
+    },
+    {
+      "name": "Iced Coffee",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    },
+    {
+      "name": "Sourdough Bread ",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 6
+    },
+    {
+      "name": "Yogurt and Granola Bowl",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 6.5
+    },
+    {
+      "name": "Trails Coffee Hat",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 15
+    },
+    {
+      "name": "Iced Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Iced Tea",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Caprese Panini",
+      "variations": {
+        "Half": 1
+      },
+      "quantity": 1,
+      "revenue": 7.5
+    }
+  ],
+  "byHour": {
+    "15": {
+      "orders": 1,
+      "revenue": 3.7
+    },
+    "16": {
+      "orders": 2,
+      "revenue": 51.56
+    },
+    "17": {
+      "orders": 7,
+      "revenue": 112.31
+    },
+    "18": {
+      "orders": 14,
+      "revenue": 249.26
+    },
+    "19": {
+      "orders": 17,
+      "revenue": 218.80999999999997
+    },
+    "20": {
+      "orders": 8,
+      "revenue": 114.46000000000001
+    },
+    "21": {
+      "orders": 13,
+      "revenue": 192.56999999999994
+    },
+    "22": {
+      "orders": 34,
+      "revenue": 1206.43
+    }
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "date": "2026-02-11",
+  "orderCount": 73,
+  "totalRevenue": 863.67,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Medium": 10,
+        "Large": 12
+      },
+      "quantity": 22,
+      "revenue": 111.75
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 9,
+        "Large": 6
+      },
+      "quantity": 15,
+      "revenue": 69
+    },
+    {
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 15
+      },
+      "quantity": 15,
+      "revenue": 67.5
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 10
+      },
+      "quantity": 10,
+      "revenue": 40
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 9
+      },
+      "quantity": 9,
+      "revenue": 35.55
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Medium": 5,
+        "Large": 3
+      },
+      "quantity": 8,
+      "revenue": 29.5
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 35
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 7
+      },
+      "quantity": 7,
+      "revenue": 31.5
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Medium": 6
+      },
+      "quantity": 6,
+      "revenue": 27.75
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 27.75
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 4
+      },
+      "quantity": 5,
+      "revenue": 29.25
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "Medium": 5
+      },
+      "quantity": 5,
+      "revenue": 24
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 13
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 20
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Large": 1,
+        "Medium": 3
+      },
+      "quantity": 4,
+      "revenue": 23.25
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 15.450000000000001
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Medium": 3
+      },
+      "quantity": 3,
+      "revenue": 16.5
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.75
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Medium": 1,
+        "Large": 1
+      },
+      "quantity": 2,
+      "revenue": 11.25
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 10.5
+    },
+    {
+      "name": "Trails Coffee Hat",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 30
+    },
+    {
+      "name": "Iced Pure Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 6
+    },
+    {
+      "name": "test reward",
+      "variations": {
+        "$1.00": 1
+      },
+      "quantity": 1,
+      "revenue": 1
+    },
+    {
+      "name": "Vegan Gluten Free Everything Bagel",
+      "variations": {
+        "with Cream Cheese": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Hot Tea",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 5
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "250g": 1
+      },
+      "quantity": 1,
+      "revenue": 8
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 30
+    }
+  ],
+  "byHour": {
+    "0": {
+      "orders": 5,
+      "revenue": 46.39
+    },
+    "15": {
+      "orders": 2,
+      "revenue": 6.25
+    },
+    "16": {
+      "orders": 6,
+      "revenue": 70.00999999999999
+    },
+    "17": {
+      "orders": 15,
+      "revenue": 132.81
+    },
+    "18": {
+      "orders": 9,
+      "revenue": 103.97000000000001
+    },
+    "19": {
+      "orders": 6,
+      "revenue": 92.86999999999999
+    },
+    "20": {
+      "orders": 9,
+      "revenue": 85.42
+    },
+    "21": {
+      "orders": 2,
+      "revenue": 79.07
+    },
+    "22": {
+      "orders": 5,
+      "revenue": 69.92
+    },
+    "23": {
+      "orders": 14,
+      "revenue": 176.96
+    }
+  }
+}

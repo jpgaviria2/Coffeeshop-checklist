@@ -3,8 +3,9 @@
 
 const NostrTools = window.NostrTools;
 
-// Diana's nsec key
-const nsecKey = 'nsec1dghy0nxmz5l8xm0nfq3qlhk8xew54gvhvvjq3e6r5k9m8ps7x4sq8w2e9h';
+// PRIVATE KEY REMOVED — load from environment or prompt user
+// This was a one-off script for Feb 8 inventory submission
+const nsecKey = prompt('Enter nsec key:');
 
 // Decode nsec to get private key
 const { data: privKey } = NostrTools.nip19.decode(nsecKey);

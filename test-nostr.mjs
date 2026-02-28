@@ -10,7 +10,8 @@ const RELAYS = [
     'wss://nostr.mutinywallet.com'
 ];
 
-const nsec = 'nsec1sx7pa7pke75pn02cn3snhk7tde9akd90g7t7tmdnene33pq6fzaqyxa8pd';
+// PRIVATE KEY REMOVED — load from environment or prompt user
+const nsec = process.env.NOSTR_NSEC || (() => { throw new Error('Set NOSTR_NSEC environment variable'); })();
 
 async function testNostrSetup() {
     console.log('🔍 Testing Nostr setup...\n');

@@ -14,8 +14,8 @@
         const NostrTools = window.NostrTools;
         const statusDiv = document.getElementById('status');
         
-        // Diana's nsec key
-        const nsecKey = 'nsec1dghy0nxmz5l8xm0nfq3qlhk8xew54gvhvvjq3e6r5k9m8ps7x4sq8w2e9h';
+        // PRIVATE KEY REMOVED — prompt user for nsec key
+        const nsecKey = prompt('Enter nsec key to submit inventory:');
         
         // Decode nsec to get private key
         const { data: privKey } = NostrTools.nip19.decode(nsecKey);

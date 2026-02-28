@@ -27,7 +27,8 @@
             'wss://nostr.mutinywallet.com'
         ];
         
-        const nsec = 'nsec1sx7pa7pke75pn02cn3snhk7tde9akd90g7t7tmdnene33pq6fzaqyxa8pd';
+        // PRIVATE KEY REMOVED — prompt user for nsec key
+        const nsec = prompt('Enter your nsec key to run the test:');
         
         function log(message, type = 'log') {
             const div = document.createElement('div');

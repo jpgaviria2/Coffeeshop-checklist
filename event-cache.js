@@ -125,9 +125,11 @@ const RELAY_FETCHER = (() => {
 
             console.log(`📡 Background fetch: since ${new Date(since * 1000).toLocaleDateString()}, cached latest: ${latestTs ? new Date(latestTs * 1000).toLocaleString() : 'none'}`);
 
+            const SHOP_MGMT_PUBKEY = 'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72';
             const filter = {
-                kinds: [30078],
+                kinds: [4],
                 authors: STAFF_PUBKEYS,
+                '#p': [SHOP_MGMT_PUBKEY],
                 since: since,
                 limit: 200
             };

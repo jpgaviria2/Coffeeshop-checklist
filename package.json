@@ -1,0 +1,12 @@
+{
+  "name": "coffeeshop-checklist-scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "decrypt": "node scripts/decrypt-submissions.mjs"
+  },
+  "dependencies": {
+    "nostr-tools": "^2.7.2",
+    "websocket-polyfill": "^0.0.3"
+  }
+}

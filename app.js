@@ -3,7 +3,10 @@
 
 let userKeys = null;
 let currentChecklist = 'opening';
-let currentWeekOffset = 0; // 0 = this week, 1 = next week, -1 = last week
+let currentWeekOffset = 0;
+
+// Shop management pubkey — all submissions are encrypted to this key
+const SHOP_MGMT_PUBKEY = 'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72';
 
 // Nostr relay configuration
 const RELAYS = [
@@ -82,21 +85,26 @@ async function loadTodaysActivity() {
         }
 
         let html = '';
-        const icons = { opening: '🌅', closing: '🌙', inventory: '📦', checkin: '☀️', checkout: '👋' };
+        const icons = { opening: '🌅', closing: '🌙', inventory: '📦' };
         
-        myTodayEvents.forEach(e => {
+        for (const e of myTodayEvents) {
             try {
-                const content = JSON.parse(e.content);
+                // Decrypt own DMs (staff can decrypt their own sent messages)
+                let contentStr = e.content;
+                if (e.kind === 4) {
+                    try {
+                        contentStr = await NostrTools.nip04.decrypt(
+                            userKeys.privateKey, SHOP_MGMT_PUBKEY, e.content
+                        );
+                    } catch (decErr) {
+                        // If stored already decrypted (from cache), try parsing directly
+                    }
+                }
+                const content = JSON.parse(contentStr);
                 const time = new Date(e.created_at * 1000);
                 const timeStr = time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
                 
-                if (content.timeclock) {
-                    const type = content.timeclock;
-                    html += `<div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
-                        <span>${icons[type] || '📋'} ${type === 'checkin' ? 'Check In' : 'Check Out'}</span>
-                        <span style="color:#28a745;font-size:13px;">${timeStr} ✅</span>
-                    </div>`;
-                } else if (content.checklist) {
+                if (content.checklist) {
                     const type = content.checklist;
                     const label = type.charAt(0).toUpperCase() + type.slice(1);
                     const rate = content.completionRate ? ` (${content.completionRate})` : '';
@@ -106,7 +114,7 @@ async function loadTodaysActivity() {
                     </div>`;
                 }
             } catch (err) {}
-        });
+        }
 
         container.innerHTML = html || '<div style="padding:12px;color:#999;text-align:center;font-size:13px;">No submissions yet today</div>';
         container.style.display = 'block';
@@ -330,22 +338,20 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('submitBtn').textContent = 'Submitting...';
         
-        // Create Nostr event
+        // Encrypt content as NIP-04 DM to shop management key
+        const plaintext = JSON.stringify(contentData);
+        const encryptedContent = await NostrTools.nip04.encrypt(
+            userKeys.privateKey, SHOP_MGMT_PUBKEY, plaintext
+        );
+        
         const eventTemplate = {
-            kind: 30078,
+            kind: 4,
             created_at: Math.floor(Date.now() / 1000),
             tags: [
-                ['d', `checklist-${currentChecklist}-${new Date().toISOString().split('T')[0]}`],
-                ['type', currentChecklist],
-                ['shop', 'trails-coffee'],
+                ['p', SHOP_MGMT_PUBKEY]
             ],
-            content: JSON.stringify(contentData)
+            content: encryptedContent
         };
-        
-        if (currentChecklist !== 'inventory') {
-            eventTemplate.tags.push(['completed', items.filter(i => i.completed).length.toString()]);
-            eventTemplate.tags.push(['total', items.length.toString()]);
-        }
         
         // Sign event with private key
         const signedEvent = NostrTools.finalizeEvent(eventTemplate, userKeys.privateKey);

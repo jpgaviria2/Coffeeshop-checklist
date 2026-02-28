@@ -1,0 +1,33 @@
+name: Decrypt Submissions
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  decrypt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - run: npm ci
+      
+      - name: Decrypt submissions from relays
+        env:
+          SHOP_MGMT_NSEC: ${{ secrets.SHOP_MGMT_NSEC }}
+        run: npm run decrypt
+      
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/submissions/
+          git diff --cached --quiet || (git commit -m "Update decrypted submissions $(date -u +%Y-%m-%dT%H:%M)" && git push)

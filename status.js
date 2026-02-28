@@ -1,5 +1,8 @@
 // Status page - Load and display checklist submissions
+// Requires manager login (shop management nsec) to decrypt submissions
 // Uses EVENT_CACHE for instant display + background relay updates
+
+const SHOP_MGMT_PUBKEY = 'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72';
 
 // Staff name mapping (for display)
 const STAFF_NAMES = {
@@ -15,32 +18,95 @@ const STAFF_NAMES = {
     'e94223ab25f9a156eb402d6e7627c8118f38285b74687a53b656d9481d3672b2': 'Ruby'
 };
 
+let mgmtPrivateKey = null;
+
 window.addEventListener('DOMContentLoaded', async () => {
-    await loadSubmissions();
+    // Check for saved manager key
+    const savedMgmtNsec = localStorage.getItem('nostr_mgmt_nsec');
+    if (savedMgmtNsec) {
+        try {
+            const decoded = NostrTools.nip19.decode(savedMgmtNsec);
+            if (decoded.type === 'nsec') {
+                const pubkey = NostrTools.getPublicKey(decoded.data);
+                if (pubkey === SHOP_MGMT_PUBKEY) {
+                    mgmtPrivateKey = decoded.data;
+                    showManagerView();
+                    return;
+                }
+            }
+        } catch (e) {
+            localStorage.removeItem('nostr_mgmt_nsec');
+        }
+    }
+    showManagerLogin();
 });
+
+function showManagerLogin() {
+    document.getElementById('loading').style.display = 'none';
+    const container = document.getElementById('statusContent');
+    container.style.display = 'block';
+    container.innerHTML = `
+        <div style="text-align:center;padding:40px 20px;">
+            <h2 style="color:#667eea;margin-bottom:15px;">🔒 Manager Access</h2>
+            <p style="color:#666;margin-bottom:20px;">Enter the shop management nsec to view submissions</p>
+            <div style="max-width:400px;margin:0 auto;">
+                <input type="password" id="mgmtNsecInput" placeholder="nsec1..." 
+                    style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:monospace;margin-bottom:15px;">
+                <button onclick="managerLogin()" 
+                    style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">
+                    Unlock Dashboard
+                </button>
+                <p id="mgmtLoginError" style="color:#dc3545;margin-top:10px;display:none;"></p>
+            </div>
+        </div>
+    `;
+}
+
+function managerLogin() {
+    const nsecInput = document.getElementById('mgmtNsecInput').value.trim();
+    const errorEl = document.getElementById('mgmtLoginError');
+    try {
+        const decoded = NostrTools.nip19.decode(nsecInput);
+        if (decoded.type !== 'nsec') throw new Error('Not an nsec');
+        const pubkey = NostrTools.getPublicKey(decoded.data);
+        if (pubkey !== SHOP_MGMT_PUBKEY) {
+            errorEl.textContent = 'This is not the shop management key.';
+            errorEl.style.display = 'block';
+            return;
+        }
+        mgmtPrivateKey = decoded.data;
+        localStorage.setItem('nostr_mgmt_nsec', nsecInput);
+        showManagerView();
+    } catch (e) {
+        errorEl.textContent = 'Invalid nsec key.';
+        errorEl.style.display = 'block';
+    }
+}
+
+async function showManagerView() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('loading').textContent = 'Decrypting submissions...';
+    document.getElementById('statusContent').style.display = 'none';
+    document.getElementById('statusContent').innerHTML = '';
+    await loadSubmissions();
+}
 
 async function loadSubmissions() {
     try {
-        // 1. Show cached data INSTANTLY
         const cachedEvents = await EVENT_CACHE.getAllEvents();
         
         if (cachedEvents.length > 0) {
-            console.log(`⚡ Showing ${cachedEvents.length} cached events instantly`);
-            const grouped = groupEventsByDate(cachedEvents);
+            const decrypted = await decryptEvents(cachedEvents);
+            const grouped = groupEventsByDate(decrypted);
             renderSubmissions(grouped);
             document.getElementById('loading').style.display = 'none';
             document.getElementById('statusContent').style.display = 'block';
-            
-            // Show a subtle "updating..." indicator
             showUpdateIndicator();
         }
         
-        // 2. Wait for background fetch to complete (already started by event-cache.js)
         await RELAY_FETCHER.fetchFromRelays();
         
-        // 3. Re-render with fresh data
         const allEvents = await EVENT_CACHE.getAllEvents();
-        console.log(`🔄 Refreshed: ${allEvents.length} total events`);
         
         if (allEvents.length === 0) {
             document.getElementById('loading').style.display = 'none';
@@ -49,7 +115,8 @@ async function loadSubmissions() {
             return;
         }
         
-        const grouped = groupEventsByDate(allEvents);
+        const decrypted = await decryptEvents(allEvents);
+        const grouped = groupEventsByDate(decrypted);
         renderSubmissions(grouped);
         
         document.getElementById('loading').style.display = 'none';
@@ -58,14 +125,39 @@ async function loadSubmissions() {
         
     } catch (error) {
         console.error('Error loading submissions:', error);
-        // If relay fetch fails but we have cache, that's fine
         const cachedEvents = await EVENT_CACHE.getAllEvents();
         if (cachedEvents.length > 0) {
             hideUpdateIndicator();
-            return; // Already showing cached data
+            return;
         }
         document.getElementById('loading').textContent = 'Error loading submissions: ' + error.message;
     }
+}
+
+async function decryptEvents(events) {
+    const results = [];
+    for (const event of events) {
+        try {
+            let contentStr = event.content;
+            if (event.kind === 4 && mgmtPrivateKey) {
+                contentStr = await NostrTools.nip04.decrypt(
+                    mgmtPrivateKey, event.pubkey, event.content
+                );
+            }
+            // Attach decrypted content for rendering
+            results.push({ ...event, _decryptedContent: contentStr });
+        } catch (e) {
+            // Skip events we can't decrypt (old format or bad encryption)
+            // Try parsing as plain JSON (legacy kind 30078 events)
+            try {
+                JSON.parse(event.content);
+                results.push({ ...event, _decryptedContent: event.content });
+            } catch (e2) {
+                // truly unreadable, skip
+            }
+        }
+    }
+    return results;
 }
 
 function showUpdateIndicator() {
@@ -84,7 +176,7 @@ function showUpdateIndicator() {
 function hideUpdateIndicator() {
     const indicator = document.getElementById('updateIndicator');
     if (indicator) {
-        const count = EVENT_CACHE.getCount().then(c => {
+        EVENT_CACHE.getCount().then(c => {
             indicator.textContent = `✅ ${c} submissions cached`;
             setTimeout(() => { indicator.style.display = 'none'; }, 2000);
         });
@@ -96,13 +188,11 @@ function groupEventsByDate(events) {
     
     events.forEach(event => {
         try {
-            const content = JSON.parse(event.content);
-            // Skip timeclock events — only show checklists
+            const content = JSON.parse(event._decryptedContent || event.content);
             if (content.timeclock) return;
-            // Must have a checklist type
             if (!content.checklist) return;
         } catch (e) {
-            return; // Skip invalid events
+            return;
         }
         
         const date = new Date(event.created_at * 1000);
@@ -122,6 +212,12 @@ function groupEventsByDate(events) {
 function renderSubmissions(groupedByDate) {
     const container = document.getElementById('statusContent');
     container.innerHTML = '';
+    
+    // Add logout button at top
+    const logoutBar = document.createElement('div');
+    logoutBar.style.cssText = 'text-align:right;padding:10px;';
+    logoutBar.innerHTML = '<button onclick="managerLogout()" style="background:#dc3545;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔒 Lock Dashboard</button>';
+    container.appendChild(logoutBar);
     
     const dates = Object.keys(groupedByDate).sort().reverse();
     
@@ -149,9 +245,15 @@ function renderSubmissions(groupedByDate) {
     });
 }
 
+function managerLogout() {
+    localStorage.removeItem('nostr_mgmt_nsec');
+    mgmtPrivateKey = null;
+    showManagerLogin();
+}
+
 function createEntryElement(event) {
     try {
-        const content = JSON.parse(event.content);
+        const content = JSON.parse(event._decryptedContent || event.content);
         const checklistType = content.checklist;
         const timestamp = new Date(event.created_at * 1000);
         const staffName = STAFF_NAMES[event.pubkey] || event.pubkey.substring(0, 8);
@@ -198,7 +300,12 @@ function createEntryElement(event) {
 }
 
 function viewDetails(event) {
-    sessionStorage.setItem('checklistDetail', JSON.stringify(event));
+    // Store decrypted content for detail page
+    const detailEvent = { ...event };
+    if (event._decryptedContent) {
+        detailEvent.content = event._decryptedContent;
+    }
+    sessionStorage.setItem('checklistDetail', JSON.stringify(detailEvent));
     window.location.href = 'detail.html';
 }
 

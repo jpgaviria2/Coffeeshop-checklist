@@ -306,11 +306,23 @@ function renderSubmissions(groupedByDate) {
     } else {
         const fullBadge = document.createElement('span');
         fullBadge.style.cssText = 'background:#28a745;color:white;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;';
-        fullBadge.textContent = '✅ Full Access';
+        fullBadge.textContent = '✅ All Staff';
         topBar.appendChild(fullBadge);
     }
     
     container.appendChild(topBar);
+
+    // If no mgmt key and we have encrypted events, show one-time setup banner
+    if (!mgmtPrivateKey) {
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:15px;margin:10px 15px;text-align:center;';
+        banner.innerHTML = `
+            <p style="font-weight:600;color:#856404;margin-bottom:8px;">🔑 One-time setup needed</p>
+            <p style="color:#856404;font-size:13px;margin-bottom:12px;">Enter the shop management key once to see all staff submissions. It saves to your device permanently — you'll never be asked again.</p>
+            <button onclick="showUnlockModal()" style="background:#667eea;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Enter Shop Key</button>
+        `;
+        container.appendChild(banner);
+    }
     
     const dates = Object.keys(groupedByDate).sort().reverse();
     

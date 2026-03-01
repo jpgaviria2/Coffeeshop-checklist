@@ -1,33 +1,21 @@
 {
-  "generated": "2026-03-01T06:22:35.113Z",
+  "generated": "2026-03-01T15:05:30.891Z",
   "forecast": {
-    "2026-02-28": {
-      "tempMax": 9.7,
-      "tempMin": 3.1,
+    "2026-03-01": {
+      "tempMax": 10,
+      "tempMin": 0.9,
       "precipitation": 0,
-      "weatherCode": 3,
-      "condition": "Overcast",
+      "weatherCode": 2,
+      "condition": "Partly cloudy",
       "isRainy": false,
       "isCold": false,
       "isVeryCold": false,
       "isWarm": false,
       "emoji": "⛅"
     },
-    "2026-03-01": {
-      "tempMax": 12,
-      "tempMin": 2.2,
-      "precipitation": 0,
-      "weatherCode": 1,
-      "condition": "Mostly clear",
-      "isRainy": false,
-      "isCold": false,
-      "isVeryCold": false,
-      "isWarm": false,
-      "emoji": "☀️"
-    },
     "2026-03-02": {
-      "tempMax": 12.2,
-      "tempMin": 4.6,
+      "tempMax": 12,
+      "tempMin": 5.7,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",
@@ -38,9 +26,21 @@
       "emoji": "⛅"
     },
     "2026-03-03": {
-      "tempMax": 8,
-      "tempMin": 4.5,
-      "precipitation": 13.4,
+      "tempMax": 8.6,
+      "tempMin": 4.8,
+      "precipitation": 10.9,
+      "weatherCode": 80,
+      "condition": "Light showers",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "🌦️"
+    },
+    "2026-03-04": {
+      "tempMax": 10.3,
+      "tempMin": 4.2,
+      "precipitation": 18.7,
       "weatherCode": 81,
       "condition": "Showers",
       "isRainy": true,
@@ -49,22 +49,22 @@
       "isWarm": false,
       "emoji": "🌦️"
     },
-    "2026-03-04": {
-      "tempMax": 8.8,
-      "tempMin": 4.5,
-      "precipitation": 9.5,
-      "weatherCode": 55,
-      "condition": "Heavy drizzle",
+    "2026-03-05": {
+      "tempMax": 7.5,
+      "tempMin": 3.9,
+      "precipitation": 1.9,
+      "weatherCode": 51,
+      "condition": "Light drizzle",
       "isRainy": true,
       "isCold": false,
       "isVeryCold": false,
       "isWarm": false,
       "emoji": "☁️"
     },
-    "2026-03-05": {
-      "tempMax": 8.4,
-      "tempMin": 3.4,
-      "precipitation": 0.9,
+    "2026-03-06": {
+      "tempMax": 5.4,
+      "tempMin": 4,
+      "precipitation": 0.5,
       "weatherCode": 51,
       "condition": "Light drizzle",
       "isRainy": false,
@@ -73,17 +73,17 @@
       "isWarm": false,
       "emoji": "☁️"
     },
-    "2026-03-06": {
-      "tempMax": 6,
-      "tempMin": 4.1,
-      "precipitation": 1.2,
-      "weatherCode": 51,
-      "condition": "Light drizzle",
-      "isRainy": true,
+    "2026-03-07": {
+      "tempMax": 8.1,
+      "tempMin": 5.1,
+      "precipitation": 0,
+      "weatherCode": 3,
+      "condition": "Overcast",
+      "isRainy": false,
       "isCold": false,
       "isVeryCold": false,
       "isWarm": false,
-      "emoji": "☁️"
+      "emoji": "⛅"
     }
   }
 }

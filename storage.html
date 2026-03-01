@@ -95,13 +95,9 @@
             <h1>📦 Storage Map</h1>
             <p>What's in each drawer</p>
         </div>
-        <div class="nav">
-            <a href="index.html">📋 Checklists</a>
-            <a href="status.html">📊 Status</a>
-            <a href="procedures.html">📖 Procedures</a>
-            <a href="storage.html" class="active">📦 Storage</a>
-            <a href="dashboard.html">📈 Dashboard</a>
-        </div>
+        <div class="nav"></div>
+        <script src="nav.js"></script>
+        <script>initNav('storage');</script>
         <div class="content">
             <input type="text" class="search-bar" placeholder="🔍 Search items..." id="searchBar" oninput="filterDrawers()">
             

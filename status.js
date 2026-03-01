@@ -1,8 +1,18 @@
 // Status page - Load and display checklist submissions
-// Requires manager login (shop management nsec) to decrypt submissions
+// Auto-authenticates if user is already logged in as a manager (JP/Charlene)
+// Falls back to shop management nsec prompt if needed
 // Uses EVENT_CACHE for instant display + background relay updates
 
 const SHOP_MGMT_PUBKEY = 'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72';
+
+// Manager pubkeys — only these users can view submissions
+const MANAGER_PUBKEYS = [
+    'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd', // JP
+    '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba', // JP
+    '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f', // Charlene
+    'a41881ea72c89d552bd6435593afc7dd58c8d2203f18d674a2306e73dfbaf7c9', // Charlene
+    '6b5f11f26cdabc44ed07dffbe5d56451d2330994689e2a157f2ee4801d82778f', // Charlene
+];
 
 // Staff name mapping (for display)
 const STAFF_NAMES = {
@@ -21,7 +31,7 @@ const STAFF_NAMES = {
 let mgmtPrivateKey = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
-    // Check for saved manager key
+    // 1. Check for saved management key first
     const savedMgmtNsec = localStorage.getItem('nostr_mgmt_nsec');
     if (savedMgmtNsec) {
         try {
@@ -38,23 +48,81 @@ window.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('nostr_mgmt_nsec');
         }
     }
-    showManagerLogin();
+
+    // 2. Check if the user is already logged in on the main page
+    const savedNsec = localStorage.getItem('nostr_nsec');
+    if (savedNsec) {
+        try {
+            const decoded = NostrTools.nip19.decode(savedNsec);
+            if (decoded.type === 'nsec') {
+                const pubkey = NostrTools.getPublicKey(decoded.data);
+                
+                // If their staff key IS the management key, auto-unlock
+                if (pubkey === SHOP_MGMT_PUBKEY) {
+                    mgmtPrivateKey = decoded.data;
+                    localStorage.setItem('nostr_mgmt_nsec', savedNsec);
+                    showManagerView();
+                    return;
+                }
+                
+                // If they're a known manager, show simplified unlock
+                if (MANAGER_PUBKEYS.includes(pubkey)) {
+                    const staffName = STAFF_NAMES[pubkey] || 'Manager';
+                    showManagerUnlock(staffName);
+                    return;
+                }
+                
+                // Regular staff — no access
+                showAccessDenied();
+                return;
+            }
+        } catch (e) {
+            // Fall through to login
+        }
+    }
+
+    // 3. Not logged in at all
+    showLoginRequired();
 });
 
-function showManagerLogin() {
+function showLoginRequired() {
     document.getElementById('loading').style.display = 'none';
     const container = document.getElementById('statusContent');
     container.style.display = 'block';
     container.innerHTML = `
         <div style="text-align:center;padding:40px 20px;">
-            <h2 style="color:#667eea;margin-bottom:15px;">🔒 Manager Access</h2>
-            <p style="color:#666;margin-bottom:20px;">Enter the shop management nsec to view submissions</p>
+            <h2 style="color:#667eea;margin-bottom:15px;">🔒 Login Required</h2>
+            <p style="color:#666;margin-bottom:20px;">Please log in on the <a href="index.html" style="color:#667eea;">Checklists</a> page first, then come back here.</p>
+        </div>
+    `;
+}
+
+function showAccessDenied() {
+    document.getElementById('loading').style.display = 'none';
+    const container = document.getElementById('statusContent');
+    container.style.display = 'block';
+    container.innerHTML = `
+        <div style="text-align:center;padding:40px 20px;">
+            <h2 style="color:#dc3545;margin-bottom:15px;">🚫 Manager Access Only</h2>
+            <p style="color:#666;">This page is only available to managers.</p>
+        </div>
+    `;
+}
+
+function showManagerUnlock(staffName) {
+    document.getElementById('loading').style.display = 'none';
+    const container = document.getElementById('statusContent');
+    container.style.display = 'block';
+    container.innerHTML = `
+        <div style="text-align:center;padding:40px 20px;">
+            <h2 style="color:#667eea;margin-bottom:10px;">👋 Hey ${staffName}</h2>
+            <p style="color:#666;margin-bottom:20px;">Enter the shop management key to view all submissions</p>
             <div style="max-width:400px;margin:0 auto;">
                 <input type="password" id="mgmtNsecInput" placeholder="nsec1..." 
                     style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:monospace;margin-bottom:15px;">
                 <button onclick="managerLogin()" 
                     style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">
-                    Unlock Dashboard
+                    🔓 Unlock Submissions
                 </button>
                 <p id="mgmtLoginError" style="color:#dc3545;margin-top:10px;display:none;"></p>
             </div>
@@ -144,10 +212,8 @@ async function decryptEvents(events) {
                     mgmtPrivateKey, event.pubkey, event.content
                 );
             }
-            // Attach decrypted content for rendering
             results.push({ ...event, _decryptedContent: contentStr });
         } catch (e) {
-            // Skip events we can't decrypt (old format or bad encryption)
             // Try parsing as plain JSON (legacy kind 30078 events)
             try {
                 JSON.parse(event.content);
@@ -213,13 +279,18 @@ function renderSubmissions(groupedByDate) {
     const container = document.getElementById('statusContent');
     container.innerHTML = '';
     
-    // Add logout button at top
-    const logoutBar = document.createElement('div');
-    logoutBar.style.cssText = 'text-align:right;padding:10px;';
-    logoutBar.innerHTML = '<button onclick="managerLogout()" style="background:#dc3545;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔒 Lock Dashboard</button>';
-    container.appendChild(logoutBar);
+    // Add lock button at top
+    const lockBar = document.createElement('div');
+    lockBar.style.cssText = 'text-align:right;padding:10px;';
+    lockBar.innerHTML = '<button onclick="managerLogout()" style="background:#dc3545;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔒 Lock</button>';
+    container.appendChild(lockBar);
     
     const dates = Object.keys(groupedByDate).sort().reverse();
+    
+    if (dates.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        return;
+    }
     
     dates.forEach(dateKey => {
         const events = groupedByDate[dateKey];
@@ -248,7 +319,7 @@ function renderSubmissions(groupedByDate) {
 function managerLogout() {
     localStorage.removeItem('nostr_mgmt_nsec');
     mgmtPrivateKey = null;
-    showManagerLogin();
+    location.reload();
 }
 
 function createEntryElement(event) {
@@ -300,7 +371,6 @@ function createEntryElement(event) {
 }
 
 function viewDetails(event) {
-    // Store decrypted content for detail page
     const detailEvent = { ...event };
     if (event._decryptedContent) {
         detailEvent.content = event._decryptedContent;

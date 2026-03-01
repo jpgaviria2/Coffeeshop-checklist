@@ -1,17 +1,18 @@
 // Status page - Load and display checklist submissions
-// Auto-authenticates if user is already logged in as a manager (JP/Charlene)
-// Falls back to shop management nsec prompt if needed
-// Uses EVENT_CACHE for instant display + background relay updates
+// Managers (JP, Charlene, Dayi) get auto-access with their own nsec
+// Own submissions decrypt with own key; shop mgmt key unlocks ALL submissions
 
 const SHOP_MGMT_PUBKEY = 'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72';
 
-// Manager pubkeys — only these users can view submissions
+// Manager pubkeys — these users can view the status page
 const MANAGER_PUBKEYS = [
     'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd', // JP
     '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba', // JP
     '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f', // Charlene
     'a41881ea72c89d552bd6435593afc7dd58c8d2203f18d674a2306e73dfbaf7c9', // Charlene
     '6b5f11f26cdabc44ed07dffbe5d56451d2330994689e2a157f2ee4801d82778f', // Charlene
+    '4287e0cdcccb4789f0c1d4c27caae092f19f0c266c0d0638b571558d09317911', // Dayi
+    '6d3907327333dfb1b6f6100f9fdd1c6cbaa50b3acc801cf4cf5d937b838ee80b', // Dayi
 ];
 
 // Staff name mapping (for display)
@@ -28,10 +29,13 @@ const STAFF_NAMES = {
     'e94223ab25f9a156eb402d6e7627c8118f38285b74687a53b656d9481d3672b2': 'Ruby'
 };
 
-let mgmtPrivateKey = null;
+let mgmtPrivateKey = null;  // Shop management key (decrypts ALL submissions)
+let userPrivateKey = null;   // Logged-in user's key (decrypts OWN submissions)
+let userPubkey = null;
+let userName = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
-    // 1. Check for saved management key first
+    // 1. Try to get mgmt key from localStorage (previously saved)
     const savedMgmtNsec = localStorage.getItem('nostr_mgmt_nsec');
     if (savedMgmtNsec) {
         try {
@@ -40,8 +44,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                 const pubkey = NostrTools.getPublicKey(decoded.data);
                 if (pubkey === SHOP_MGMT_PUBKEY) {
                     mgmtPrivateKey = decoded.data;
-                    showManagerView();
-                    return;
                 }
             }
         } catch (e) {
@@ -49,39 +51,37 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 2. Check if the user is already logged in on the main page
+    // 2. Check user's staff login
     const savedNsec = localStorage.getItem('nostr_nsec');
     if (savedNsec) {
         try {
             const decoded = NostrTools.nip19.decode(savedNsec);
             if (decoded.type === 'nsec') {
-                const pubkey = NostrTools.getPublicKey(decoded.data);
-                
-                // If their staff key IS the management key, auto-unlock
-                if (pubkey === SHOP_MGMT_PUBKEY) {
+                userPubkey = NostrTools.getPublicKey(decoded.data);
+                userPrivateKey = decoded.data;
+                userName = STAFF_NAMES[userPubkey] || userPubkey.substring(0, 8);
+
+                // If user's key IS the management key
+                if (userPubkey === SHOP_MGMT_PUBKEY) {
                     mgmtPrivateKey = decoded.data;
-                    localStorage.setItem('nostr_mgmt_nsec', savedNsec);
+                }
+
+                // If user is a manager, grant access
+                if (MANAGER_PUBKEYS.includes(userPubkey) || userPubkey === SHOP_MGMT_PUBKEY) {
                     showManagerView();
                     return;
                 }
-                
-                // If they're a known manager, show simplified unlock
-                if (MANAGER_PUBKEYS.includes(pubkey)) {
-                    const staffName = STAFF_NAMES[pubkey] || 'Manager';
-                    showManagerUnlock(staffName);
-                    return;
-                }
-                
-                // Regular staff — no access
+
+                // Non-manager staff
                 showAccessDenied();
                 return;
             }
         } catch (e) {
-            // Fall through to login
+            // Fall through
         }
     }
 
-    // 3. Not logged in at all
+    // 3. Not logged in
     showLoginRequired();
 });
 
@@ -91,8 +91,9 @@ function showLoginRequired() {
     container.style.display = 'block';
     container.innerHTML = `
         <div style="text-align:center;padding:40px 20px;">
-            <h2 style="color:#667eea;margin-bottom:15px;">🔒 Login Required</h2>
-            <p style="color:#666;margin-bottom:20px;">Please log in on the <a href="index.html" style="color:#667eea;">Checklists</a> page first, then come back here.</p>
+            <div style="font-size:48px;margin-bottom:15px;">🔒</div>
+            <h2 style="color:#667eea;margin-bottom:15px;">Login Required</h2>
+            <p style="color:#666;margin-bottom:20px;">Please log in on the <a href="index.html" style="color:#667eea;font-weight:600;">Checklists</a> page first.</p>
         </div>
     `;
 }
@@ -103,57 +104,16 @@ function showAccessDenied() {
     container.style.display = 'block';
     container.innerHTML = `
         <div style="text-align:center;padding:40px 20px;">
-            <h2 style="color:#dc3545;margin-bottom:15px;">🚫 Manager Access Only</h2>
+            <div style="font-size:48px;margin-bottom:15px;">🚫</div>
+            <h2 style="color:#dc3545;margin-bottom:15px;">Manager Access Only</h2>
             <p style="color:#666;">This page is only available to managers.</p>
         </div>
     `;
 }
 
-function showManagerUnlock(staffName) {
-    document.getElementById('loading').style.display = 'none';
-    const container = document.getElementById('statusContent');
-    container.style.display = 'block';
-    container.innerHTML = `
-        <div style="text-align:center;padding:40px 20px;">
-            <h2 style="color:#667eea;margin-bottom:10px;">👋 Hey ${staffName}</h2>
-            <p style="color:#666;margin-bottom:20px;">Enter the shop management key to view all submissions</p>
-            <div style="max-width:400px;margin:0 auto;">
-                <input type="password" id="mgmtNsecInput" placeholder="nsec1..." 
-                    style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:monospace;margin-bottom:15px;">
-                <button onclick="managerLogin()" 
-                    style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">
-                    🔓 Unlock Submissions
-                </button>
-                <p id="mgmtLoginError" style="color:#dc3545;margin-top:10px;display:none;"></p>
-            </div>
-        </div>
-    `;
-}
-
-function managerLogin() {
-    const nsecInput = document.getElementById('mgmtNsecInput').value.trim();
-    const errorEl = document.getElementById('mgmtLoginError');
-    try {
-        const decoded = NostrTools.nip19.decode(nsecInput);
-        if (decoded.type !== 'nsec') throw new Error('Not an nsec');
-        const pubkey = NostrTools.getPublicKey(decoded.data);
-        if (pubkey !== SHOP_MGMT_PUBKEY) {
-            errorEl.textContent = 'This is not the shop management key.';
-            errorEl.style.display = 'block';
-            return;
-        }
-        mgmtPrivateKey = decoded.data;
-        localStorage.setItem('nostr_mgmt_nsec', nsecInput);
-        showManagerView();
-    } catch (e) {
-        errorEl.textContent = 'Invalid nsec key.';
-        errorEl.style.display = 'block';
-    }
-}
-
 async function showManagerView() {
     document.getElementById('loading').style.display = 'block';
-    document.getElementById('loading').textContent = 'Decrypting submissions...';
+    document.getElementById('loading').textContent = 'Loading submissions...';
     document.getElementById('statusContent').style.display = 'none';
     document.getElementById('statusContent').innerHTML = '';
     await loadSubmissions();
@@ -161,6 +121,7 @@ async function showManagerView() {
 
 async function loadSubmissions() {
     try {
+        // Show cached data first
         const cachedEvents = await EVENT_CACHE.getAllEvents();
         
         if (cachedEvents.length > 0) {
@@ -172,6 +133,7 @@ async function loadSubmissions() {
             showUpdateIndicator();
         }
         
+        // Then fetch fresh from relay
         await RELAY_FETCHER.fetchFromRelays();
         
         const allEvents = await EVENT_CACHE.getAllEvents();
@@ -198,7 +160,7 @@ async function loadSubmissions() {
             hideUpdateIndicator();
             return;
         }
-        document.getElementById('loading').textContent = 'Error loading submissions: ' + error.message;
+        document.getElementById('loading').textContent = 'Error: ' + error.message;
     }
 }
 
@@ -207,19 +169,58 @@ async function decryptEvents(events) {
     for (const event of events) {
         try {
             let contentStr = event.content;
-            if (event.kind === 4 && mgmtPrivateKey) {
-                contentStr = await NostrTools.nip04.decrypt(
-                    mgmtPrivateKey, event.pubkey, event.content
-                );
+            let decrypted = false;
+
+            if (event.kind === 4) {
+                // Try 1: Use shop management key (decrypts everything)
+                if (mgmtPrivateKey) {
+                    try {
+                        contentStr = await NostrTools.nip04.decrypt(
+                            mgmtPrivateKey, event.pubkey, event.content
+                        );
+                        decrypted = true;
+                    } catch (e) { /* fall through */ }
+                }
+
+                // Try 2: Use user's own key (decrypts own submissions)
+                if (!decrypted && userPrivateKey) {
+                    try {
+                        // If this event is FROM us, decrypt with our key + mgmt pubkey
+                        if (event.pubkey === userPubkey) {
+                            contentStr = await NostrTools.nip04.decrypt(
+                                userPrivateKey, SHOP_MGMT_PUBKEY, event.content
+                            );
+                            decrypted = true;
+                        }
+                        // If this event is TO us (from mgmt), decrypt with our key + sender pubkey
+                        else {
+                            contentStr = await NostrTools.nip04.decrypt(
+                                userPrivateKey, event.pubkey, event.content
+                            );
+                            decrypted = true;
+                        }
+                    } catch (e) { /* can't decrypt this one */ }
+                }
+
+                if (!decrypted) {
+                    // Mark as encrypted — we'll show metadata only
+                    results.push({ 
+                        ...event, 
+                        _decryptedContent: null, 
+                        _encrypted: true 
+                    });
+                    continue;
+                }
             }
-            results.push({ ...event, _decryptedContent: contentStr });
+
+            results.push({ ...event, _decryptedContent: contentStr, _encrypted: false });
         } catch (e) {
-            // Try parsing as plain JSON (legacy kind 30078 events)
+            // Try as plain JSON (legacy kind 30078)
             try {
                 JSON.parse(event.content);
-                results.push({ ...event, _decryptedContent: event.content });
+                results.push({ ...event, _decryptedContent: event.content, _encrypted: false });
             } catch (e2) {
-                // truly unreadable, skip
+                // skip
             }
         }
     }
@@ -253,6 +254,16 @@ function groupEventsByDate(events) {
     const grouped = {};
     
     events.forEach(event => {
+        // Skip events we couldn't decrypt at all
+        if (event._encrypted && !event._decryptedContent) {
+            // Still include encrypted events — show metadata
+            const date = new Date(event.created_at * 1000);
+            const dateKey = date.toISOString().split('T')[0];
+            if (!grouped[dateKey]) grouped[dateKey] = [];
+            grouped[dateKey].push(event);
+            return;
+        }
+
         try {
             const content = JSON.parse(event._decryptedContent || event.content);
             if (content.timeclock) return;
@@ -279,11 +290,30 @@ function renderSubmissions(groupedByDate) {
     const container = document.getElementById('statusContent');
     container.innerHTML = '';
     
-    // Add lock button at top
-    const lockBar = document.createElement('div');
-    lockBar.style.cssText = 'text-align:right;padding:10px;';
-    lockBar.innerHTML = '<button onclick="managerLogout()" style="background:#dc3545;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔒 Lock</button>';
-    container.appendChild(lockBar);
+    // Top bar with user info and optional unlock
+    const topBar = document.createElement('div');
+    topBar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 15px;border-bottom:1px solid #eee;';
+    
+    const greeting = document.createElement('span');
+    greeting.style.cssText = 'font-weight:600;color:#333;font-size:14px;';
+    greeting.textContent = `👋 ${userName}`;
+    topBar.appendChild(greeting);
+    
+    if (!mgmtPrivateKey) {
+        // Show unlock button for full access
+        const unlockBtn = document.createElement('button');
+        unlockBtn.style.cssText = 'background:#667eea;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;';
+        unlockBtn.textContent = '🔑 Unlock All Staff';
+        unlockBtn.onclick = showUnlockModal;
+        topBar.appendChild(unlockBtn);
+    } else {
+        const fullBadge = document.createElement('span');
+        fullBadge.style.cssText = 'background:#28a745;color:white;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;';
+        fullBadge.textContent = '✅ Full Access';
+        topBar.appendChild(fullBadge);
+    }
+    
+    container.appendChild(topBar);
     
     const dates = Object.keys(groupedByDate).sort().reverse();
     
@@ -316,18 +346,92 @@ function renderSubmissions(groupedByDate) {
     });
 }
 
-function managerLogout() {
-    localStorage.removeItem('nostr_mgmt_nsec');
-    mgmtPrivateKey = null;
-    location.reload();
+function showUnlockModal() {
+    const modal = document.createElement('div');
+    modal.id = 'unlockModal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:white;border-radius:12px;padding:25px;max-width:400px;width:100%;">
+            <h3 style="color:#667eea;margin-bottom:10px;">🔑 Unlock All Submissions</h3>
+            <p style="color:#666;font-size:14px;margin-bottom:15px;">Enter the shop management key to see submissions from all staff.</p>
+            <input type="password" id="unlockNsecInput" placeholder="nsec1..." 
+                style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:monospace;margin-bottom:10px;">
+            <p id="unlockError" style="color:#dc3545;font-size:13px;display:none;margin-bottom:10px;"></p>
+            <div style="display:flex;gap:10px;">
+                <button onclick="document.getElementById('unlockModal').remove()" 
+                    style="flex:1;padding:10px;background:#e0e0e0;color:#333;border:none;border-radius:8px;font-size:14px;cursor:pointer;">Cancel</button>
+                <button onclick="doUnlock()" 
+                    style="flex:1;padding:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Unlock</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('unlockNsecInput').focus();
+}
+
+function doUnlock() {
+    const nsecInput = document.getElementById('unlockNsecInput').value.trim();
+    const errorEl = document.getElementById('unlockError');
+    try {
+        const decoded = NostrTools.nip19.decode(nsecInput);
+        if (decoded.type !== 'nsec') throw new Error('Not an nsec');
+        const pubkey = NostrTools.getPublicKey(decoded.data);
+        if (pubkey !== SHOP_MGMT_PUBKEY) {
+            errorEl.textContent = 'Not the shop management key.';
+            errorEl.style.display = 'block';
+            return;
+        }
+        mgmtPrivateKey = decoded.data;
+        localStorage.setItem('nostr_mgmt_nsec', nsecInput);
+        document.getElementById('unlockModal').remove();
+        // Reload with full access
+        showManagerView();
+    } catch (e) {
+        errorEl.textContent = 'Invalid nsec key.';
+        errorEl.style.display = 'block';
+    }
 }
 
 function createEntryElement(event) {
+    const timestamp = new Date(event.created_at * 1000);
+    const staffName = STAFF_NAMES[event.pubkey] || event.pubkey.substring(0, 8);
+
+    // Encrypted event we couldn't decrypt
+    if (event._encrypted && !event._decryptedContent) {
+        const entry = document.createElement('div');
+        entry.className = 'checklist-entry';
+        entry.style.opacity = '0.6';
+        
+        const info = document.createElement('div');
+        info.className = 'entry-info';
+        
+        const type = document.createElement('div');
+        type.className = 'entry-type';
+        type.textContent = `🔒 Submission — ${staffName}`;
+        
+        const time = document.createElement('div');
+        time.className = 'entry-time';
+        time.textContent = formatTime(timestamp) + ' (encrypted)';
+        
+        info.appendChild(type);
+        info.appendChild(time);
+        entry.appendChild(info);
+        
+        const badge = document.createElement('div');
+        badge.className = 'entry-badge';
+        badge.style.cssText = 'background:#999;color:white;padding:4px 12px;border-radius:12px;font-size:12px;';
+        badge.textContent = '🔒';
+        entry.appendChild(badge);
+        
+        return entry;
+    }
+
     try {
         const content = JSON.parse(event._decryptedContent || event.content);
         const checklistType = content.checklist;
-        const timestamp = new Date(event.created_at * 1000);
-        const staffName = STAFF_NAMES[event.pubkey] || event.pubkey.substring(0, 8);
+        
+        if (!checklistType) return null;
+        if (content.timeclock) return null;
         
         const entry = document.createElement('div');
         entry.className = 'checklist-entry';

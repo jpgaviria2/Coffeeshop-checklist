@@ -986,5 +986,16 @@
         "name": "Smoke Ham & Cheese Croissant"
       }
     ]
+  },
+  {
+    "id": "L22VPV76EYPJ3TMMYP75XSVH",
+    "name": "Day Old",
+    "variations": [
+      {
+        "id": "TY7UHOFWFIXZEN3MZHNFNDTK",
+        "name": "Regular",
+        "price": 250
+      }
+    ]
   }
 ]

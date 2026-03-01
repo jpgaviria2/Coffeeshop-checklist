@@ -1,25 +1,66 @@
 {
   "date": "2026-02-28",
-  "orderCount": 40,
-  "totalRevenue": 605.22,
+  "orderCount": 84,
+  "totalRevenue": 1168.28,
   "items": [
     {
       "name": "Latte",
       "variations": {
-        "Medium": 7,
-        "Large": 7
+        "Medium": 12,
+        "Large": 11
       },
-      "quantity": 14,
-      "revenue": 69.5
+      "quantity": 23,
+      "revenue": 112
     },
     {
       "name": "Drip Coffee",
       "variations": {
-        "Medium": 8,
-        "Large": 2
+        "Medium": 9,
+        "Large": 7
       },
-      "quantity": 10,
-      "revenue": 37.5
+      "quantity": 16,
+      "revenue": 61
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 16
+      },
+      "quantity": 16,
+      "revenue": 72
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 15
+      },
+      "quantity": 15,
+      "revenue": 48.75
+    },
+    {
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 14
+      },
+      "quantity": 14,
+      "revenue": 63
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 1,
+        "Medium": 12
+      },
+      "quantity": 13,
+      "revenue": 62.25
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 9
+      },
+      "quantity": 9,
+      "revenue": 41.25
     },
     {
       "name": "Cinnamon Bun",
@@ -31,12 +72,58 @@
       "revenue": 44
     },
     {
-      "name": "Banana Bread",
+      "name": "Mocha",
+      "variations": {
+        "Large": 3,
+        "Medium": 5
+      },
+      "quantity": 8,
+      "revenue": 42.75
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "kids": 3,
+        "Medium": 2,
+        "Large": 2
+      },
+      "quantity": 7,
+      "revenue": 30
+    },
+    {
+      "name": "Plain Croissant",
       "variations": {
         "Regular": 7
       },
       "quantity": 7,
-      "revenue": 31.5
+      "revenue": 28
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Large": 2,
+        "Medium": 5
+      },
+      "quantity": 7,
+      "revenue": 41
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 4,
+        "Medium": 3
+      },
+      "quantity": 7,
+      "revenue": 40.75
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Large": 3,
+        "Medium": 4
+      },
+      "quantity": 7,
+      "revenue": 32
     },
     {
       "name": "Gluten Free Cheddar Scone",
@@ -55,39 +142,29 @@
       "revenue": 30
     },
     {
-      "name": "Cappuccino",
-      "variations": {
-        "Large": 1,
-        "Medium": 5
-      },
-      "quantity": 6,
-      "revenue": 29
-    },
-    {
-      "name": "Plain Croissant",
+      "name": "Water Bottle",
       "variations": {
         "Regular": 5
       },
       "quantity": 5,
-      "revenue": 20
+      "revenue": 12.5
     },
     {
-      "name": "Hot Chocolate",
+      "name": "Iced Vanilla Matcha",
       "variations": {
-        "kids": 1,
-        "Medium": 2,
-        "Large": 1
+        "Medium": 5
       },
-      "quantity": 4,
-      "revenue": 17.5
+      "quantity": 5,
+      "revenue": 22
     },
     {
-      "name": "Flat White",
+      "name": "Ginger Peach Iced Tea",
       "variations": {
-        "Regular": 4
+        "Large 16oz": 3,
+        "Medium 12oz": 2
       },
-      "quantity": 4,
-      "revenue": 18
+      "quantity": 5,
+      "revenue": 28
     },
     {
       "name": "Spinach Feta Croissant",
@@ -96,22 +173,6 @@
       },
       "quantity": 4,
       "revenue": 21
-    },
-    {
-      "name": "Cookie",
-      "variations": {
-        "Regular": 4
-      },
-      "quantity": 4,
-      "revenue": 13
-    },
-    {
-      "name": "Lemon cake",
-      "variations": {
-        "Regular": 4
-      },
-      "quantity": 4,
-      "revenue": 18
     },
     {
       "name": "Hot Tea",
@@ -123,56 +184,38 @@
       "revenue": 9.5
     },
     {
-      "name": "London Fog Latte",
+      "name": "Cortado",
       "variations": {
-        "Large": 1,
-        "Medium": 2
+        "Regular": 3
       },
       "quantity": 3,
-      "revenue": 16.75
-    },
-    {
-      "name": "Americano",
-      "variations": {
-        "Large": 1,
-        "Medium": 2
-      },
-      "quantity": 3,
-      "revenue": 13.5
-    },
-    {
-      "name": "Iced Vanilla Matcha",
-      "variations": {
-        "Medium": 3
-      },
-      "quantity": 3,
-      "revenue": 12.75
-    },
-    {
-      "name": "Chai Latte",
-      "variations": {
-        "Large": 1,
-        "Medium": 1
-      },
-      "quantity": 2,
-      "revenue": 12
-    },
-    {
-      "name": "Mocha",
-      "variations": {
-        "Large": 1,
-        "Medium": 1
-      },
-      "quantity": 2,
       "revenue": 10.5
     },
     {
-      "name": "Cortado",
+      "name": "Hot Pure Matcha",
       "variations": {
-        "Regular": 2
+        "Large": 2,
+        "Medium": 1
+      },
+      "quantity": 3,
+      "revenue": 18
+    },
+    {
+      "name": "Poppi Soda",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 10.5
+    },
+    {
+      "name": "Vanilla Matcha",
+      "variations": {
+        "Large": 1,
+        "Medium": 1
       },
       "quantity": 2,
-      "revenue": 7
+      "revenue": 10
     },
     {
       "name": "Iced Pure Matcha",
@@ -207,30 +250,6 @@
       "revenue": 2.5
     },
     {
-      "name": "Water Bottle",
-      "variations": {
-        "Regular": 1
-      },
-      "quantity": 1,
-      "revenue": 2.5
-    },
-    {
-      "name": "Hot Pure Matcha",
-      "variations": {
-        "Large": 1
-      },
-      "quantity": 1,
-      "revenue": 6
-    },
-    {
-      "name": "Poppi Soda",
-      "variations": {
-        "Regular": 1
-      },
-      "quantity": 1,
-      "revenue": 3.5
-    },
-    {
       "name": "Yogurt and Granola Bowl",
       "variations": {
         "Regular": 1
@@ -239,20 +258,44 @@
       "revenue": 6.5
     },
     {
-      "name": "Vanilla Matcha",
-      "variations": {
-        "Large": 1
-      },
-      "quantity": 1,
-      "revenue": 5
-    },
-    {
       "name": "Alani Nu Energy Drink",
       "variations": {
         "Regular": 1
       },
       "quantity": 1,
       "revenue": 4
+    },
+    {
+      "name": "Day Old",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 2.5
+    },
+    {
+      "name": "Remedy Kombucha",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 5.5
+    },
+    {
+      "name": "Trails Coffee T-Shirt",
+      "variations": {
+        "Tan": 1
+      },
+      "quantity": 1,
+      "revenue": 25
+    },
+    {
+      "name": "GF Mini Doughnut",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.95
     }
   ],
   "byHour": {
@@ -275,6 +318,22 @@
     "19": {
       "orders": 13,
       "revenue": 224.41
+    },
+    "20": {
+      "orders": 8,
+      "revenue": 135.47000000000003
+    },
+    "21": {
+      "orders": 17,
+      "revenue": 190.20999999999998
+    },
+    "22": {
+      "orders": 10,
+      "revenue": 145.21
+    },
+    "23": {
+      "orders": 9,
+      "revenue": 92.17000000000002
     }
   }
 }

@@ -66,14 +66,9 @@ window.addEventListener('DOMContentLoaded', async () => {
                     mgmtPrivateKey = decoded.data;
                 }
 
-                // If user is a manager, grant access
-                if (MANAGER_PUBKEYS.includes(userPubkey) || userPubkey === SHOP_MGMT_PUBKEY) {
-                    showManagerView();
-                    return;
-                }
-
-                // Non-manager staff
-                showAccessDenied();
+                // Any logged-in user can view status
+                // NIP-04 encryption handles access control — you only see what your key decrypts
+                showManagerView();
                 return;
             }
         } catch (e) {

@@ -177,24 +177,26 @@ async function decryptEvents(events) {
                     } catch (e) { /* fall through */ }
                 }
 
-                // Try 2: Use user's own key (decrypts own submissions)
+                // Try 2: Use logged-in user's key to decrypt
+                // Works for own submissions AND if the user IS the mgmt key holder
                 if (!decrypted && userPrivateKey) {
+                    // Try decrypting as recipient (user's privkey + sender's pubkey)
                     try {
-                        // If this event is FROM us, decrypt with our key + mgmt pubkey
-                        if (event.pubkey === userPubkey) {
+                        contentStr = await NostrTools.nip04.decrypt(
+                            userPrivateKey, event.pubkey, event.content
+                        );
+                        decrypted = true;
+                    } catch (e) { /* fall through */ }
+
+                    // Try decrypting as sender (user's privkey + mgmt pubkey)
+                    if (!decrypted) {
+                        try {
                             contentStr = await NostrTools.nip04.decrypt(
                                 userPrivateKey, SHOP_MGMT_PUBKEY, event.content
                             );
                             decrypted = true;
-                        }
-                        // If this event is TO us (from mgmt), decrypt with our key + sender pubkey
-                        else {
-                            contentStr = await NostrTools.nip04.decrypt(
-                                userPrivateKey, event.pubkey, event.content
-                            );
-                            decrypted = true;
-                        }
-                    } catch (e) { /* can't decrypt this one */ }
+                        } catch (e) { /* can't decrypt */ }
+                    }
                 }
 
                 if (!decrypted) {

@@ -1,0 +1,21 @@
+{
+  "date": "2026-03-02",
+  "orderCount": 1,
+  "totalRevenue": 8.4,
+  "items": [
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8
+    }
+  ],
+  "byHour": {
+    "0": {
+      "orders": 1,
+      "revenue": 8.4
+    }
+  }
+}

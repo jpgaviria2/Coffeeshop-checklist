@@ -1,7 +1,7 @@
 {
   "date": "2026-03-02",
-  "orderCount": 1,
-  "totalRevenue": 8.4,
+  "orderCount": 2,
+  "totalRevenue": 28.4,
   "items": [
     {
       "name": "Plain Croissant",
@@ -10,12 +10,22 @@
       },
       "quantity": 2,
       "revenue": 8
+    },
+    {
+      "name": "eGift Card",
+      "variations": {},
+      "quantity": 1,
+      "revenue": 20
     }
   ],
   "byHour": {
     "0": {
       "orders": 1,
       "revenue": 8.4
+    },
+    "14": {
+      "orders": 1,
+      "revenue": 20
     }
   }
 }

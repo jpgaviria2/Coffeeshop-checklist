@@ -1,220 +1,6 @@
 {
-  "generated": "2026-03-02T15:15:41.395Z",
+  "generated": "2026-03-03T06:24:58.673Z",
   "forecast": {
-    "2026-03-02": {
-      "dayOfWeek": "Monday",
-      "items": {
-        "Plain Croissant": {
-          "predicted": 5,
-          "avgLastMonth": 5.5,
-          "weatherAdjusted": false
-        },
-        "eGift Card": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Latte": {
-          "predicted": 12,
-          "avgLastMonth": 14.8,
-          "weatherAdjusted": false
-        },
-        "Hot Chocolate": {
-          "predicted": 4,
-          "avgLastMonth": 4.5,
-          "weatherAdjusted": false
-        },
-        "Drip Coffee": {
-          "predicted": 7,
-          "avgLastMonth": 7.8,
-          "weatherAdjusted": false
-        },
-        "Ham and Cheese Croissant": {
-          "predicted": 3,
-          "avgLastMonth": 3.8,
-          "weatherAdjusted": false
-        },
-        "Cookie": {
-          "predicted": 3,
-          "avgLastMonth": 4.8,
-          "weatherAdjusted": false
-        },
-        "Banana Bread": {
-          "predicted": 4,
-          "avgLastMonth": 5.5,
-          "weatherAdjusted": false
-        },
-        "Cinnamon Bun": {
-          "predicted": 3,
-          "avgLastMonth": 3,
-          "weatherAdjusted": false
-        },
-        "Americano": {
-          "predicted": 4,
-          "avgLastMonth": 4.8,
-          "weatherAdjusted": false
-        },
-        "Chocolate Croissant": {
-          "predicted": 5,
-          "avgLastMonth": 5.8,
-          "weatherAdjusted": false
-        },
-        "Mocha": {
-          "predicted": 4,
-          "avgLastMonth": 4.5,
-          "weatherAdjusted": false
-        },
-        "Chai Latte": {
-          "predicted": 4,
-          "avgLastMonth": 4.5,
-          "weatherAdjusted": false
-        },
-        "Cappuccino": {
-          "predicted": 3,
-          "avgLastMonth": 3.5,
-          "weatherAdjusted": false
-        },
-        "GF VEGAN brownie": {
-          "predicted": 2,
-          "avgLastMonth": 1.5,
-          "weatherAdjusted": false
-        },
-        "Spinach Feta Croissant": {
-          "predicted": 1,
-          "avgLastMonth": 0.8,
-          "weatherAdjusted": false
-        },
-        "Flat White": {
-          "predicted": 4,
-          "avgLastMonth": 4.8,
-          "weatherAdjusted": false
-        },
-        "Cortado": {
-          "predicted": 1,
-          "avgLastMonth": 1.8,
-          "weatherAdjusted": false
-        },
-        "Hot Tea": {
-          "predicted": 1,
-          "avgLastMonth": 1,
-          "weatherAdjusted": false
-        },
-        "Hot Pure Matcha": {
-          "predicted": 2,
-          "avgLastMonth": 1.8,
-          "weatherAdjusted": false
-        },
-        "London Fog Latte": {
-          "predicted": 2,
-          "avgLastMonth": 2.5,
-          "weatherAdjusted": false
-        },
-        "Iced Latte": {
-          "predicted": 1,
-          "avgLastMonth": 1.5,
-          "weatherAdjusted": false
-        },
-        "Coffee Beans (Friends and Family)": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Ginger Peach Iced Tea": {
-          "predicted": 2,
-          "avgLastMonth": 2.5,
-          "weatherAdjusted": false
-        },
-        "Iced Americano": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "GF Mini Doughnut": {
-          "predicted": 3,
-          "avgLastMonth": 4.3,
-          "weatherAdjusted": false
-        },
-        "Caprese Panini": {
-          "predicted": 2,
-          "avgLastMonth": 2,
-          "weatherAdjusted": false
-        },
-        "Vanilla Matcha": {
-          "predicted": 1,
-          "avgLastMonth": 1.8,
-          "weatherAdjusted": false
-        },
-        "Vegan Gluten Free Everything Bagel": {
-          "predicted": 1,
-          "avgLastMonth": 1,
-          "weatherAdjusted": false
-        },
-        "Water Bottle": {
-          "predicted": 1,
-          "avgLastMonth": 0.8,
-          "weatherAdjusted": false
-        },
-        "Steamed Milk": {
-          "predicted": 0,
-          "avgLastMonth": 0.5,
-          "weatherAdjusted": false
-        },
-        "Yogurt and Granola Bowl": {
-          "predicted": 0,
-          "avgLastMonth": 0.5,
-          "weatherAdjusted": false
-        },
-        "Ceramics cup": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Ceramics vase ": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Iced Coffee": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Bagel": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Iced Vanilla Matcha": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Iced Pure Matcha": {
-          "predicted": 1,
-          "avgLastMonth": 1.3,
-          "weatherAdjusted": false
-        },
-        "Upstairs": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        },
-        "Gluten Free Granola": {
-          "predicted": 0,
-          "avgLastMonth": 0.3,
-          "weatherAdjusted": false
-        }
-      },
-      "totalRevenue": {
-        "predicted": 516
-      },
-      "weather": {
-        "emoji": "⛅",
-        "temp": 10.4,
-        "condition": "Overcast",
-        "precipitation": 0
-      }
-    },
     "2026-03-03": {
       "dayOfWeek": "Tuesday",
       "items": {
@@ -444,9 +230,9 @@
       },
       "weather": {
         "emoji": "🌧️",
-        "temp": 8.1,
+        "temp": 8.4,
         "condition": "Rain",
-        "precipitation": 30.2
+        "precipitation": 21.62
       }
     },
     "2026-03-04": {
@@ -652,44 +438,44 @@
         "predicted": 674
       },
       "weather": {
-        "emoji": "🌧️",
-        "temp": 9.7,
-        "condition": "Light rain",
-        "precipitation": 12.23
+        "emoji": "☁️",
+        "temp": 9.1,
+        "condition": "Heavy drizzle",
+        "precipitation": 4.82
       }
     },
     "2026-03-05": {
       "dayOfWeek": "Thursday",
       "items": {
         "Latte": {
-          "predicted": 20,
+          "predicted": 17,
           "avgLastMonth": 17,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Americano": {
-          "predicted": 9,
+          "predicted": 8,
           "avgLastMonth": 8,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Mocha": {
-          "predicted": 7,
+          "predicted": 6,
           "avgLastMonth": 5,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "London Fog Latte": {
-          "predicted": 5,
+          "predicted": 4,
           "avgLastMonth": 3.5,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Hot Chocolate": {
-          "predicted": 6,
+          "predicted": 5,
           "avgLastMonth": 6,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Drip Coffee": {
-          "predicted": 8,
+          "predicted": 7,
           "avgLastMonth": 7.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Plain Croissant": {
           "predicted": 4,
@@ -712,9 +498,9 @@
           "weatherAdjusted": false
         },
         "Chai Latte": {
-          "predicted": 5,
+          "predicted": 4,
           "avgLastMonth": 4.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Spinach Feta Croissant": {
           "predicted": 1,
@@ -722,9 +508,9 @@
           "weatherAdjusted": false
         },
         "Cappuccino": {
-          "predicted": 5,
+          "predicted": 4,
           "avgLastMonth": 4,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Cookie": {
           "predicted": 5,
@@ -749,12 +535,12 @@
         "Iced Vanilla Matcha": {
           "predicted": 1,
           "avgLastMonth": 0.8,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Cortado": {
           "predicted": 1,
           "avgLastMonth": 1.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Gluten Free Granola": {
           "predicted": 1,
@@ -774,7 +560,7 @@
         "Hot Pure Matcha": {
           "predicted": 3,
           "avgLastMonth": 2.8,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Trails Coffee T-Shirt": {
           "predicted": 1,
@@ -784,7 +570,7 @@
         "Flat White": {
           "predicted": 3,
           "avgLastMonth": 4.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Steamed Milk": {
           "predicted": 1,
@@ -794,7 +580,7 @@
         "Iced Americano": {
           "predicted": 1,
           "avgLastMonth": 0.5,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Water Bottle": {
           "predicted": 1,
@@ -809,7 +595,7 @@
         "Iced Latte": {
           "predicted": 1,
           "avgLastMonth": 1,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "eGift Card": {
           "predicted": 1,
@@ -839,12 +625,12 @@
         "Vanilla Matcha": {
           "predicted": 0,
           "avgLastMonth": 0.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Macchiato": {
           "predicted": 0,
           "avgLastMonth": 0.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         },
         "Chocolate Energy Bite": {
           "predicted": 0,
@@ -859,17 +645,17 @@
         "Iced Coffee": {
           "predicted": 0,
           "avgLastMonth": 0.3,
-          "weatherAdjusted": true
+          "weatherAdjusted": false
         }
       },
       "totalRevenue": {
         "predicted": 717
       },
       "weather": {
-        "emoji": "🌧️",
-        "temp": 6.3,
-        "condition": "Light rain",
-        "precipitation": 2.4
+        "emoji": "☁️",
+        "temp": 9.4,
+        "condition": "Light drizzle",
+        "precipitation": 0.3
       }
     },
     "2026-03-06": {
@@ -1080,10 +866,10 @@
         "predicted": 682
       },
       "weather": {
-        "emoji": "🌧️",
-        "temp": 6.2,
-        "condition": "Rain",
-        "precipitation": 9.4
+        "emoji": "☁️",
+        "temp": 6.9,
+        "condition": "Heavy drizzle",
+        "precipitation": 3.6
       }
     },
     "2026-03-07": {
@@ -1345,9 +1131,9 @@
       },
       "weather": {
         "emoji": "☁️",
-        "temp": 6.8,
+        "temp": 7.5,
         "condition": "Light drizzle",
-        "precipitation": 2.4
+        "precipitation": 1.6
       }
     },
     "2026-03-08": {
@@ -1594,10 +1380,195 @@
       },
       "weather": {
         "emoji": "☁️",
-        "temp": 8.1,
-        "condition": "Drizzle",
-        "precipitation": 3.5
+        "temp": 8.6,
+        "condition": "Light drizzle",
+        "precipitation": 3.8
       }
+    },
+    "2026-03-09": {
+      "dayOfWeek": "Monday",
+      "items": {
+        "Latte": {
+          "predicted": 20,
+          "avgLastMonth": 19.8
+        },
+        "Lemon cake": {
+          "predicted": 6,
+          "avgLastMonth": 3.5
+        },
+        "Americano": {
+          "predicted": 9,
+          "avgLastMonth": 7.5
+        },
+        "Ham and Cheese Croissant": {
+          "predicted": 7,
+          "avgLastMonth": 6
+        },
+        "Cookie": {
+          "predicted": 7,
+          "avgLastMonth": 6.8
+        },
+        "Plain Croissant": {
+          "predicted": 7,
+          "avgLastMonth": 6.5
+        },
+        "Hot Chocolate": {
+          "predicted": 6,
+          "avgLastMonth": 5.8
+        },
+        "Chocolate Croissant": {
+          "predicted": 7,
+          "avgLastMonth": 7
+        },
+        "Iced Latte": {
+          "predicted": 3,
+          "avgLastMonth": 2.8
+        },
+        "Poppi Soda": {
+          "predicted": 2,
+          "avgLastMonth": 1
+        },
+        "Hot Pure Matcha": {
+          "predicted": 3,
+          "avgLastMonth": 2.8
+        },
+        "Cortado": {
+          "predicted": 3,
+          "avgLastMonth": 2.8
+        },
+        "Cappuccino": {
+          "predicted": 5,
+          "avgLastMonth": 4.5
+        },
+        "Drip Coffee": {
+          "predicted": 8,
+          "avgLastMonth": 8.8
+        },
+        "Cinnamon Bun": {
+          "predicted": 5,
+          "avgLastMonth": 4
+        },
+        "Banana Bread": {
+          "predicted": 5,
+          "avgLastMonth": 6.3
+        },
+        "Spinach Feta Croissant": {
+          "predicted": 2,
+          "avgLastMonth": 1.5
+        },
+        "Ginger Peach Iced Tea": {
+          "predicted": 3,
+          "avgLastMonth": 3.3
+        },
+        "eGift Card": {
+          "predicted": 1,
+          "avgLastMonth": 0.5
+        },
+        "London Fog Latte": {
+          "predicted": 3,
+          "avgLastMonth": 3
+        },
+        "Flat White": {
+          "predicted": 5,
+          "avgLastMonth": 5.3
+        },
+        "Vanilla Matcha": {
+          "predicted": 2,
+          "avgLastMonth": 2.3
+        },
+        "Espresso": {
+          "predicted": 1,
+          "avgLastMonth": 0.5
+        },
+        "Hot Tea": {
+          "predicted": 1,
+          "avgLastMonth": 1.3
+        },
+        "Steamed Milk": {
+          "predicted": 1,
+          "avgLastMonth": 0.8
+        },
+        "Iced Pure Matcha": {
+          "predicted": 1,
+          "avgLastMonth": 1.5
+        },
+        "Iced Americano": {
+          "predicted": 1,
+          "avgLastMonth": 0.5
+        },
+        "Water Bottle": {
+          "predicted": 1,
+          "avgLastMonth": 1
+        },
+        "Alani Nu Energy Drink": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Chai Latte": {
+          "predicted": 4,
+          "avgLastMonth": 4.8
+        },
+        "Mocha": {
+          "predicted": 4,
+          "avgLastMonth": 4.5
+        },
+        "GF VEGAN brownie": {
+          "predicted": 2,
+          "avgLastMonth": 1.5
+        },
+        "Coffee Beans (Friends and Family)": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "GF Mini Doughnut": {
+          "predicted": 3,
+          "avgLastMonth": 4.3
+        },
+        "Caprese Panini": {
+          "predicted": 2,
+          "avgLastMonth": 2
+        },
+        "Vegan Gluten Free Everything Bagel": {
+          "predicted": 1,
+          "avgLastMonth": 1
+        },
+        "Yogurt and Granola Bowl": {
+          "predicted": 0,
+          "avgLastMonth": 0.5
+        },
+        "Ceramics cup": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Ceramics vase ": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Iced Coffee": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Bagel": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Iced Vanilla Matcha": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Upstairs": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        },
+        "Gluten Free Granola": {
+          "predicted": 0,
+          "avgLastMonth": 0.3
+        }
+      },
+      "totalRevenue": {
+        "predicted": 799
+      },
+      "weather": null
     }
   }
 }

@@ -6,6 +6,7 @@ const STAFF_ROLES = {
     admins: [
         'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd', // JP
         '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba', // JP alt
+        'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72', // JP (shop mgmt)
         '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f', // Charlene
         '4287e0cdcccb4789f0c1d4c27caae092f19f0c266c0d0638b571558d09317911', // Dayi
         '6d3907327333dfb1b6f6100f9fdd1c6cbaa50b3acc801cf4cf5d937b838ee80b', // Dayi alt
@@ -48,10 +49,45 @@ const STAFF_ROLES = {
         return this.isAdmin();
     },
 
-    // Redirect if user can't access current page
+    // Redirect if user can't access current page (deferred until NostrTools loads)
     enforceAccess(pageId) {
-        if (!this.canAccess(pageId)) {
-            window.location.href = 'index.html';
+        if (!this.restrictedPages.includes(pageId)) return;
+
+        // If cached pubkey exists, check immediately
+        const cached = this._getCachedPubkey();
+        if (cached) {
+            if (!this.admins.includes(cached)) {
+                window.location.href = 'index.html';
+            }
+            return;
         }
+
+        // Otherwise wait for NostrTools to load and check
+        const self = this;
+        window.addEventListener('DOMContentLoaded', function() {
+            // Give NostrTools time to load from CDN
+            const check = function() {
+                if (typeof NostrTools === 'undefined') {
+                    setTimeout(check, 100);
+                    return;
+                }
+                const nsec = localStorage.getItem('nostr_nsec');
+                if (!nsec) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                try {
+                    const decoded = NostrTools.nip19.decode(nsec);
+                    const pubkey = NostrTools.getPublicKey(decoded.data);
+                    localStorage.setItem('nostr_pubkey', pubkey);
+                    if (!self.admins.includes(pubkey)) {
+                        window.location.href = 'index.html';
+                    }
+                } catch (e) {
+                    window.location.href = 'index.html';
+                }
+            };
+            check();
+        });
     }
 };

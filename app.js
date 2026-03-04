@@ -6,7 +6,7 @@ let currentChecklist = 'opening';
 let currentWeekOffset = 0;
 
 // Shop management pubkey — all submissions are encrypted to this key
-const SHOP_MGMT_PUBKEY = 'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72';
+const SHOP_MGMT_PUBKEY = 'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37e0117d61f2';
 
 // Nostr relay configuration
 const RELAYS = [

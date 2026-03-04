@@ -7,6 +7,7 @@ const STAFF_ROLES = {
         'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd', // JP
         '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba', // JP alt
         'c1a9ea801212d71b39146d2d867f8744000cab935d062dce6756eac8ad408c72', // JP (shop mgmt)
+        '4123fb4c449d8a48a954fe25ce6b171bda595ff83fecdd8e2588f8ea00634e05', // JP (manager key)
         '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f', // Charlene
         '4287e0cdcccb4789f0c1d4c27caae092f19f0c266c0d0638b571558d09317911', // Dayi
         '6d3907327333dfb1b6f6100f9fdd1c6cbaa50b3acc801cf4cf5d937b838ee80b', // Dayi alt

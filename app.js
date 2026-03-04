@@ -36,6 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 privateKey: decoded.data,
                 publicKey: NostrTools.getPublicKey(decoded.data)
             };
+            localStorage.setItem('nostr_pubkey', userKeys.publicKey);
             showLoggedInState();
         } catch (error) {
             localStorage.removeItem('nostr_nsec');
@@ -311,6 +312,7 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
             
             // Save to localStorage for persistence across sessions
             localStorage.setItem('nostr_nsec', nsecInput);
+            localStorage.setItem('nostr_pubkey', publicKey);
             
             // Show logged in state
             showLoggedInState();
@@ -676,6 +678,7 @@ function showStatus(type, message) {
 // Logout function
 function logout() {
     localStorage.removeItem('nostr_nsec');
+    localStorage.removeItem('nostr_pubkey');
     userKeys = null;
     
     // Reset UI

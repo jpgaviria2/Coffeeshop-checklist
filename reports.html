@@ -53,8 +53,10 @@
     <div class="nav-bar"></div>
     <script src="translations.js"></script>
     <script src="i18n.js"></script>
+    <script src="roles.js"></script>
     <script src="nav.js"></script>
-    <script>initNav('reports');</script>
+    <script>initNav('reports');
+    STAFF_ROLES.enforceAccess('reports');</script>
     <div class="container">
         <h1 data-i18n="reports.title">📊 Weekly Report</h1>
         <div class="subtitle" id="dateRange"></div>

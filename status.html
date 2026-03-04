@@ -165,8 +165,10 @@
         <div class="nav-bar"></div>
         <script src="translations.js"></script>
     <script src="i18n.js"></script>
+    <script src="roles.js"></script>
     <script src="nav.js"></script>
-        <script>initNav('status');</script>
+        <script>initNav('status');
+    STAFF_ROLES.enforceAccess('status');</script>
         
         <div class="content">
             <div class="loading" id="loading" data-i18n="status.loading">

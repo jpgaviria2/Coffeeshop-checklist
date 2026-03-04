@@ -2,7 +2,7 @@
 // Include this script on every page, then call: initNav('pageName')
 
 function initNav(activePage) {
-    const pages = [
+    const allPages = [
         { id: 'checklists', href: 'index.html', icon: '📋', labelKey: 'nav.checklists', label: 'Checklists' },
         { id: 'status', href: 'status.html', icon: '📊', labelKey: 'nav.status', label: 'Status' },
         { id: 'reports', href: 'reports.html', icon: '📈', labelKey: 'nav.reports', label: 'Reports' },
@@ -12,6 +12,11 @@ function initNav(activePage) {
         { id: 'waste', href: 'waste.html', icon: '🗑️', labelKey: 'nav.waste', label: 'Waste Tracking' },
         { id: 'dashboard', href: 'dashboard.html', icon: '☕', labelKey: 'nav.dashboard', label: 'Sales Dashboard' },
     ];
+
+    // Filter pages based on role access
+    const pages = (typeof STAFF_ROLES !== 'undefined')
+        ? allPages.filter(p => STAFF_ROLES.canAccess(p.id))
+        : allPages;
 
     function getLabel(page) {
         if (typeof i18n !== 'undefined') {

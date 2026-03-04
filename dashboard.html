@@ -37,8 +37,10 @@
     <div class="nav-bar"></div>
     <script src="translations.js"></script>
     <script src="i18n.js"></script>
+    <script src="roles.js"></script>
     <script src="nav.js"></script>
-    <script>initNav('dashboard');</script>
+    <script>initNav('dashboard');
+    STAFF_ROLES.enforceAccess('dashboard');</script>
     <div class="container">
         <h1 data-i18n="dashboard.title">☕ Sales Dashboard</h1>
         <div id="content">

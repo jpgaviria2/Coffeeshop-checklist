@@ -17,24 +17,13 @@ const STAFF_ROLES = {
     // Pages restricted to admins only
     restrictedPages: ['status', 'reports', 'dashboard'],
 
-    // Get pubkey from stored nsec (works even before NostrTools loads by using cached pubkey)
-    _getCachedPubkey() {
-        return localStorage.getItem('nostr_pubkey');
-    },
-
     isAdmin() {
-        // First try cached pubkey (available immediately)
-        const cached = this._getCachedPubkey();
-        if (cached) return this.admins.includes(cached);
-
-        // Fallback: derive from nsec if NostrTools available
+        // Derive pubkey from nsec (NostrTools must be loaded before this script)
         const nsec = localStorage.getItem('nostr_nsec');
         if (!nsec || typeof NostrTools === 'undefined') return false;
         try {
             const decoded = NostrTools.nip19.decode(nsec);
             const pubkey = NostrTools.getPublicKey(decoded.data);
-            // Cache for instant checks next time
-            localStorage.setItem('nostr_pubkey', pubkey);
             return this.admins.includes(pubkey);
         } catch (e) {
             return false;
@@ -51,45 +40,11 @@ const STAFF_ROLES = {
         return this.isAdmin();
     },
 
-    // Redirect if user can't access current page (deferred until NostrTools loads)
+    // Redirect if user can't access current page
     enforceAccess(pageId) {
         if (!this.restrictedPages.includes(pageId)) return;
-
-        // If cached pubkey exists, check immediately
-        const cached = this._getCachedPubkey();
-        if (cached) {
-            if (!this.admins.includes(cached)) {
-                window.location.href = 'index.html';
-            }
-            return;
+        if (!this.isAdmin()) {
+            window.location.href = 'index.html';
         }
-
-        // Otherwise wait for NostrTools to load and check
-        const self = this;
-        window.addEventListener('DOMContentLoaded', function() {
-            // Give NostrTools time to load from CDN
-            const check = function() {
-                if (typeof NostrTools === 'undefined') {
-                    setTimeout(check, 100);
-                    return;
-                }
-                const nsec = localStorage.getItem('nostr_nsec');
-                if (!nsec) {
-                    window.location.href = 'index.html';
-                    return;
-                }
-                try {
-                    const decoded = NostrTools.nip19.decode(nsec);
-                    const pubkey = NostrTools.getPublicKey(decoded.data);
-                    localStorage.setItem('nostr_pubkey', pubkey);
-                    if (!self.admins.includes(pubkey)) {
-                        window.location.href = 'index.html';
-                    }
-                } catch (e) {
-                    window.location.href = 'index.html';
-                }
-            };
-            check();
-        });
     }
 };

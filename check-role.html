@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head><title>Role Debug</title></head>
+<body style="font-family:monospace;padding:20px;">
+<h2>Role Debug</h2>
+<pre id="out">Loading...</pre>
+<script src="https://unpkg.com/nostr-tools@2.7.2/lib/nostr.bundle.js"></script>
+<script src="roles.js"></script>
+<script>
+const out = document.getElementById('out');
+const nsec = localStorage.getItem('nostr_nsec');
+let info = '';
+info += 'NostrTools defined: ' + (typeof NostrTools !== 'undefined') + '\n';
+info += 'nsec in storage: ' + (nsec ? nsec.substring(0,10) + '...' : 'NONE') + '\n';
+if (nsec && typeof NostrTools !== 'undefined') {
+    try {
+        const decoded = NostrTools.nip19.decode(nsec);
+        const pubkey = NostrTools.getPublicKey(decoded.data);
+        info += 'Derived pubkey: ' + pubkey + '\n';
+        info += 'Is in admin list: ' + STAFF_ROLES.admins.includes(pubkey) + '\n';
+        info += 'isAdmin(): ' + STAFF_ROLES.isAdmin() + '\n';
+    } catch(e) {
+        info += 'ERROR: ' + e.message + '\n';
+    }
+} else {
+    info += 'Cannot derive pubkey\n';
+}
+info += '\nAdmin list:\n';
+STAFF_ROLES.admins.forEach(a => info += '  ' + a + '\n');
+out.textContent = info;
+</script>
+</body></html>

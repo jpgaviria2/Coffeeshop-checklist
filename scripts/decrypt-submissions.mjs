@@ -3,7 +3,8 @@
 // Runs via GitHub Actions on a schedule
 
 import { nip04, nip19, getPublicKey } from 'nostr-tools';
-import { WebSocket } from 'websocket-polyfill';
+import pkg from 'websocket-polyfill';
+const { WebSocket } = pkg;
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';

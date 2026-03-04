@@ -997,5 +997,16 @@
         "price": 250
       }
     ]
+  },
+  {
+    "id": "776AGYPUUZM22KV6YAVL2ZG3",
+    "name": "Perrier",
+    "variations": [
+      {
+        "id": "ZPB42FIJHMIQLGDJASWWQ3S2",
+        "name": "Regular",
+        "price": 300
+      }
+    ]
   }
 ]

@@ -35,14 +35,16 @@
 </head>
 <body>
     <div class="nav-bar"></div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
     <script src="nav.js"></script>
     <script>initNav('dashboard');</script>
     <div class="container">
-        <h1>☕ Sales Dashboard</h1>
+        <h1 data-i18n="dashboard.title">☕ Sales Dashboard</h1>
         <div id="content">
             <div class="empty-state">
                 <div class="icon">⏳</div>
-                <p>Loading...</p>
+                <p data-i18n="dashboard.loading">Loading...</p>
             </div>
         </div>
         <div class="updated" id="updated"></div>

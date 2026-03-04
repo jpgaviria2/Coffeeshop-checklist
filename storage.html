@@ -92,22 +92,24 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📦 Storage Map</h1>
-            <p>What's in each drawer</p>
+            <h1 data-i18n="storage.title">📦 Storage Map</h1>
+            <p data-i18n="storage.subtitle">What's in each drawer</p>
         </div>
         <div class="nav"></div>
-        <script src="nav.js"></script>
+        <script src="translations.js"></script>
+    <script src="i18n.js"></script>
+    <script src="nav.js"></script>
         <script>initNav('storage');</script>
         <div class="content">
-            <input type="text" class="search-bar" placeholder="🔍 Search items..." id="searchBar" oninput="filterDrawers()">
+            <input type="text" class="search-bar" placeholder="🔍 Search items..." data-i18n-placeholder="storage.search" id="searchBar" oninput="filterDrawers()">
             
             <div id="drawers">
                 <div class="drawer-card open" data-items="spin mop bucket, spray bottles, reusable bags, cleaning supplies">
                     <div class="drawer-header" onclick="toggleDrawer(this)">
                         <div class="drawer-emoji">🧹</div>
                         <div class="drawer-title">
-                            <strong>Drawer 1</strong>
-                            <span>Cleaning supplies</span>
+                            <strong data-i18n="storage.d1.title">Drawer 1</strong>
+                            <span data-i18n="storage.d1.sub">Cleaning supplies</span>
                         </div>
                         <div class="drawer-arrow">›</div>
                     </div>
@@ -125,8 +127,8 @@
                     <div class="drawer-header" onclick="toggleDrawer(this)">
                         <div class="drawer-emoji">🥡</div>
                         <div class="drawer-title">
-                            <strong>Drawer 2</strong>
-                            <span>Disposables &amp; paper goods</span>
+                            <strong data-i18n="storage.d2.title">Drawer 2</strong>
+                            <span data-i18n="storage.d2.sub">Disposables &amp; paper goods</span>
                         </div>
                         <div class="drawer-arrow">›</div>
                     </div>
@@ -147,8 +149,8 @@
                     <div class="drawer-header" onclick="toggleDrawer(this)">
                         <div class="drawer-emoji">🥤</div>
                         <div class="drawer-title">
-                            <strong>Drawer 3</strong>
-                            <span>Cups, lids &amp; cutlery</span>
+                            <strong data-i18n="storage.d3.title">Drawer 3</strong>
+                            <span data-i18n="storage.d3.sub">Cups, lids &amp; cutlery</span>
                         </div>
                         <div class="drawer-arrow">›</div>
                     </div>
@@ -168,8 +170,8 @@
                     <div class="drawer-header" onclick="toggleDrawer(this)">
                         <div class="drawer-emoji">🌱</div>
                         <div class="drawer-title">
-                            <strong>Drawer 4</strong>
-                            <span>Compostable cups &amp; napkins</span>
+                            <strong data-i18n="storage.d4.title">Drawer 4</strong>
+                            <span data-i18n="storage.d4.sub">Compostable cups &amp; napkins</span>
                         </div>
                         <div class="drawer-arrow">›</div>
                     </div>
@@ -187,8 +189,8 @@
                     <div class="drawer-header" onclick="toggleDrawer(this)">
                         <div class="drawer-emoji">🔝</div>
                         <div class="drawer-title">
-                            <strong>Drawer 5</strong>
-                            <span>Lids &amp; bulk stock</span>
+                            <strong data-i18n="storage.d5.title">Drawer 5</strong>
+                            <span data-i18n="storage.d5.sub">Lids &amp; bulk stock</span>
                         </div>
                         <div class="drawer-arrow">›</div>
                     </div>
@@ -206,8 +208,8 @@
                     <div class="drawer-header" onclick="toggleDrawer(this)">
                         <div class="drawer-emoji">🔧</div>
                         <div class="drawer-title">
-                            <strong>Drawer 6</strong>
-                            <span>Misc &amp; tools</span>
+                            <strong data-i18n="storage.d6.title">Drawer 6</strong>
+                            <span data-i18n="storage.d6.sub">Misc &amp; tools</span>
                         </div>
                         <div class="drawer-arrow">›</div>
                     </div>
@@ -226,7 +228,7 @@
             </div>
 
             <div class="no-results" id="noResults">
-                😕 No items found
+                <span data-i18n="storage.noresults">😕 No items found</span>
             </div>
         </div>
     </div>

@@ -3,15 +3,22 @@
 
 function initNav(activePage) {
     const pages = [
-        { id: 'checklists', href: 'index.html', icon: '📋', label: 'Checklists' },
-        { id: 'status', href: 'status.html', icon: '📊', label: 'Status' },
-        { id: 'reports', href: 'reports.html', icon: '📈', label: 'Reports' },
-        { id: 'procedures', href: 'procedures.html', icon: '📖', label: 'Procedures' },
-        { id: 'storage', href: 'storage.html', icon: '📦', label: 'Storage' },
-        { id: 'prep', href: 'prep.html', icon: '📝', label: 'Prep Lists' },
-        { id: 'waste', href: 'waste.html', icon: '🗑️', label: 'Waste Tracking' },
-        { id: 'dashboard', href: 'dashboard.html', icon: '☕', label: 'Sales Dashboard' },
+        { id: 'checklists', href: 'index.html', icon: '📋', labelKey: 'nav.checklists', label: 'Checklists' },
+        { id: 'status', href: 'status.html', icon: '📊', labelKey: 'nav.status', label: 'Status' },
+        { id: 'reports', href: 'reports.html', icon: '📈', labelKey: 'nav.reports', label: 'Reports' },
+        { id: 'procedures', href: 'procedures.html', icon: '📖', labelKey: 'nav.procedures', label: 'Procedures' },
+        { id: 'storage', href: 'storage.html', icon: '📦', labelKey: 'nav.storage', label: 'Storage' },
+        { id: 'prep', href: 'prep.html', icon: '📝', labelKey: 'nav.prep', label: 'Prep Lists' },
+        { id: 'waste', href: 'waste.html', icon: '🗑️', labelKey: 'nav.waste', label: 'Waste Tracking' },
+        { id: 'dashboard', href: 'dashboard.html', icon: '☕', labelKey: 'nav.dashboard', label: 'Sales Dashboard' },
     ];
+
+    function getLabel(page) {
+        if (typeof i18n !== 'undefined') {
+            return i18n.t(page.labelKey);
+        }
+        return page.label;
+    }
 
     const activeItem = pages.find(p => p.id === activePage) || pages[0];
 
@@ -106,6 +113,39 @@ function initNav(activePage) {
         .nav-overlay.open {
             display: block;
         }
+        /* Language toggle */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 101;
+        }
+        .lang-toggle-btn {
+            padding: 4px 10px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-toggle-btn:first-child {
+            border-radius: 6px 0 0 6px;
+            border-right: 1px solid #667eea;
+        }
+        .lang-toggle-btn:last-child {
+            border-radius: 0 6px 6px 0;
+            border-left: 1px solid #667eea;
+        }
+        .lang-toggle-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
     `;
     document.head.appendChild(style);
 
@@ -116,6 +156,7 @@ function initNav(activePage) {
     // Build new nav
     const navContainer = document.createElement('div');
     navContainer.className = 'nav-container';
+    navContainer.style.position = 'relative';
 
     // Overlay (closes menu when tapping outside)
     const overlay = document.createElement('div');
@@ -125,10 +166,20 @@ function initNav(activePage) {
     // Header bar
     const header = document.createElement('div');
     header.className = 'nav-header';
+    header.id = 'navHeader';
     header.innerHTML = `
         <span class="nav-hamburger">☰</span>
-        <span class="nav-current">${activeItem.icon} ${activeItem.label}</span>
+        <span class="nav-current" id="navCurrentLabel">${activeItem.icon} ${getLabel(activeItem)}</span>
         <span class="nav-arrow" id="navArrow">▼</span>
+    `;
+
+    // Language toggle
+    const langToggle = document.createElement('div');
+    langToggle.className = 'lang-toggle';
+    const currentLang = (typeof i18n !== 'undefined') ? i18n.getLang() : (localStorage.getItem('trails-coffee-lang') || 'en');
+    langToggle.innerHTML = `
+        <button class="lang-toggle-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" onclick="event.stopPropagation(); if(typeof i18n!=='undefined') i18n.switchLang('en');">EN</button>
+        <button class="lang-toggle-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es" onclick="event.stopPropagation(); if(typeof i18n!=='undefined') i18n.switchLang('es');">ES</button>
     `;
 
     // Dropdown menu
@@ -136,15 +187,20 @@ function initNav(activePage) {
     menu.className = 'nav-menu';
     menu.id = 'navMenu';
 
-    pages.forEach(page => {
-        const a = document.createElement('a');
-        a.href = page.href;
-        if (page.id === activePage) a.className = 'active';
-        a.innerHTML = `<span class="nav-menu-icon">${page.icon}</span>${page.label}`;
-        menu.appendChild(a);
-    });
+    function buildMenuItems() {
+        menu.innerHTML = '';
+        pages.forEach(page => {
+            const a = document.createElement('a');
+            a.href = page.href;
+            if (page.id === activePage) a.className = 'active';
+            a.innerHTML = `<span class="nav-menu-icon">${page.icon}</span>${getLabel(page)}`;
+            menu.appendChild(a);
+        });
+    }
+    buildMenuItems();
 
     navContainer.appendChild(header);
+    navContainer.appendChild(langToggle);
     navContainer.appendChild(menu);
 
     // Replace existing nav
@@ -164,4 +220,13 @@ function initNav(activePage) {
 
     header.addEventListener('click', toggleMenu);
     overlay.addEventListener('click', toggleMenu);
+
+    // Expose nav update function for i18n
+    window._i18nUpdateNav = function() {
+        const currentLabel = document.getElementById('navCurrentLabel');
+        if (currentLabel) {
+            currentLabel.innerHTML = activeItem.icon + ' ' + getLabel(activeItem);
+        }
+        buildMenuItems();
+    };
 }

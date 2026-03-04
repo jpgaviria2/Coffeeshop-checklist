@@ -66,41 +66,48 @@
     </style>
 </head>
 <body>
+    <div style="position:fixed;top:10px;right:10px;z-index:9999;display:flex;gap:0;">
+        <button class="lang-toggle-btn" data-lang="en" onclick="if(typeof i18n!=='undefined') i18n.switchLang('en');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px 0 0 6px;border-right:1px solid #667eea;">EN</button>
+        <button class="lang-toggle-btn" data-lang="es" onclick="if(typeof i18n!=='undefined') i18n.switchLang('es');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 6px 6px 0;border-left:1px solid #667eea;">ES</button>
+    </div>
+    <style>.lang-toggle-btn.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:white!important;}</style>
     <div class="container">
         <div class="header">
-            <button class="back-btn" onclick="window.location.href='index.html'">← Back to Checklists</button>
-            <h1>✨ Espresso Station Closing Standard</h1>
-            <p>This is how the espresso station should look every night</p>
+            <button class="back-btn" onclick="window.location.href='index.html'" data-i18n="espresso_std.back">← Back to Checklists</button>
+            <h1 data-i18n="espresso_std.title">✨ Espresso Station Closing Standard</h1>
+            <p data-i18n="espresso_std.subtitle">This is how the espresso station should look every night</p>
         </div>
         
         <div class="content">
             <div class="important">
-                <strong>📸 Reference Photo:</strong> The espresso station must look exactly like this at closing - polished, clean, organized.
+                <strong data-i18n="espresso_std.ref">📸 Reference Photo:</strong> <span data-i18n="espresso_std.ref_desc">The espresso station must look exactly like this at closing - polished, clean, organized.</span>
             </div>
             
             <div class="photo-container">
                 <img src="espresso-station-clean.jpg" alt="Espresso Station Clean Standard">
-                <p style="margin-top: 10px; color: #666; font-size: 14px;">Perfect closing condition - February 8, 2026</p>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;"><span data-i18n="espresso_std.photo_caption">Perfect closing condition - February 8, 2026</span></p>
             </div>
             
             <div class="checklist">
-                <h2>Espresso Machine Closing Checklist</h2>
+                <h2 data-i18n="espresso_std.checklist_title">Espresso Machine Closing Checklist</h2>
                 <ul>
-                    <li>✨ Machine polished and shiny (no fingerprints, water spots, or coffee stains)</li>
-                    <li>🧼 Drip trays cleaned and in place</li>
-                    <li>☕ Portafilters clean and positioned properly</li>
-                    <li>🥤 Cups and glasses organized on top (as shown in photo)</li>
-                    <li>🧽 Group heads cleaned, baskets removed and cleaned</li>
-                    <li>💧 Steam wands wiped clean</li>
-                    <li>📏 Work surface around machine clean and organized</li>
-                    <li>🔧 Tampers and tools in their proper positions</li>
+                    <li data-i18n="espresso_std.item1">✨ Machine polished and shiny (no fingerprints, water spots, or coffee stains)</li>
+                    <li data-i18n="espresso_std.item2">🧼 Drip trays cleaned and in place</li>
+                    <li data-i18n="espresso_std.item3">☕ Portafilters clean and positioned properly</li>
+                    <li data-i18n="espresso_std.item4">🥤 Cups and glasses organized on top (as shown in photo)</li>
+                    <li data-i18n="espresso_std.item5">🧽 Group heads cleaned, baskets removed and cleaned</li>
+                    <li data-i18n="espresso_std.item6">💧 Steam wands wiped clean</li>
+                    <li data-i18n="espresso_std.item7">📏 Work surface around machine clean and organized</li>
+                    <li data-i18n="espresso_std.item8">🔧 Tampers and tools in their proper positions</li>
                 </ul>
             </div>
             
             <div class="important">
-                <strong>💡 Standard:</strong> If the station doesn't match this photo, it's not ready for closing. Take the extra time to get it right!
+                <strong data-i18n="espresso_std.standard">💡 Standard:</strong> <span data-i18n="espresso_std.standard_desc">If the station doesn't match this photo, it's not ready for closing. Take the extra time to get it right!</span>
             </div>
         </div>
     </div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>

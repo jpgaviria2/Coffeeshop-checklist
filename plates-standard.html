@@ -66,52 +66,59 @@
     </style>
 </head>
 <body>
+    <div style="position:fixed;top:10px;right:10px;z-index:9999;display:flex;gap:0;">
+        <button class="lang-toggle-btn" data-lang="en" onclick="if(typeof i18n!=='undefined') i18n.switchLang('en');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px 0 0 6px;border-right:1px solid #667eea;">EN</button>
+        <button class="lang-toggle-btn" data-lang="es" onclick="if(typeof i18n!=='undefined') i18n.switchLang('es');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 6px 6px 0;border-left:1px solid #667eea;">ES</button>
+    </div>
+    <style>.lang-toggle-btn.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:white!important;}</style>
     <div class="container">
         <div class="header">
-            <button class="back-btn" onclick="window.location.href='index.html'">← Back to Checklists</button>
-            <h1>🍽️ Plate Organization Standard</h1>
-            <p>Efficient plate and dish organization for closing</p>
+            <button class="back-btn" onclick="window.location.href='index.html'" data-i18n="plates_std.back">← Back to Checklists</button>
+            <h1 data-i18n="plates_std.title">🍽️ Plate Organization Standard</h1>
+            <p data-i18n="plates_std.subtitle">Efficient plate and dish organization for closing</p>
         </div>
         
         <div class="content">
             <div class="important">
-                <strong>📸 Reference Photo:</strong> Plates must be organized exactly like this for efficiency and ease of access.
+                <strong data-i18n="plates_std.ref">📸 Reference Photo:</strong> <span data-i18n="plates_std.ref_desc">Plates must be organized exactly like this for efficiency and ease of access.</span>
             </div>
             
             <div class="photo-container">
                 <img src="plates-organized.jpg" alt="Plate Organization Standard">
-                <p style="margin-top: 10px; color: #666; font-size: 14px;">Perfect plate organization - February 8, 2026</p>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;"><span data-i18n="plates_std.photo_caption">Perfect plate organization - February 8, 2026</span></p>
             </div>
             
             <div class="checklist">
-                <h2>Plate Organization Requirements</h2>
+                <h2 data-i18n="plates_std.org_title">Plate Organization Requirements</h2>
                 <ul>
-                    <li>🍽️ <strong>White plates:</strong> Stacked by size, largest at bottom</li>
-                    <li>⚫ <strong>Black plates:</strong> Separate stack, organized by size</li>
-                    <li>📏 <strong>Consistent stacks:</strong> Edges aligned, stable piles</li>
-                    <li>🥣 <strong>Bowls:</strong> Nested properly, easy to grab</li>
-                    <li>🧼 <strong>All clean & dry:</strong> No water spots or food residue</li>
-                    <li>📦 <strong>Shelf organized:</strong> Everything in designated spot</li>
-                    <li>✨ <strong>Accessible:</strong> Most-used items at front/easy height</li>
+                    <li data-i18n="plates_std.item1">🍽️ <strong>White plates:</strong> Stacked by size, largest at bottom</li>
+                    <li data-i18n="plates_std.item2">⚫ <strong>Black plates:</strong> Separate stack, organized by size</li>
+                    <li data-i18n="plates_std.item3">📏 <strong>Consistent stacks:</strong> Edges aligned, stable piles</li>
+                    <li data-i18n="plates_std.item4">🥣 <strong>Bowls:</strong> Nested properly, easy to grab</li>
+                    <li data-i18n="plates_std.item5">🧼 <strong>All clean & dry:</strong> No water spots or food residue</li>
+                    <li data-i18n="plates_std.item6">📦 <strong>Shelf organized:</strong> Everything in designated spot</li>
+                    <li data-i18n="plates_std.item7">✨ <strong>Accessible:</strong> Most-used items at front/easy height</li>
                 </ul>
             </div>
             
             <div class="important">
-                <strong>💡 Why this matters:</strong> Organized plates mean faster service, no hunting for clean dishes during rush, and professional presentation. This organization saves time every single shift!
+                <strong data-i18n="plates_std.why">💡 Why this matters:</strong> <span data-i18n="plates_std.why_desc">Organized plates mean faster service, no hunting for clean dishes during rush, and professional presentation. This organization saves time every single shift!</span>
             </div>
             
             <div class="checklist">
-                <h2>Closing Checklist for Dishes</h2>
+                <h2 data-i18n="plates_std.closing_title">Closing Checklist for Dishes</h2>
                 <ul>
-                    <li>Wash all dishes before organizing</li>
-                    <li>Dry completely (no stacking wet plates)</li>
-                    <li>Sort by type and size</li>
-                    <li>Stack according to photo standard</li>
-                    <li>Ensure stability (won't tip or fall)</li>
-                    <li>Place on shelf in designated locations</li>
+                    <li data-i18n="plates_std.close1">Wash all dishes before organizing</li>
+                    <li data-i18n="plates_std.close2">Dry completely (no stacking wet plates)</li>
+                    <li data-i18n="plates_std.close3">Sort by type and size</li>
+                    <li data-i18n="plates_std.close4">Stack according to photo standard</li>
+                    <li data-i18n="plates_std.close5">Ensure stability (won't tip or fall)</li>
+                    <li data-i18n="plates_std.close6">Place on shelf in designated locations</li>
                 </ul>
             </div>
         </div>
     </div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>

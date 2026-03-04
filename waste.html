@@ -35,18 +35,20 @@
 </head>
 <body>
     <div class="nav-bar"></div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
     <script src="nav.js"></script>
     <script>initNav('waste');</script>
     <div class="container">
-        <h1>🗑️ Waste & Loss Tracking</h1>
-        <div class="subtitle">Inventory variance analysis</div>
+        <h1 data-i18n="waste.title">🗑️ Waste & Loss Tracking</h1>
+        <div class="subtitle" data-i18n="waste.subtitle">Inventory variance analysis</div>
         <div class="week-nav">
-            <button onclick="prevWeek()">← Prev</button>
+            <button onclick="prevWeek()" data-i18n="waste.prev">← Prev</button>
             <div class="label" id="weekLabel"></div>
-            <button onclick="nextWeek()">Next →</button>
+            <button onclick="nextWeek()" data-i18n="waste.next">Next →</button>
         </div>
         <div id="content">
-            <div class="empty-state"><div class="icon">⏳</div><p>Loading...</p></div>
+            <div class="empty-state"><div class="icon">⏳</div><p data-i18n="waste.loading">Loading...</p></div>
         </div>
     </div>
     <script src="waste.js"></script>

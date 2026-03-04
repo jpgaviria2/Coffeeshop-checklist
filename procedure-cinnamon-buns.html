@@ -53,11 +53,16 @@
     </style>
 </head>
 <body>
+    <div style="position:fixed;top:10px;right:10px;z-index:9999;display:flex;gap:0;">
+        <button class="lang-toggle-btn" data-lang="en" onclick="if(typeof i18n!=='undefined') i18n.switchLang('en');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px 0 0 6px;border-right:1px solid #667eea;">EN</button>
+        <button class="lang-toggle-btn" data-lang="es" onclick="if(typeof i18n!=='undefined') i18n.switchLang('es');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 6px 6px 0;border-left:1px solid #667eea;">ES</button>
+    </div>
+    <style>.lang-toggle-btn.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:white!important;}</style>
     <div class="container">
         <div class="header">
-            <button class="back-btn" onclick="window.location.href='procedures.html'">← Back to Procedures</button>
-            <h1>🍥 Cinnamon Buns</h1>
-            <p>Overnight prep, baking & temperature guide</p>
+            <button class="back-btn" onclick="window.location.href='procedures.html'" data-i18n="cinnamon.back">← Back to Procedures</button>
+            <h1 data-i18n="cinnamon.title">🍥 Cinnamon Buns</h1>
+            <p data-i18n="cinnamon.subtitle">Overnight prep, baking & temperature guide</p>
         </div>
         
         <div class="content">
@@ -148,5 +153,7 @@
             </div>
         </div>
     </div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>

@@ -109,58 +109,60 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>☕ Trails Coffee</h1>
-            <p>Training & Procedures</p>
+            <h1 data-i18n="procedures.header_title">☕ Trails Coffee</h1>
+            <p data-i18n="procedures.header_sub">Training & Procedures</p>
         </div>
         
         <div class="nav-bar"></div>
-        <script src="nav.js"></script>
+        <script src="translations.js"></script>
+    <script src="i18n.js"></script>
+    <script src="nav.js"></script>
         <script>initNav('procedures');</script>
         
         <div class="content">
-            <h2 style="color: #667eea; margin-bottom: 20px;">Training Guides</h2>
+            <h2 style="color: #667eea; margin-bottom: 20px;" data-i18n="procedures.section_title">Training Guides</h2>
             
             <div class="procedure-list">
                 <div class="procedure-card" onclick="window.location.href='procedure-drip-coffee.html'">
                     <div class="procedure-icon">☕</div>
-                    <h3>Drip Coffee Brewing</h3>
-                    <p>Learn how to prepare the perfect batch of drip coffee using our commercial brewer. Includes measurements, timing, and quality checks.</p>
+                    <h3 data-i18n="proc.drip.title">Drip Coffee Brewing</h3>
+                    <p data-i18n="proc.drip.desc">Learn how to prepare the perfect batch of drip coffee using our commercial brewer. Includes measurements, timing, and quality checks.</p>
                 </div>
                 
                 <div class="procedure-card" onclick="window.location.href='procedure-grinder.html'">
                     <div class="procedure-icon">⚙️</div>
-                    <h3>Coffee Grinder Setup</h3>
-                    <p>Step-by-step guide to calibrate the grinder for consistent espresso shots. Covers grind size, dose weight, and daily checks.</p>
+                    <h3 data-i18n="proc.grinder.title">Coffee Grinder Setup</h3>
+                    <p data-i18n="proc.grinder.desc">Step-by-step guide to calibrate the grinder for consistent espresso shots. Covers grind size, dose weight, and daily checks.</p>
                 </div>
                 
                 <div class="procedure-card" onclick="window.location.href='procedure-baking.html'">
                     <div class="procedure-icon">🥐</div>
-                    <h3>Baking Pastries</h3>
-                    <p>Complete baking procedure from prep to finish. Includes oven settings, egg wash application, timing, and rotation technique.</p>
+                    <h3 data-i18n="proc.baking.title">Baking Pastries</h3>
+                    <p data-i18n="proc.baking.desc">Complete baking procedure from prep to finish. Includes oven settings, egg wash application, timing, and rotation technique.</p>
                 </div>
                 
                 <div class="procedure-card" onclick="window.location.href='procedure-espresso.html'">
                     <div class="procedure-icon">☕</div>
-                    <h3>Espresso Drinks</h3>
-                    <p>Master espresso extraction and milk steaming. Covers machine calibration, shot timing, milk texturing, and drink assembly.</p>
+                    <h3 data-i18n="proc.espresso.title">Espresso Drinks</h3>
+                    <p data-i18n="proc.espresso.desc">Master espresso extraction and milk steaming. Covers machine calibration, shot timing, milk texturing, and drink assembly.</p>
                 </div>
                 
                 <div class="procedure-card" onclick="window.location.href='procedure-drink-recipes.html'">
                     <div class="procedure-icon">📋</div>
-                    <h3>Drink Recipes</h3>
-                    <p>Complete recipe guide for all drinks organized by type. Includes exact measurements for lattes, cappuccinos, matcha, chai, and more.</p>
+                    <h3 data-i18n="proc.recipes.title">Drink Recipes</h3>
+                    <p data-i18n="proc.recipes.desc">Complete recipe guide for all drinks organized by type. Includes exact measurements for lattes, cappuccinos, matcha, chai, and more.</p>
                 </div>
                 
                 <div class="procedure-card" onclick="window.location.href='procedure-cinnamon-buns.html'">
                     <div class="procedure-icon">🍥</div>
-                    <h3>Cinnamon Buns</h3>
-                    <p>Overnight prep, tray spacing, baking with lid, and the 93°C internal temperature rule. From freezer to fresh.</p>
+                    <h3 data-i18n="proc.cinnamon.title">Cinnamon Buns</h3>
+                    <p data-i18n="proc.cinnamon.desc">Overnight prep, tray spacing, baking with lid, and the 93°C internal temperature rule. From freezer to fresh.</p>
                 </div>
 
                 <div class="procedure-card" onclick="window.location.href='procedure-kds-printer.html'">
                     <div class="procedure-icon">🖨️</div>
-                    <h3>KDS Tablet & Printer</h3>
-                    <p>Morning printer check, test print, and troubleshooting. How to reset the Square terminal and unlock the KDS tablet if it dies.</p>
+                    <h3 data-i18n="proc.kds.title">KDS Tablet & Printer</h3>
+                    <p data-i18n="proc.kds.desc">Morning printer check, test print, and troubleshooting. How to reset the Square terminal and unlock the KDS tablet if it dies.</p>
                 </div>
             </div>
         </div>

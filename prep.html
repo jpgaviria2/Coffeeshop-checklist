@@ -60,16 +60,18 @@
 </head>
 <body>
     <div class="nav-bar"></div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
     <script src="nav.js"></script>
     <script>initNav('prep');</script>
     <div class="container">
-        <h1>📝 Prep List</h1>
+        <h1 data-i18n="prep.title">📝 Prep List</h1>
         <div class="subtitle" id="dateLabel"></div>
 
         <div class="tab-bar">
-            <button class="active" id="tabToday" onclick="showTab('today')">Today</button>
-            <button id="tabWeek" onclick="showTab('week')">Week</button>
-            <button id="tabSupplies" onclick="showTab('supplies')">Supplies</button>
+            <button class="active" id="tabToday" onclick="showTab('today')" data-i18n="prep.tab.today">Today</button>
+            <button id="tabWeek" onclick="showTab('week')" data-i18n="prep.tab.week">Week</button>
+            <button id="tabSupplies" onclick="showTab('supplies')" data-i18n="prep.tab.supplies">Supplies</button>
         </div>
 
         <div id="todayView"></div>

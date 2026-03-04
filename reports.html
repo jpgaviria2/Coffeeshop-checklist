@@ -51,18 +51,20 @@
 </head>
 <body>
     <div class="nav-bar"></div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
     <script src="nav.js"></script>
     <script>initNav('reports');</script>
     <div class="container">
-        <h1>📊 Weekly Report</h1>
+        <h1 data-i18n="reports.title">📊 Weekly Report</h1>
         <div class="subtitle" id="dateRange"></div>
         <div class="week-nav">
-            <button onclick="prevWeek()">← Prev</button>
+            <button onclick="prevWeek()" data-i18n="reports.prev">← Prev</button>
             <div class="label" id="weekLabel"></div>
-            <button onclick="nextWeek()">Next →</button>
+            <button onclick="nextWeek()" data-i18n="reports.next">Next →</button>
         </div>
         <div id="content">
-            <div class="empty-state"><div class="icon">⏳</div><p>Loading...</p></div>
+            <div class="empty-state"><div class="icon">⏳</div><p data-i18n="reports.loading">Loading...</p></div>
         </div>
     </div>
     <script src="reports.js"></script>

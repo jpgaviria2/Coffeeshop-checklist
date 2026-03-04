@@ -460,54 +460,56 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>☕ Trails Coffee</h1>
-            <p>Staff Portal</p>
+            <h1 data-i18n="index.title">☕ Trails Coffee</h1>
+            <p data-i18n="index.subtitle">Staff Portal</p>
         </div>
         
         <div class="nav-bar"></div>
-        <script src="nav.js"></script>
+        <script src="translations.js"></script>
+    <script src="i18n.js"></script>
+    <script src="nav.js"></script>
         <script>initNav('checklists');</script>
         
         <div class="content">
             <!-- Authentication Section (Moved to Top) -->
             <div class="auth-section" id="authSection">
-                <h2>🔑 Staff Login</h2>
-                <p>Enter your nsec to access checklists</p>
+                <h2 data-i18n="index.login.title">🔑 Staff Login</h2>
+                <p data-i18n="index.login.desc">Enter your nsec to access checklists</p>
                 
                 <div class="input-group">
-                    <label for="nsecInput">Your nsec key:</label>
-                    <input type="password" id="nsecInput" placeholder="nsec1..." autocomplete="off">
+                    <label for="nsecInput" data-i18n="index.login.label">Your nsec key:</label>
+                    <input type="password" id="nsecInput" placeholder="nsec1..." data-i18n-placeholder="index.login.placeholder" autocomplete="off">
                 </div>
                 
-                <button class="btn" id="loginBtn">Login</button>
+                <button class="btn" id="loginBtn" data-i18n="index.login.btn">Login</button>
                 
                 <p style="margin-top: 20px; font-size: 12px; color: #999;">
-                    Don't have an nsec? Ask your manager for one.
+                    <span data-i18n="index.login.nokey">Don't have an nsec? Ask your manager for one.</span>
                 </p>
             </div>
             
             <!-- User Info (shown when logged in) -->
             <div class="user-info" id="userInfo" style="display: none;">
-                <strong>✅ Logged in</strong>
-                <button class="logout-btn" onclick="logout()">Logout</button>
+                <strong data-i18n="index.loggedin">✅ Logged in</strong>
+                <button class="logout-btn" onclick="logout()" data-i18n="index.logout">Logout</button>
             </div>
             
             <!-- Square Team App Notice -->
             <div id="squareNotice" style="display:none; padding:15px; text-align:center; background:#e8ebf7; border-radius:12px; margin-bottom:15px;">
-                <div style="font-size:1.1em; font-weight:600; color:#667eea; margin-bottom:8px;">⏱️ Hours & Schedule</div>
-                <div style="color:#555; font-size:0.9em; line-height:1.6;">Clock in/out and view your schedule in the <strong>Square Team app</strong>.<br>Download it from the App Store or Google Play.</div>
+                <div style="font-size:1.1em; font-weight:600; color:#667eea; margin-bottom:8px;"><span data-i18n="index.square.title">⏱️ Hours &amp; Schedule</span></div>
+                <div style="color:#555; font-size:0.9em; line-height:1.6;"><span data-i18n="index.square.desc">Clock in/out and view your schedule in the <strong>Square Team app</strong>.<br>Download it from the App Store or Google Play.</span></div>
             </div>
 
             <!-- Today's Activity (shown when logged in) -->
             <div id="todaysActivity" style="display:none;background:#f8f9fa;border-radius:10px;margin-bottom:15px;overflow:hidden;">
-                <div style="padding:10px 12px;background:#e8ebf7;font-weight:600;color:#667eea;font-size:14px;">📋 Today's Activity</div>
+                <div style="padding:10px 12px;background:#e8ebf7;font-weight:600;color:#667eea;font-size:14px;"><span data-i18n="index.activity.title">📋 Today's Activity</span></div>
             </div>
 
             <!-- Quick Actions (shown when logged in) -->
             <div class="quick-actions" id="quickActions" style="display: none;">
-                <button class="action-btn" onclick="showChecklist('opening')">📋 Open Opening Checklist</button>
-                <button class="action-btn" onclick="showChecklist('closing')">📋 Open Closing Checklist</button>
-                <button class="action-btn" onclick="showChecklist('inventory')">📦 Inventory Handover</button>
+                <button class="action-btn" onclick="showChecklist('opening')" data-i18n="index.btn.opening">📋 Open Opening Checklist</button>
+                <button class="action-btn" onclick="showChecklist('closing')" data-i18n="index.btn.closing">📋 Open Closing Checklist</button>
+                <button class="action-btn" onclick="showChecklist('inventory')" data-i18n="index.btn.inventory">📦 Inventory Handover</button>
             </div>
             
             <!-- Schedule removed — managed via Square Team app -->
@@ -515,353 +517,353 @@
             <!-- Checklist Section -->
             <div class="checklist-section" id="checklistSection" style="display: none;">
                 <div class="checklist-header-bar">
-                    <h2 id="checklistTitle">Opening Checklist</h2>
-                    <button class="close-checklist-btn" onclick="closeChecklist()">✕ Close</button>
+                    <h2 id="checklistTitle" data-i18n="index.opening.title">Opening Checklist</h2>
+                    <button class="close-checklist-btn" onclick="closeChecklist()" data-i18n="index.checklist.close">✕ Close</button>
                 </div>
                 
                 <div class="checklist-type">
-                    <button id="openingBtn" class="active">🌅 Opening</button>
-                    <button id="closingBtn">🌙 Closing</button>
-                    <button id="inventoryBtn">📦 Inventory</button>
+                    <button id="openingBtn" class="active" data-i18n="index.tab.opening">🌅 Opening</button>
+                    <button id="closingBtn" data-i18n="index.tab.closing">🌙 Closing</button>
+                    <button id="inventoryBtn" data-i18n="index.tab.inventory">📦 Inventory</button>
                 </div>
                 
                 <div class="checklist" id="openingChecklist">
                     <div id="openingPastryInfo"></div>
-                    <h3>Opening Tasks</h3>
+                    <h3 data-i18n="opening.title">Opening Tasks</h3>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-1">
-                        <label for="opening-1">Turn on lights, plug in coffee brewer, turn on espresso machine</label>
+                        <label for="opening-1" data-i18n="opening.1">Turn on lights, plug in coffee brewer, turn on espresso machine</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-2">
-                        <label for="opening-2">Arrange thawed pastries from rack onto baking trays, set oven to 375°F</label>
+                        <label for="opening-2" data-i18n="opening.2">Arrange thawed pastries from rack onto baking trays, set oven to 375°F</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-3">
-                        <label for="opening-3">Flush coffee brewer (top up 200-300ml water)</label>
+                        <label for="opening-3" data-i18n="opening.3">Flush coffee brewer (top up 200-300ml water)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-4">
-                        <label for="opening-4">Prepare egg wash (crack & stir, do NOT apply yet)</label>
+                        <label for="opening-4" data-i18n="opening.4">Prepare egg wash (crack & stir, do NOT apply yet)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-5">
-                        <label for="opening-5">Brew coffee: 70g coffee for 1.9L water (make 2 batches)</label>
+                        <label for="opening-5" data-i18n="opening.5">Brew coffee: 70g coffee for 1.9L water (make 2 batches)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-6">
-                        <label for="opening-6">Calibrate grinder (18-19g per 2-sec shot)</label>
+                        <label for="opening-6" data-i18n="opening.6">Calibrate grinder (18-19g per 2-sec shot)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-7">
-                        <label for="opening-7">Calibrate espresso (38-40g in 20-30 sec, tamper at 11)</label>
+                        <label for="opening-7" data-i18n="opening.7">Calibrate espresso (38-40g in 20-30 sec, tamper at 11)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-8">
-                        <label for="opening-8">Bake pastries: apply egg, 2 trays, 10 min + rotate + 4-5 min</label>
+                        <label for="opening-8" data-i18n="opening.8">Bake pastries: apply egg, 2 trays, 10 min + rotate + 4-5 min</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-9">
-                        <label for="opening-9">Turn on POS (check customer display), turn on music</label>
+                        <label for="opening-9" data-i18n="opening.9">Turn on POS (check customer display), turn on music</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-9b">
-                        <label for="opening-9b">Check KDS tablet (blue iPad) is charging & connected — do a test print from Square: More → Settings → Hardware → select tablet → Print Test (<a href="procedure-kds-printer.html" target="_blank" style="color: #667eea;">troubleshooting</a>)</label>
+                        <label for="opening-9b" data-i18n="opening.9b">Check KDS tablet (blue iPad) is charging & connected — do a test print from Square: More → Settings → Hardware → select tablet → Print Test (<a href="procedure-kds-printer.html" target="_blank" style="color: #667eea;">troubleshooting</a>)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-10">
-                        <label for="opening-10">Fill water jug with ice, restock concentrates. Set out cream & milk for customer table — only ¼ full (prevents expiry since not refrigerated)</label>
+                        <label for="opening-10" data-i18n="opening.10">Fill water jug with ice, restock concentrates. Set out cream & milk for customer table — only ¼ full (prevents expiry since not refrigerated)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-11">
-                        <label for="opening-11">Set out outside tables, chairs & garbage bin</label>
+                        <label for="opening-11" data-i18n="opening.11">Set out outside tables, chairs & garbage bin</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-12">
-                        <label for="opening-12">Empty dishwasher, verify 2 coffee batches ready, oven off</label>
+                        <label for="opening-12" data-i18n="opening.12">Empty dishwasher, verify 2 coffee batches ready, oven off</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-13">
-                        <label for="opening-13">Restock cups, lids & supplies from storage drawers (see <a href="storage.html" target="_blank" style="color: #667eea;">📦 Storage Map</a>)</label>
+                        <label for="opening-13" data-i18n="opening.13">Restock cups, lids & supplies from storage drawers (see <a href="storage.html" target="_blank" style="color: #667eea;">📦 Storage Map</a>)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-14">
-                        <label for="opening-14">Check fridge & freezer temps — record in Health Binder</label>
+                        <label for="opening-14" data-i18n="opening.14">Check fridge & freezer temps — record in Health Binder</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-15">
-                        <label for="opening-15">Test Quats sanitizer level — record in Health Binder</label>
+                        <label for="opening-15" data-i18n="opening.15">Test Quats sanitizer level — record in Health Binder</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-16">
-                        <label for="opening-16">🥐 Count pastries after baking & message Manager with counts (e.g. "6 plain croissant, 4 chocolate, 3 ham cheese, 5 cinnamon bun") — inventory will be updated for online orders</label>
+                        <label for="opening-16" data-i18n="opening.16">🥐 Count pastries after baking & message Manager with counts (e.g. "6 plain croissant, 4 chocolate, 3 ham cheese, 5 cinnamon bun") — inventory will be updated for online orders</label>
                     </div>
                 </div>
                 
                 <div class="checklist" id="closingChecklist" style="display: none;">
                     <div id="closingFreezerPulls"></div>
-                    <h3>Closing Tasks</h3>
+                    <h3 data-i18n="closing.title">Closing Tasks</h3>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-1">
-                        <label for="closing-1">Clean coffee basket, empty drip container, unplug brewer</label>
+                        <label for="closing-1" data-i18n="closing.1">Clean coffee basket, empty drip container, unplug brewer</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-2">
-                        <label for="closing-2">Clean espresso groups, install 17g basket, leave paddles</label>
+                        <label for="closing-2" data-i18n="closing.2">Clean espresso groups, install 17g basket, leave paddles</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-3">
-                        <label for="closing-3">Polish & organize espresso station (<a href="espresso-standard.html" target="_blank" style="color: #667eea;">see photo standard</a>)</label>
+                        <label for="closing-3" data-i18n="closing.3">Polish & organize espresso station (<a href="espresso-standard.html" target="_blank" style="color: #667eea;">see photo standard</a>)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-4">
-                        <label for="closing-4">Restock coffee cups at both barista stations — 12oz compostable from Drawer 4, lids from Drawer 5</label>
+                        <label for="closing-4" data-i18n="closing.4">Restock coffee cups at both barista stations — 12oz compostable from Drawer 4, lids from Drawer 5</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-5">
-                        <label for="closing-5">Put La Marzocco on standby</label>
+                        <label for="closing-5" data-i18n="closing.5">Put La Marzocco on standby</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-6">
-                        <label for="closing-6">Turn off grinder, restock beans (under counter below grinder), empty coffee bag</label>
+                        <label for="closing-6" data-i18n="closing.6">Turn off grinder, restock beans (under counter below grinder), empty coffee bag</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-7">
-                        <label for="closing-7">Wash knockout box in dishwasher</label>
+                        <label for="closing-7" data-i18n="closing.7">Wash knockout box in dishwasher</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-7b">
-                        <label for="closing-7b">Clean pitcher cleaner (rinse & refresh solution)</label>
+                        <label for="closing-7b" data-i18n="closing.7b">Clean pitcher cleaner (rinse & refresh solution)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-8">
-                        <label for="closing-8">Count milk: ensure 5 four-liter jugs in fridge</label>
+                        <label for="closing-8" data-i18n="closing.8">Count milk: ensure 5 four-liter jugs in fridge</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-8b">
-                        <label for="closing-8b">Put customer table cream & milk back in fridge — check expiry, replace if needed</label>
+                        <label for="closing-8b" data-i18n="closing.8b">Put customer table cream & milk back in fridge — check expiry, replace if needed</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-9">
-                        <label for="closing-9">Check beans: need 2 five-pound bags (order if less)</label>
+                        <label for="closing-9" data-i18n="closing.9">Check beans: need 2 five-pound bags (order if less)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-10">
-                        <label for="closing-10">Ensure drip coffee beans are full</label>
+                        <label for="closing-10" data-i18n="closing.10">Ensure drip coffee beans are full</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-11">
-                        <label for="closing-11">Ensure decaf espresso beans are full</label>
+                        <label for="closing-11" data-i18n="closing.11">Ensure decaf espresso beans are full</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-12">
-                        <label for="closing-12">Refill ALL to the top: hot chocolate, chai, London Fog, whipped cream</label>
+                        <label for="closing-12" data-i18n="closing.12">Refill ALL to the top: hot chocolate, chai, London Fog, whipped cream</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-13">
-                        <label for="closing-13">Refill cream cheese & Nutella piping bags</label>
+                        <label for="closing-13" data-i18n="closing.13">Refill cream cheese & Nutella piping bags</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-14">
-                        <label for="closing-14">Refill dried strawberries in jars</label>
+                        <label for="closing-14" data-i18n="closing.14">Refill dried strawberries in jars</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-15">
-                        <label for="closing-15">Refill glass bottles (water & ginger peach)</label>
+                        <label for="closing-15" data-i18n="closing.15">Refill glass bottles (water & ginger peach)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-16">
-                        <label for="closing-16">Restock croissant bags & dessert takeout containers (Drawer 2)</label>
+                        <label for="closing-16" data-i18n="closing.16">Restock croissant bags & dessert takeout containers (Drawer 2)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-17">
-                        <label for="closing-17">Organize espresso & cortado cups</label>
+                        <label for="closing-17" data-i18n="closing.17">Organize espresso & cortado cups</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-18">
-                        <label for="closing-18">Weekly: Check items needing glue (bench, front light, etc.)</label>
+                        <label for="closing-18" data-i18n="closing.18">Weekly: Check items needing glue (bench, front light, etc.)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-19">
-                        <label for="closing-19">Pull tomorrow's pastries from freezer (see list above), place on tray EDGES (not center), mist each pastry, place on rack to thaw overnight</label>
+                        <label for="closing-19" data-i18n="closing.19">Pull tomorrow's pastries from freezer (see list above), place on tray EDGES (not center), mist each pastry, place on rack to thaw overnight</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-19b">
-                        <label for="closing-19b">⚠️ Place a tray of HOT WATER on the bottom shelf of the rack (keeps humidity overnight)</label>
+                        <label for="closing-19b" data-i18n="closing.19b_water">⚠️ Place a tray of HOT WATER on the bottom shelf of the rack (keeps humidity overnight)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-19b">
-                        <label for="closing-19b">Record pastry inventory: count display (even numbers per kind) + freezer stock (target ~30 each in freezer). 3 trays = 5 each, 6 trays = 10 each. Log in Inventory Handover.</label>
+                        <label for="closing-19b" data-i18n="closing.19b_record">Record pastry inventory: count display (even numbers per kind) + freezer stock (target ~30 each in freezer). 3 trays = 5 each, 6 trays = 10 each. Log in Inventory Handover.</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-20">
-                        <label for="closing-20">Empty & turn off dishwasher</label>
+                        <label for="closing-20" data-i18n="closing.20">Empty & turn off dishwasher</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-21">
-                        <label for="closing-21">Wash all glass bowls</label>
+                        <label for="closing-21" data-i18n="closing.21">Wash all glass bowls</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-22">
-                        <label for="closing-22">Organize plates & dishes (<a href="plates-standard.html" target="_blank" style="color: #667eea;">see photo standard</a>)</label>
+                        <label for="closing-22" data-i18n="closing.22">Organize plates & dishes (<a href="plates-standard.html" target="_blank" style="color: #667eea;">see photo standard</a>)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-23">
-                        <label for="closing-23">All display trays clean, dry, in position with price tags ready</label>
+                        <label for="closing-23" data-i18n="closing.23">All display trays clean, dry, in position with price tags ready</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-24">
-                        <label for="closing-24">Empty compost bin into outdoor compost</label>
+                        <label for="closing-24" data-i18n="closing.24">Empty compost bin into outdoor compost</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-25">
-                        <label for="closing-25">Count cash: large bills in yellow envelope, record all bill counts</label>
+                        <label for="closing-25" data-i18n="closing.25">Count cash: large bills in yellow envelope, record all bill counts</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-26">
-                        <label for="closing-26">Clean surfaces, empty trash, sweep & mop</label>
+                        <label for="closing-26" data-i18n="closing.26">Clean surfaces, empty trash, sweep & mop</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-27">
-                        <label for="closing-27">Clean door (inside & outside)</label>
+                        <label for="closing-27" data-i18n="closing.27">Clean door (inside & outside)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-28">
-                        <label for="closing-28">Clean glass screen with vinegar (inside & outside) until shiny</label>
+                        <label for="closing-28" data-i18n="closing.28">Clean glass screen with vinegar (inside & outside) until shiny</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-29">
-                        <label for="closing-29">Check chair legs are tight (tighten if needed)</label>
+                        <label for="closing-29" data-i18n="closing.29">Check chair legs are tight (tighten if needed)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-30">
-                        <label for="closing-30">Lock doors & windows, arm alarm</label>
+                        <label for="closing-30" data-i18n="closing.30">Lock doors & windows, arm alarm</label>
                     </div>
                 </div>
                 
                 <div class="checklist" id="inventoryChecklist" style="display: none;">
-                    <h3>Inventory Handover</h3>
-                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Count remaining items at end of shift</p>
+                    <h3 data-i18n="inv.title">Inventory Handover</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;"><span data-i18n="inv.desc">Count remaining items at end of shift</span></p>
                     
                     <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">🥛 Milk & Dairy Products</h4>
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.milk.title">🥛 Milk &amp; Dairy Products</span></h4>
                         <div class="inventory-item">
-                            <label for="inv-milk-35">3.5% Milk (jugs):</label>
+                            <label for="inv-milk-35" data-i18n="inv.milk35">3.5% Milk (jugs):</label>
                             <input type="number" id="inv-milk-35" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-milk-2">2% Milk (jugs):</label>
+                            <label for="inv-milk-2" data-i18n="inv.milk2">2% Milk (jugs):</label>
                             <input type="number" id="inv-milk-2" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-oat-milk-1l">Oat Milk (1L):</label>
+                            <label for="inv-oat-milk-1l" data-i18n="inv.oat1l">Oat Milk (1L):</label>
                             <input type="number" id="inv-oat-milk-1l" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-soy-milk-1l">Soy Milk (1L):</label>
+                            <label for="inv-soy-milk-1l" data-i18n="inv.soy1l">Soy Milk (1L):</label>
                             <input type="number" id="inv-soy-milk-1l" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-half-and-half">Half & Half 10% (1L):</label>
+                            <label for="inv-half-and-half" data-i18n="inv.halfhalf">Half & Half 10% (1L):</label>
                             <input type="number" id="inv-half-and-half" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-whipping-cream">Whipping Cream 33% (1L):</label>
+                            <label for="inv-whipping-cream" data-i18n="inv.whipping">Whipping Cream 33% (1L):</label>
                             <input type="number" id="inv-whipping-cream" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-greek-yogurt">Greek Yogurt (3kg jar):</label>
+                            <label for="inv-greek-yogurt" data-i18n="inv.yogurt">Greek Yogurt (3kg jar):</label>
                             <input type="number" id="inv-greek-yogurt" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-whole-milk">Whole Milk (jugs):</label>
+                            <label for="inv-whole-milk" data-i18n="inv.whole">Whole Milk (jugs):</label>
                             <input type="number" id="inv-whole-milk" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-almond-milk">Almond Milk (jugs):</label>
+                            <label for="inv-almond-milk" data-i18n="inv.almond">Almond Milk (jugs):</label>
                             <input type="number" id="inv-almond-milk" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-soy-milk">Soy Milk (jugs):</label>
+                            <label for="inv-soy-milk" data-i18n="inv.soy">Soy Milk (jugs):</label>
                             <input type="number" id="inv-soy-milk" min="0" value="0">
                         </div>
                     </div>
                     
                     <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">☕ Coffee Beans</h4>
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.beans.title">☕ Coffee Beans</span></h4>
                         <div class="inventory-item">
-                            <label for="inv-beans-regular">Regular Beans (5lb bags):</label>
+                            <label for="inv-beans-regular" data-i18n="inv.regular">Regular Beans (5lb bags):</label>
                             <input type="number" id="inv-beans-regular" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-beans-decaf">Decaf Beans (5lb bags):</label>
+                            <label for="inv-beans-decaf" data-i18n="inv.decaf">Decaf Beans (5lb bags):</label>
                             <input type="number" id="inv-beans-decaf" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-coffee-bags">Coffee Bags for Sale (1lb):</label>
+                            <label for="inv-coffee-bags" data-i18n="inv.coffeebags">Coffee Bags for Sale (1lb):</label>
                             <input type="number" id="inv-coffee-bags" min="0" value="0">
                         </div>
                     </div>
                     
                     <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">🥐 Pastries</h4>
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.pastry.title">🥐 Pastries</span></h4>
                         <div class="inventory-item">
-                            <label for="inv-ham-cheese">Ham & Cheese Croissants:</label>
+                            <label for="inv-ham-cheese" data-i18n="inv.hamcheese">Ham & Cheese Croissants:</label>
                             <input type="number" id="inv-ham-cheese" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-chocolate">Chocolate Croissants:</label>
+                            <label for="inv-chocolate" data-i18n="inv.chocolate">Chocolate Croissants:</label>
                             <input type="number" id="inv-chocolate" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-plain">Plain Croissants:</label>
+                            <label for="inv-plain" data-i18n="inv.plain">Plain Croissants:</label>
                             <input type="number" id="inv-plain" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-banana-bread">Banana Bread:</label>
+                            <label for="inv-banana-bread" data-i18n="inv.banana">Banana Bread:</label>
                             <input type="number" id="inv-banana-bread" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-lemon-loaf">Lemon Loaf:</label>
+                            <label for="inv-lemon-loaf" data-i18n="inv.lemon">Lemon Loaf:</label>
                             <input type="number" id="inv-lemon-loaf" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-cinnamon-buns">Cinnamon Buns:</label>
+                            <label for="inv-cinnamon-buns" data-i18n="inv.cinnamon">Cinnamon Buns:</label>
                             <input type="number" id="inv-cinnamon-buns" min="0" value="0">
                         </div>
                     </div>
                     
                     <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;">🧊 Freezer Stock (target ~30 each)</h4>
+                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.freezer.title">🧊 Freezer Stock (target ~30 each)</span></h4>
                         <div class="inventory-item">
-                            <label for="inv-freezer-ham-cheese">Ham & Cheese (freezer):</label>
+                            <label for="inv-freezer-ham-cheese" data-i18n="inv.freezer.hamcheese">Ham & Cheese (freezer):</label>
                             <input type="number" id="inv-freezer-ham-cheese" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-freezer-chocolate">Chocolate Croissants (freezer):</label>
+                            <label for="inv-freezer-chocolate" data-i18n="inv.freezer.chocolate">Chocolate Croissants (freezer):</label>
                             <input type="number" id="inv-freezer-chocolate" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-freezer-plain">Plain Croissants (freezer):</label>
+                            <label for="inv-freezer-plain" data-i18n="inv.freezer.plain">Plain Croissants (freezer):</label>
                             <input type="number" id="inv-freezer-plain" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-freezer-cinnamon">Cinnamon Buns (freezer):</label>
+                            <label for="inv-freezer-cinnamon" data-i18n="inv.freezer.cinnamon">Cinnamon Buns (freezer):</label>
                             <input type="number" id="inv-freezer-cinnamon" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-freezer-banana">Banana Bread (freezer):</label>
+                            <label for="inv-freezer-banana" data-i18n="inv.freezer.banana">Banana Bread (freezer):</label>
                             <input type="number" id="inv-freezer-banana" min="0" value="0">
                         </div>
                         <div class="inventory-item">
-                            <label for="inv-freezer-lemon">Lemon Loaf (freezer):</label>
+                            <label for="inv-freezer-lemon" data-i18n="inv.freezer.lemon">Lemon Loaf (freezer):</label>
                             <input type="number" id="inv-freezer-lemon" min="0" value="0">
                         </div>
                     </div>
                 </div>
                 
                 <div class="submit-section">
-                    <button class="btn" id="submitBtn">Submit Checklist</button>
+                    <button class="btn" id="submitBtn" data-i18n="index.submit">Submit Checklist</button>
                     <div class="status" id="statusMessage"></div>
                 </div>
             </div>

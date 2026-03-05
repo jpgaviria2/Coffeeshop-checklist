@@ -6,7 +6,7 @@
       {
         "id": "P6QXTS3FGKDKWFCSOAGFEBH4",
         "name": "Regular",
-        "price": 450
+        "price": 425
       }
     ]
   },
@@ -39,7 +39,7 @@
       {
         "id": "UTRQF4BLSOVODEEREMJWWLRC",
         "name": "Regular",
-        "price": 450
+        "price": 425
       }
     ]
   },
@@ -96,8 +96,8 @@
       },
       {
         "id": "CFXQNIG6PR44U2E7JZAVWGH6",
-        "name": "1LB",
-        "price": 2200
+        "name": "400g",
+        "price": 1599
       }
     ]
   },
@@ -232,7 +232,7 @@
       {
         "id": "JNBROA53BHSPSUJDDXNQEYGA",
         "name": "Large",
-        "price": 500
+        "price": 475
       }
     ]
   },
@@ -243,12 +243,12 @@
       {
         "id": "O6NZBZY4NVHVZ4ELKWUYQM6A",
         "name": "Medium",
-        "price": 450
+        "price": 475
       },
       {
         "id": "3HC4DPX6IQBSIRYKG5DTDOQV",
         "name": "Large",
-        "price": 500
+        "price": 525
       }
     ]
   },
@@ -259,12 +259,12 @@
       {
         "id": "NYTU32K57BF55YRFLLOX43YV",
         "name": "Medium",
-        "price": 450
+        "price": 475
       },
       {
         "id": "XO25YDYISMMX6Z2SWFG6J2QE",
         "name": "Large",
-        "price": 500
+        "price": 525
       }
     ]
   },
@@ -286,12 +286,12 @@
       {
         "id": "NZWPIQYCL3RKBAQC6WZPEVWD",
         "name": "Medium",
-        "price": 500
+        "price": 600
       },
       {
         "id": "M6ET42VGYUO22TYAHXLHY65D",
         "name": "Large",
-        "price": 550
+        "price": 650
       }
     ]
   },
@@ -313,7 +313,7 @@
       {
         "id": "JNVJRBKFJ4ZDRQ6TXKSTYNHO",
         "name": "Regular",
-        "price": 350
+        "price": 400
       }
     ]
   },
@@ -324,12 +324,12 @@
       {
         "id": "RNXWWIPI5Y64YQXJXHAPM2CS",
         "name": "Medium",
-        "price": 350
+        "price": 325
       },
       {
         "id": "CSG5UKSUTYQMBVMDUTMCBB3X",
         "name": "Large",
-        "price": 400
+        "price": 375
       }
     ]
   },
@@ -361,12 +361,12 @@
       {
         "id": "6HYYILY24UVRIU2XYSRPTY7A",
         "name": "Medium",
-        "price": 500
+        "price": 475
       },
       {
         "id": "GTTKBE5P2TK5O3UE62TVYYBX",
         "name": "Large",
-        "price": 550
+        "price": 525
       }
     ]
   },
@@ -375,19 +375,14 @@
     "name": "Iced Americano",
     "variations": [
       {
-        "id": "AMDO5NGA3MRPJH5BP7W25E5G",
-        "name": "Small",
-        "price": 350
-      },
-      {
         "id": "QIYSRQ65AITHC7G5FRX5EJDH",
         "name": "Medium",
-        "price": 450
+        "price": 400
       },
       {
         "id": "HHYDICI4UTLZZKFRPPDCNSQ2",
         "name": "Large",
-        "price": 500
+        "price": 450
       }
     ]
   },
@@ -430,12 +425,12 @@
       {
         "id": "NC7P5JDGYQ6QCYJ7VOLAO5Q6",
         "name": "Medium",
-        "price": 525
+        "price": 575
       },
       {
         "id": "AEGJB4LW6T2JRJCGSYVMF3EK",
         "name": "Large",
-        "price": 600
+        "price": 625
       }
     ]
   },
@@ -456,7 +451,7 @@
       {
         "id": "QOANXYALHCI4FFYLVBMBBCN4",
         "name": "kids",
-        "price": 300
+        "price": 325
       }
     ]
   },
@@ -478,7 +473,7 @@
       {
         "id": "EU4D3JC3NTQNFT3P5FXMLMZA",
         "name": "Medium",
-        "price": 525
+        "price": 575
       },
       {
         "id": "FORBMAZOI6YFKFTMJX24UPNT",
@@ -494,7 +489,7 @@
       {
         "id": "6OVWZWCOXKQ7JGITECCKHRZX",
         "name": "Medium",
-        "price": 525
+        "price": 550
       },
       {
         "id": "6MWRAZI6JYOVVXHEDKIXKBVU",
@@ -516,38 +511,6 @@
         "id": "KNAKZAEZ4QPVKNJDNS26LYIC",
         "name": "Large",
         "price": 600
-      }
-    ]
-  },
-  {
-    "id": "JMJ3UUKW7U3BF4HVFFGP4VTM",
-    "name": "Vanilla Matcha",
-    "variations": [
-      {
-        "id": "UC4NMMUYHMVGRLQK2TJAL2JS",
-        "name": "Medium",
-        "price": 425
-      },
-      {
-        "id": "2F3EGBLKAKABJF7HPLQEGRGJ",
-        "name": "Large",
-        "price": 500
-      }
-    ]
-  },
-  {
-    "id": "KNTV76EXRY32AJZQY47Z76JS",
-    "name": "Iced Vanilla Matcha",
-    "variations": [
-      {
-        "id": "72GLJHC3IZM2K4YGKKJKAZFN",
-        "name": "Medium",
-        "price": 425
-      },
-      {
-        "id": "UYTHBBIL6MI7IU7GRQZZQB6O",
-        "name": "Large",
-        "price": 500
       }
     ]
   },
@@ -737,12 +700,12 @@
       {
         "id": "73JTBSVWS55TSTUWFNKIZEXF",
         "name": "Medium 12oz",
-        "price": 500
+        "price": 450
       },
       {
         "id": "YW3CKQHF2C2D525QXPVQ7FMO",
         "name": "Large 16oz",
-        "price": 550
+        "price": 525
       }
     ]
   },
@@ -764,7 +727,7 @@
       {
         "id": "V6US4ORMDRE6ZZCTJ3YVQZG2",
         "name": "Regular",
-        "price": 375
+        "price": 300
       }
     ]
   },
@@ -1006,6 +969,22 @@
         "id": "ZPB42FIJHMIQLGDJASWWQ3S2",
         "name": "Regular",
         "price": 300
+      }
+    ]
+  },
+  {
+    "id": "A6QFTJBDE3VSDQW67NYSM2WI",
+    "name": "Raspberry Rioboos latte",
+    "variations": [
+      {
+        "id": "EBI2EZMZIZXOMRDBILYT2U5D",
+        "name": "12oz",
+        "price": 575
+      },
+      {
+        "id": "AKAJ6ZGFYEQTZLY36JZWSW7Y",
+        "name": "16",
+        "price": 625
       }
     ]
   }

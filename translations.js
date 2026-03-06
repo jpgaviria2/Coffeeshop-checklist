@@ -91,6 +91,7 @@ const TRANSLATIONS = {
     "closing.23": "Bring in all tables and chairs from outside",
     "closing.24": "Turn off lights and shut off music",
     "closing.25": "Lock the door",
+    "closing.26": "Clean out sinks",
 
     // Inventory section
     "inv.title": "Inventory Handover",
@@ -720,6 +721,7 @@ const TRANSLATIONS = {
     "closing.23": "Traer todas las mesas y sillas de afuera",
     "closing.24": "Apagar luces y apagar música",
     "closing.25": "Cerrar la puerta con llave",
+    "closing.26": "Limpiar los lavaderos",
 
     // Inventory section
     "inv.title": "Inventario",

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3.3.7';
+const CACHE_VERSION = 'v3.3.8';
 const CACHE_NAME = `trails-coffee-${CACHE_VERSION}`;
 const BASE_PATH = '/Coffeeshop-checklist';
 

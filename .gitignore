@@ -1,1 +1,5 @@
 node_modules/
+# Sensitive business data - keep local only
+data/daily/*.json
+data/*.json
+!data/daily/.gitkeep

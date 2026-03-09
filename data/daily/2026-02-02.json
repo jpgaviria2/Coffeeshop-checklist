@@ -184,41 +184,41 @@
     }
   ],
   "byHour": {
-    "8": {
+    "3": {
+      "orders": 1,
+      "revenue": 0
+    },
+    "16": {
       "orders": 4,
       "revenue": 32.73
     },
-    "9": {
+    "17": {
       "orders": 6,
       "revenue": 90.03
     },
-    "10": {
+    "18": {
       "orders": 5,
       "revenue": 78.34
     },
-    "11": {
+    "19": {
       "orders": 7,
       "revenue": 75.21000000000001
     },
-    "12": {
+    "20": {
       "orders": 9,
       "revenue": 104.02
     },
-    "13": {
+    "21": {
       "orders": 4,
       "revenue": 37.04
     },
-    "14": {
+    "22": {
       "orders": 4,
       "revenue": 49.39
     },
-    "15": {
+    "23": {
       "orders": 3,
       "revenue": 39.71
-    },
-    "19": {
-      "orders": 1,
-      "revenue": 0
     }
   }
 }

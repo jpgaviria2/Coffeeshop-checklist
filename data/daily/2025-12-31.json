@@ -11,13 +11,13 @@
     }
   ],
   "byHour": {
-    "7": {
-      "orders": 1,
-      "revenue": 0.52
-    },
-    "22": {
+    "6": {
       "orders": 1,
       "revenue": 1.05
+    },
+    "15": {
+      "orders": 1,
+      "revenue": 0.52
     }
   }
 }

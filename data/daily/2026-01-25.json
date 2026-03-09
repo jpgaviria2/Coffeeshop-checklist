@@ -13,21 +13,21 @@
     }
   ],
   "byHour": {
-    "10": {
+    "0": {
       "orders": 1,
       "revenue": 1
     },
-    "16": {
-      "orders": 1,
-      "revenue": 1
-    },
-    "17": {
+    "1": {
       "orders": 4,
       "revenue": 4
     },
-    "18": {
+    "2": {
       "orders": 2,
       "revenue": 2
+    },
+    "18": {
+      "orders": 1,
+      "revenue": 1
     }
   }
 }

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matcha & Tea Preparation - Trails Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 1.8em; }
+        h2 { color: #667eea; margin: 30px 0 15px 0; font-size: 1.4em; border-bottom: 2px solid #667eea; padding-bottom: 8px; }
+        h3 { color: #764ba2; margin: 20px 0 10px 0; font-size: 1.2em; }
+        .recipe-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .recipe-table thead {
+            background: #667eea;
+            color: white;
+        }
+        .recipe-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        .recipe-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .recipe-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .drink-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .size-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .instructions {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .note-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        .note-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .note-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #856404;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+            margin: 20px 0;
+        }
+        .tip-box strong {
+            color: #0c5460;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .tip-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #0c5460;
+        }
+        .warning-box {
+            background: #f8d7da;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin: 20px 0;
+        }
+        .warning-box strong {
+            color: #721c24;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .warning-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #721c24;
+        }
+        .step-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .step-list ol {
+            margin-left: 20px;
+            line-height: 2;
+        }
+        .step-list li {
+            margin-bottom: 10px;
+        }
+        .step-list li strong {
+            color: #667eea;
+        }
+        @media (max-width: 768px) {
+            .recipe-table {
+                font-size: 0.9em;
+            }
+            .recipe-table th,
+            .recipe-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="position:fixed;top:10px;right:10px;z-index:9999;display:flex;gap:0;">
+        <button class="lang-toggle-btn" data-lang="en" onclick="if(typeof i18n!=='undefined') i18n.switchLang('en');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:6px 0 0 6px;border-right:1px solid #667eea;">EN</button>
+        <button class="lang-toggle-btn" data-lang="es" onclick="if(typeof i18n!=='undefined') i18n.switchLang('es');" style="padding:4px 10px;border:2px solid #667eea;background:white;color:#667eea;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 6px 6px 0;border-left:1px solid #667eea;">ES</button>
+    </div>
+    <style>.lang-toggle-btn.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:white!important;}</style>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='procedures.html'" data-i18n="tea.back">← Back to Procedures</button>
+            <h1 data-i18n="tea.title">🍵 Matcha & Tea Preparation Guide</h1>
+            <p data-i18n="tea.subtitle">Traditional matcha preparation using Domo Tea products</p>
+        </div>
+        
+        <div class="content">
+            <div class="warning-box">
+                <strong>⚠️ CRITICAL: Water Temperature</strong>
+                <ul>
+                    <li><strong>NEVER use boiling water</strong> - it will make the matcha bitter</li>
+                    <li>Target temperature: <strong>175°F (80°C)</strong></li>
+                    <li>Let water cool for <strong>1 minute</strong> after boiling</li>
+                    <li>Or use hot water tap and let cool 30 seconds</li>
+                </ul>
+            </div>
+
+            <!-- TRADITIONAL MATCHA PREPARATION -->
+            <h2>🍵 Traditional Matcha Tea (No Milk)</h2>
+            
+            <h3>Water Ratios for Traditional Matcha</h3>
+            <table class="recipe-table">
+                <thead>
+                    <tr>
+                        <th>Strength</th>
+                        <th>Matcha Powder</th>
+                        <th>Hot Water (175°F)</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="drink-name">Light / Mild</td>
+                        <td>½ - 1 tsp</td>
+                        <td>2-3 oz (60-90ml)</td>
+                        <td class="instructions">Subtle flavor, good for beginners</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Standard / Medium</td>
+                        <td>1-1½ tsp</td>
+                        <td>3-4 oz (90-120ml)</td>
+                        <td class="instructions">Balanced, traditional strength</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Strong / Bold</td>
+                        <td>1½-2 tsp</td>
+                        <td>2-3 oz (60-90ml)</td>
+                        <td class="instructions">Rich, intense matcha flavor</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Step-by-Step: Traditional Matcha</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>Prepare water:</strong> Heat water to 175°F (80°C). If boiling, let cool for 1 minute.</li>
+                    <li><strong>Sift matcha (optional):</strong> Use small sieve to remove clumps. (Can skip if powder is fresh)</li>
+                    <li><strong>Add powder to bowl/cup:</strong> Measure matcha powder based on desired strength (see table above)</li>
+                    <li><strong>Add hot water:</strong> Pour 2-4 oz of 175°F water over matcha powder</li>
+                    <li><strong>Whisk vigorously:</strong> Use bamboo whisk or handheld frother
+                        <ul>
+                            <li>If using bamboo whisk: Move in fast <strong>M or W motion</strong> for 15-30 seconds</li>
+                            <li>If using frother: Whisk until fully mixed and frothy</li>
+                        </ul>
+                    </li>
+                    <li><strong>Check consistency:</strong> Should have a layer of foam on top, no clumps visible</li>
+                    <li><strong>Serve immediately:</strong> Enjoy hot, or add ice for iced matcha tea</li>
+                </ol>
+            </div>
+
+            <!-- MATCHA LATTE PREPARATION -->
+            <h2>🥛 Matcha Latte (With Milk)</h2>
+            
+            <h3>Matcha Latte Recipe Chart</h3>
+            <table class="recipe-table">
+                <thead>
+                    <tr>
+                        <th>Size</th>
+                        <th>Matcha Powder</th>
+                        <th>Hot Water (for whisking)</th>
+                        <th>Steamed Milk</th>
+                        <th>Total Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="size-badge">12oz</span></td>
+                        <td>1-2 tsp</td>
+                        <td>2 oz (60ml)</td>
+                        <td>300ml</td>
+                        <td>~12oz</td>
+                    </tr>
+                    <tr>
+                        <td><span class="size-badge">16oz</span></td>
+                        <td>2 tsp</td>
+                        <td>2 oz (60ml)</td>
+                        <td>415ml</td>
+                        <td>~16oz</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Step-by-Step: Hot Matcha Latte</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>Measure matcha:</strong> Add powder to cup (1-2 tsp for 12oz, 2 tsp for 16oz)</li>
+                    <li><strong>Add small amount of hot water:</strong> Pour 2 oz (60ml) of 175°F water into cup</li>
+                    <li><strong>Whisk matcha paste:</strong> Whisk vigorously with bamboo whisk or frother until smooth (no clumps!)</li>
+                    <li><strong>Steam milk:</strong> Steam 300ml (12oz) or 415ml (16oz) milk to 140-150°F</li>
+                    <li><strong>Pour milk over matcha:</strong> Slowly add steamed milk to whisked matcha</li>
+                    <li><strong>Stir gently:</strong> Mix to combine, creating light foam on top</li>
+                    <li><strong>Serve:</strong> Top with light dusting of matcha powder (optional)</li>
+                </ol>
+            </div>
+
+            <h3>Step-by-Step: Iced Matcha Latte</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>Measure matcha:</strong> Add powder to separate mixing container (1-2 tsp for 12oz, 2 tsp for 16oz)</li>
+                    <li><strong>Whisk with cold milk:</strong> Add small amount of cold milk (2-3 oz) and whisk until smooth paste forms</li>
+                    <li><strong>Fill cup with ice:</strong> Fill cup 3/4 full with ice</li>
+                    <li><strong>Add matcha mixture:</strong> Pour whisked matcha paste over ice</li>
+                    <li><strong>Add remaining cold milk:</strong> Pour 300ml (12oz) or 415ml (16oz) cold milk</li>
+                    <li><strong>Stir well:</strong> Mix thoroughly to ensure matcha is evenly distributed</li>
+                    <li><strong>Serve:</strong> With straw</li>
+                </ol>
+            </div>
+
+            <!-- TOOLS & EQUIPMENT -->
+            <h2>🛠️ Tools & Equipment</h2>
+            
+            <div class="tip-box">
+                <strong>Required Tools</strong>
+                <ul>
+                    <li><strong>Bamboo whisk (chasen):</strong> Traditional tool for making matcha. Use M or W motion.</li>
+                    <li><strong>OR handheld frother:</strong> Electric alternative, whisk until smooth and frothy</li>
+                    <li><strong>Small sieve (optional):</strong> Removes clumps from powder</li>
+                    <li><strong>Measuring spoons:</strong> For accurate matcha portions</li>
+                    <li><strong>Thermometer (optional):</strong> To verify water temperature</li>
+                </ul>
+            </div>
+
+            <!-- PRO TIPS -->
+            <h2>💡 Pro Tips</h2>
+            
+            <div class="tip-box">
+                <strong>Matcha Whisking Technique</strong>
+                <ul>
+                    <li><strong>M or W motion:</strong> Move whisk quickly in these patterns - this aerates the matcha and creates foam</li>
+                    <li><strong>Speed matters:</strong> Whisk briskly for 15-30 seconds, not gently</li>
+                    <li><strong>No clumps:</strong> If clumps appear, keep whisking or use sieve next time</li>
+                    <li><strong>Froth goal:</strong> Aim for a layer of fine bubbles on top</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>Common Mistakes to Avoid</strong>
+                <ul>
+                    <li><strong>Water too hot:</strong> Makes matcha bitter and destroys nutrients. Always use 175°F, NOT boiling!</li>
+                    <li><strong>Not whisking enough:</strong> Results in clumpy, uneven drink. Whisk vigorously!</li>
+                    <li><strong>Adding powder directly to milk:</strong> Won't dissolve properly. Always whisk with water first.</li>
+                    <li><strong>Using old matcha:</strong> Fresh matcha is bright green. Dull/brown = stale.</li>
+                </ul>
+            </div>
+
+            <div class="note-box">
+                <strong>Flavor Variations (Optional)</strong>
+                <ul>
+                    <li><strong>Add sweetener:</strong> Honey, vanilla syrup, or simple syrup (ask customer preference)</li>
+                    <li><strong>Vanilla matcha latte:</strong> Add 1 pump vanilla syrup before adding milk</li>
+                    <li><strong>Cinnamon matcha:</strong> Light dusting of cinnamon on foam</li>
+                    <li><strong>Iced with cream:</strong> Top iced matcha latte with cold cream float</li>
+                </ul>
+            </div>
+
+            <!-- DOMO TEA NOTES -->
+            <h2>📦 Domo Tea Products</h2>
+            
+            <div class="note-box">
+                <strong>About Our Matcha</strong>
+                <ul>
+                    <li><strong>Brand:</strong> Domo Tea (Japanese matcha)</li>
+                    <li><strong>Storage:</strong> Keep sealed, refrigerate after opening for freshness</li>
+                    <li><strong>Shelf life:</strong> Best within 3-6 months of opening</li>
+                    <li><strong>Color check:</strong> Should be bright, vibrant green. If dull/brown, matcha is oxidized (tell manager)</li>
+                    <li><strong>Always use Japanese matcha</strong> - quality matters for flavor and texture</li>
+                </ul>
+            </div>
+
+            <!-- QUICK REFERENCE -->
+            <h2>📋 Quick Reference Chart</h2>
+            
+            <table class="recipe-table">
+                <thead>
+                    <tr>
+                        <th>Drink Type</th>
+                        <th>Matcha Amount</th>
+                        <th>Water Temp</th>
+                        <th>Water Amount</th>
+                        <th>Milk Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="drink-name">Traditional Matcha (Light)</td>
+                        <td>½-1 tsp</td>
+                        <td>175°F (80°C)</td>
+                        <td>2-3 oz</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Traditional Matcha (Standard)</td>
+                        <td>1-1½ tsp</td>
+                        <td>175°F (80°C)</td>
+                        <td>3-4 oz</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Traditional Matcha (Strong)</td>
+                        <td>1½-2 tsp</td>
+                        <td>175°F (80°C)</td>
+                        <td>2-3 oz</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Hot Matcha Latte 12oz</td>
+                        <td>1-2 tsp</td>
+                        <td>175°F (80°C)</td>
+                        <td>2 oz (for whisking)</td>
+                        <td>300ml steamed</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Hot Matcha Latte 16oz</td>
+                        <td>2 tsp</td>
+                        <td>175°F (80°C)</td>
+                        <td>2 oz (for whisking)</td>
+                        <td>415ml steamed</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Iced Matcha Latte 12oz</td>
+                        <td>1-2 tsp</td>
+                        <td>Cold</td>
+                        <td>None</td>
+                        <td>300ml cold + ice 3/4</td>
+                    </tr>
+                    <tr>
+                        <td class="drink-name">Iced Matcha Latte 16oz</td>
+                        <td>2 tsp</td>
+                        <td>Cold</td>
+                        <td>None</td>
+                        <td>415ml cold + ice 3/4</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>🔥 Remember: Temperature is CRITICAL!</strong>
+                <ul>
+                    <li>Boiling water (212°F) = BITTER matcha ❌</li>
+                    <li>Warm water (175°F) = SMOOTH matcha ✅</li>
+                    <li>When in doubt: Let boiling water cool for 1 full minute</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="translations.js"></script>
+    <script src="i18n.js"></script>
+</body>
+</html>

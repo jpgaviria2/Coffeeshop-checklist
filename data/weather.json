@@ -1,0 +1,89 @@
+{
+  "generated": "2026-03-09T00:22:57.808Z",
+  "forecast": {
+    "2026-03-08": {
+      "tempMax": 10,
+      "tempMin": 1,
+      "precipitation": 6.1,
+      "weatherCode": 63,
+      "condition": "Rain",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "🌧️"
+    },
+    "2026-03-09": {
+      "tempMax": 3.2,
+      "tempMin": 0,
+      "precipitation": 1.25,
+      "weatherCode": 73,
+      "condition": "Snow",
+      "isRainy": true,
+      "isCold": true,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "❄️"
+    },
+    "2026-03-10": {
+      "tempMax": 3.5,
+      "tempMin": -0.1,
+      "precipitation": 12.55,
+      "weatherCode": 85,
+      "condition": "Light snow showers",
+      "isRainy": true,
+      "isCold": true,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "🌦️"
+    },
+    "2026-03-11": {
+      "tempMax": 5.7,
+      "tempMin": 0.6,
+      "precipitation": 40,
+      "weatherCode": 75,
+      "condition": "Heavy snow",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "❄️"
+    },
+    "2026-03-12": {
+      "tempMax": 5.1,
+      "tempMin": -0.4,
+      "precipitation": 4.7,
+      "weatherCode": 85,
+      "condition": "Light snow showers",
+      "isRainy": true,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "🌦️"
+    },
+    "2026-03-13": {
+      "tempMax": 4.8,
+      "tempMin": -1.6,
+      "precipitation": 3.6,
+      "weatherCode": 53,
+      "condition": "Drizzle",
+      "isRainy": true,
+      "isCold": true,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "☁️"
+    },
+    "2026-03-14": {
+      "tempMax": 5.1,
+      "tempMin": -2.8,
+      "precipitation": 0,
+      "weatherCode": 3,
+      "condition": "Overcast",
+      "isRainy": false,
+      "isCold": false,
+      "isVeryCold": false,
+      "isWarm": false,
+      "emoji": "⛅"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "generated": "2026-03-09T00:22:57.812Z",
+  "forecast": {
+    "2026-03-08": {
+      "dayOfWeek": "Sunday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    },
+    "2026-03-09": {
+      "dayOfWeek": "Monday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    },
+    "2026-03-10": {
+      "dayOfWeek": "Tuesday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    },
+    "2026-03-11": {
+      "dayOfWeek": "Wednesday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    },
+    "2026-03-12": {
+      "dayOfWeek": "Thursday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    },
+    "2026-03-13": {
+      "dayOfWeek": "Friday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    },
+    "2026-03-14": {
+      "dayOfWeek": "Saturday",
+      "items": {},
+      "totalRevenue": {
+        "predicted": 0
+      },
+      "noData": true
+    }
+  }
+}

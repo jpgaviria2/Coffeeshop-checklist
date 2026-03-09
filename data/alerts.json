@@ -1,0 +1,55 @@
+{
+  "generated": "2026-03-09T00:22:57.814Z",
+  "reorder": [
+    {
+      "item": "Oat Milk 1L",
+      "daysOfSupply": 2,
+      "orderBy": "today",
+      "urgency": "medium",
+      "unit": "cartons"
+    },
+    {
+      "item": "Regular Beans 5lb",
+      "daysOfSupply": 3,
+      "orderBy": "today",
+      "urgency": "medium",
+      "unit": "bags"
+    },
+    {
+      "item": "3.5% Milk",
+      "daysOfSupply": 2,
+      "orderBy": "today",
+      "urgency": "medium",
+      "unit": "jugs"
+    },
+    {
+      "item": "2% Milk",
+      "daysOfSupply": 2,
+      "orderBy": "today",
+      "urgency": "medium",
+      "unit": "jugs"
+    },
+    {
+      "item": "Whipping Cream",
+      "daysOfSupply": 3,
+      "orderBy": "today",
+      "urgency": "medium",
+      "unit": "cartons"
+    },
+    {
+      "item": "Greek Yogurt 3kg",
+      "daysOfSupply": 3,
+      "orderBy": "today",
+      "urgency": "medium",
+      "unit": "tubs"
+    }
+  ],
+  "weather": {
+    "tomorrow": {
+      "temp": 3.5,
+      "condition": "Light snow showers",
+      "emoji": "🌦️",
+      "adjustment": "+15% hot drinks, -20% iced drinks"
+    }
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "date": "2026-03-06",
+  "orderCount": 51,
+  "totalRevenue": 629.2,
+  "items": [
+    {
+      "name": "Latte",
+      "variations": {
+        "Large": 14,
+        "Medium": 3
+      },
+      "quantity": 17,
+      "revenue": 95.25
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 8,
+        "Vanilla Glazed": 1
+      },
+      "quantity": 9,
+      "revenue": 49.5
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "variations": {
+        "Regular": 8
+      },
+      "quantity": 8,
+      "revenue": 44
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Large": 5,
+        "Medium": 2
+      },
+      "quantity": 7,
+      "revenue": 25.25
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Large": 4,
+        "Medium": 1
+      },
+      "quantity": 5,
+      "revenue": 30.25
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 25
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 16.25
+    },
+    {
+      "name": "Hot Chocolate",
+      "variations": {
+        "kids": 2,
+        "Medium": 3
+      },
+      "quantity": 5,
+      "revenue": 20
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 17
+    },
+    {
+      "name": "Cappuccino",
+      "variations": {
+        "Large": 2,
+        "Medium": 2
+      },
+      "quantity": 4,
+      "revenue": 21.75
+    },
+    {
+      "name": "Spinach Feta Croissant",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 15.75
+    },
+    {
+      "name": "Plain Croissant",
+      "variations": {
+        "Regular": 2,
+        "ham smoke": 1
+      },
+      "quantity": 3,
+      "revenue": 10
+    },
+    {
+      "name": "Americano",
+      "variations": {
+        "Medium": 2,
+        "Large": 1
+      },
+      "quantity": 3,
+      "revenue": 13.25
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "250g": 1,
+        "400g": 2
+      },
+      "quantity": 3,
+      "revenue": 40.980000000000004
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 1,
+        "Large": 2
+      },
+      "quantity": 3,
+      "revenue": 19
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 11.5
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Large": 1,
+        "Medium": 1
+      },
+      "quantity": 2,
+      "revenue": 12.5
+    },
+    {
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8.5
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 1
+      },
+      "quantity": 1,
+      "revenue": 30
+    },
+    {
+      "name": "Remedy Kombucha",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 5.5
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 4.5
+    },
+    {
+      "name": "Iced Americano",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Medium 12oz": 1
+      },
+      "quantity": 1,
+      "revenue": 5.25
+    },
+    {
+      "name": "Iced Latte",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 6.75
+    },
+    {
+      "name": "Poppi Soda",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.5
+    }
+  ],
+  "byHour": {
+    "8": {
+      "orders": 9,
+      "revenue": 116.38000000000001
+    },
+    "9": {
+      "orders": 4,
+      "revenue": 35.29
+    },
+    "10": {
+      "orders": 8,
+      "revenue": 82.18
+    },
+    "11": {
+      "orders": 5,
+      "revenue": 78.49
+    },
+    "12": {
+      "orders": 7,
+      "revenue": 63.72
+    },
+    "13": {
+      "orders": 7,
+      "revenue": 107.36999999999999
+    },
+    "14": {
+      "orders": 3,
+      "revenue": 22.28
+    },
+    "15": {
+      "orders": 8,
+      "revenue": 123.49000000000001
+    }
+  }
+}

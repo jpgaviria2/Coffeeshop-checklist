@@ -1,182 +1,258 @@
 {
   "date": "2026-03-09",
-  "orderCount": 44,
-  "totalRevenue": 581.92,
-  "weather": {
-    "today": "Partly cloudy 6\u00b0C",
-    "tomorrow": "Overcast  3\u00b0C",
-    "multiplier": 0.85
-  },
-  "defrost": {
-    "Ham and Cheese Croissant": 3,
-    "Lemon cake": 3,
-    "Cookie": 3,
-    "Banana Bread": 3,
-    "Cinnamon Bun": 2,
-    "Plain Croissant": 2,
-    "Chocolate Croissant": 3,
-    "Spinach Feta Croissant": 1,
-    "GF VEGAN brownie": 1,
-    "GF Mini Doughnut": 1,
-    "Caprese Panini": 1
-  },
-  "supplyAlerts": [
-    "\u26a0\ufe0f 16oz Hot Cups: 7 days left \u2014 order soon",
-    "\ud83d\udea8 Hot Lids: only 2 days left \u2014 ORDER NOW"
-  ],
+  "orderCount": 52,
+  "totalRevenue": 748.85,
   "items": [
     {
-      "name": "London Fog Latte",
-      "quantity": 4,
-      "revenue": 0
-    },
-    {
-      "name": "Cookie",
-      "quantity": 3,
-      "revenue": 0
-    },
-    {
-      "name": "Poppi Soda",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Iced Pure Matcha",
-      "quantity": 3,
-      "revenue": 0
-    },
-    {
-      "name": "Iced Coffee",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Chocolate Croissant",
-      "quantity": 5,
-      "revenue": 0
-    },
-    {
-      "name": "Americano",
-      "quantity": 7,
-      "revenue": 0
-    },
-    {
-      "name": "Hot Pure Matcha",
-      "quantity": 4,
-      "revenue": 0
-    },
-    {
-      "name": "Lemon cake",
-      "quantity": 5,
-      "revenue": 0
-    },
-    {
       "name": "Latte",
+      "variations": {
+        "Large": 12,
+        "Medium": 9
+      },
       "quantity": 21,
-      "revenue": 0
-    },
-    {
-      "name": "Flat White",
-      "quantity": 5,
-      "revenue": 0
-    },
-    {
-      "name": "Cinnamon Bun",
-      "quantity": 3,
-      "revenue": 0
+      "revenue": 110.25
     },
     {
       "name": "Ham and Cheese Croissant",
-      "quantity": 11,
-      "revenue": 0
+      "variations": {
+        "Regular": 12
+      },
+      "quantity": 12,
+      "revenue": 66
     },
     {
-      "name": "Drip Coffee",
-      "quantity": 2,
-      "revenue": 0
+      "name": "Americano",
+      "variations": {
+        "Large": 2,
+        "Medium": 6
+      },
+      "quantity": 8,
+      "revenue": 35
     },
     {
-      "name": "Yogurt and Granola Bowl",
-      "quantity": 2,
-      "revenue": 0
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Vanilla Glazed": 2,
+        "Cream Cheese Icing": 4
+      },
+      "quantity": 6,
+      "revenue": 33
     },
     {
-      "name": "Cortado",
-      "quantity": 3,
-      "revenue": 0
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 25.5
+    },
+    {
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 30
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 5
+      },
+      "quantity": 5,
+      "revenue": 22.5
     },
     {
       "name": "Cappuccino",
+      "variations": {
+        "Large": 2,
+        "Medium": 3
+      },
       "quantity": 5,
-      "revenue": 0
+      "revenue": 25.5
     },
     {
-      "name": "Mocha",
-      "quantity": 2,
-      "revenue": 0
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Large": 3,
+        "Medium": 1
+      },
+      "quantity": 4,
+      "revenue": 24.25
     },
     {
-      "name": "Gluten Free Granola",
-      "quantity": 1,
-      "revenue": 0
+      "name": "London Fog Latte",
+      "variations": {
+        "Large": 3,
+        "Medium": 1
+      },
+      "quantity": 4,
+      "revenue": 24.5
     },
     {
-      "name": "GF VEGAN brownie",
-      "quantity": 1,
-      "revenue": 0
+      "name": "Iced Pure Matcha",
+      "variations": {
+        "Large": 1,
+        "Medium": 3
+      },
+      "quantity": 4,
+      "revenue": 21.75
+    },
+    {
+      "name": "Coffee Beans (PAC)",
+      "variations": {
+        "1LB": 4
+      },
+      "quantity": 4,
+      "revenue": 120
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12
     },
     {
       "name": "Spinach Feta Croissant",
+      "variations": {
+        "Regular": 3
+      },
       "quantity": 3,
-      "revenue": 0
+      "revenue": 15.75
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 9.75
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 12.75
     },
     {
       "name": "Hot Chocolate",
+      "variations": {
+        "Medium": 1,
+        "kids": 1
+      },
       "quantity": 2,
-      "revenue": 0
+      "revenue": 7.75
+    },
+    {
+      "name": "Yogurt and Granola Bowl",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 13
+    },
+    {
+      "name": "Drip Coffee",
+      "variations": {
+        "Large": 1,
+        "Medium": 1
+      },
+      "quantity": 2,
+      "revenue": 7
     },
     {
       "name": "Coffee Beans",
+      "variations": {
+        "1LB": 1
+      },
       "quantity": 1,
-      "revenue": 0
+      "revenue": 30
+    },
+    {
+      "name": "GF VEGAN brownie",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 4.25
+    },
+    {
+      "name": "Gluten Free Granola",
+      "variations": {
+        "400g": 1
+      },
+      "quantity": 1,
+      "revenue": 15.99
+    },
+    {
+      "name": "Iced Coffee",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    },
+    {
+      "name": "Poppi Soda",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.5
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Large": 1
+      },
+      "quantity": 1,
+      "revenue": 6.75
     }
   ],
   "byHour": {
     "14": {
-      "orders": 0,
-      "revenue": 26.18
+      "orders": 2,
+      "revenue": 56.9
     },
-    "13": {
-      "orders": 0,
-      "revenue": 133.45
-    },
-    "12": {
-      "orders": 0,
-      "revenue": 73.84
-    },
-    "11": {
-      "orders": 0,
-      "revenue": 86.53
-    },
-    "10": {
-      "orders": 0,
-      "revenue": 25.41
-    },
-    "9": {
-      "orders": 0,
-      "revenue": 82.16
-    },
-    "8": {
-      "orders": 0,
-      "revenue": 65.7
-    },
-    "7": {
-      "orders": 0,
+    "15": {
+      "orders": 3,
       "revenue": 31.75
     },
-    "6": {
-      "orders": 0,
-      "revenue": 56.9
+    "16": {
+      "orders": 4,
+      "revenue": 65.7
+    },
+    "17": {
+      "orders": 6,
+      "revenue": 82.16
+    },
+    "18": {
+      "orders": 3,
+      "revenue": 25.41
+    },
+    "19": {
+      "orders": 7,
+      "revenue": 139.33
+    },
+    "20": {
+      "orders": 10,
+      "revenue": 135.04
+    },
+    "21": {
+      "orders": 10,
+      "revenue": 133.45
+    },
+    "22": {
+      "orders": 6,
+      "revenue": 72.33
+    },
+    "23": {
+      "orders": 1,
+      "revenue": 6.78
     }
   }
 }

@@ -1,0 +1,173 @@
+{
+  "date": "2026-03-10",
+  "orderCount": 27,
+  "totalRevenue": 331.67,
+  "weather": {
+    "today": "Overcast 5\u00b0C",
+    "tomorrow": "Heavy rain 8\u00b0C",
+    "multiplier": 0.85
+  },
+  "defrost": {
+    "Ham and Cheese Croissant": 7,
+    "Lemon cake": 7,
+    "Plain Croissant": 6,
+    "Spinach Feta Croissant": 3,
+    "Banana Bread": 5,
+    "Cookie": 6,
+    "Cinnamon Bun": 2,
+    "Chocolate Croissant": 3,
+    "Gluten Free Cheddar Scone": 1,
+    "GF VEGAN brownie": 1,
+    "GF Mini Doughnut": 2
+  },
+  "supplyAlerts": [
+    "\u26a0\ufe0f 16oz Hot Cups: 6 days left \u2014 order soon",
+    "\ud83d\udea8 Hot Lids: only 1 days left \u2014 ORDER NOW"
+  ],
+  "items": [
+    {
+      "name": "Hot Chocolate",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Cinnamon Bun",
+      "quantity": 4,
+      "revenue": 0
+    },
+    {
+      "name": "Latte",
+      "quantity": 10,
+      "revenue": 0
+    },
+    {
+      "name": "Mocha",
+      "quantity": 6,
+      "revenue": 0
+    },
+    {
+      "name": "Spinach Feta Croissant",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Lemon cake",
+      "quantity": 7,
+      "revenue": 0
+    },
+    {
+      "name": "Flat White",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Americano",
+      "quantity": 5,
+      "revenue": 0
+    },
+    {
+      "name": "Chocolate Croissant",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Banana Bread",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Hot Tea",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "London Fog Latte",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Cappuccino",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Water Bottle",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Drip Coffee",
+      "quantity": 4,
+      "revenue": 0
+    },
+    {
+      "name": "test reward",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Espresso",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Iced Pure Matcha",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Poppi Soda",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Cookie",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Remedy Kombucha",
+      "quantity": 1,
+      "revenue": 0
+    }
+  ],
+  "byHour": {
+    "13": {
+      "orders": 0,
+      "revenue": 25.65
+    },
+    "12": {
+      "orders": 0,
+      "revenue": 78.82000000000001
+    },
+    "11": {
+      "orders": 0,
+      "revenue": 57.129999999999995
+    },
+    "10": {
+      "orders": 0,
+      "revenue": 30.530000000000005
+    },
+    "9": {
+      "orders": 0,
+      "revenue": 59.849999999999994
+    },
+    "8": {
+      "orders": 0,
+      "revenue": 7.3
+    },
+    "7": {
+      "orders": 0,
+      "revenue": 40.01
+    },
+    "6": {
+      "orders": 0,
+      "revenue": 32.379999999999995
+    }
+  }
+}

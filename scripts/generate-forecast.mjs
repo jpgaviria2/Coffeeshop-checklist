@@ -185,9 +185,30 @@ function generateForecast(dailyData, weather) {
       weightedRev += (recent[i].totalRevenue || 0) * normWeights[i];
     }
 
-    // Adjust revenue for weather too (rough: warm weekend = +10%)
+    // Weather traffic volume multiplier — Anmore trail town rules
+    // Cold/rain = fewer hikers = less revenue. Sunny = more people.
+    // Calibrated from March 2026 actuals (Analytics report 2026-03-11)
     let revMultiplier = 1.0;
-    if (weatherDay?.isWarm && !weatherDay?.isRainy && (dow === 0 || dow === 6)) revMultiplier = 1.10;
+    const precip = weatherDay?.precipitation || 0;
+    const code = weatherDay?.weatherCode || 0;
+
+    if (code >= 71 && code <= 77) {
+      // Snow — split light vs heavy
+      revMultiplier = precip > 5 ? 0.55 : 0.85;           // Heavy snow -45%, light snow -15%
+    } else if (code >= 45 && code <= 48) {
+      // Fog/mist — worst weather type for this location
+      revMultiplier = 0.60;                                 // Fog -40%
+    } else if (precip > 15 || (weatherDay?.isRainy && code >= 63)) {
+      revMultiplier = 0.65;                                 // Heavy rain -35%
+    } else if (precip > 2) {
+      revMultiplier = 0.75;                                 // Moderate rain -25%
+    } else if (precip > 0 || weatherDay?.isRainy) {
+      revMultiplier = 0.90;                                 // Light drizzle -10%
+    } else if (weatherDay?.isWarm) {
+      revMultiplier = (dow === 0 || dow === 6) ? 1.25 : 1.20; // Sunny warm +20-25%
+    } else {
+      revMultiplier = 1.05;                                 // Clear/overcast mild +5%
+    }
 
     forecast[dateStr] = {
       dayOfWeek: dayName,

@@ -1,0 +1,164 @@
+{
+  "date": "2026-03-11",
+  "orderCount": 32,
+  "totalRevenue": 476.26,
+  "weather": {
+    "today": "Light rain 4\u00b0C",
+    "tomorrow": "Partly Cloudy  6\u00b0C",
+    "multiplier": 1.05
+  },
+  "defrost": {
+    "Ham and Cheese Croissant": 6,
+    "Lemon cake": 6,
+    "Chocolate Croissant": 6,
+    "Banana Bread": 5,
+    "Spinach Feta Croissant": 3,
+    "Cinnamon Bun": 5,
+    "Plain Croissant": 4,
+    "Cookie": 3,
+    "Gluten Free Cheddar Scone": 1,
+    "Caprese Panini": 1,
+    "GF Mini Doughnut": 1
+  },
+  "supplyAlerts": [
+    "\u26a0\ufe0f 16oz Hot Cups: 5 days left \u2014 order soon",
+    "\ud83d\udea8 Hot Lids: only 0 days left \u2014 ORDER NOW"
+  ],
+  "items": [
+    {
+      "name": "London Fog Latte",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Mocha",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Cookie",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Drip Coffee",
+      "quantity": 8,
+      "revenue": 0
+    },
+    {
+      "name": "Latte",
+      "quantity": 20,
+      "revenue": 0
+    },
+    {
+      "name": "Lemon cake",
+      "quantity": 6,
+      "revenue": 0
+    },
+    {
+      "name": "Banana Bread",
+      "quantity": 5,
+      "revenue": 0
+    },
+    {
+      "name": "Cinnamon Bun",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Ceramics cup",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Coffee Beans",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Americano",
+      "quantity": 4,
+      "revenue": 0
+    },
+    {
+      "name": "Cortado",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Chocolate Croissant",
+      "quantity": 4,
+      "revenue": 0
+    },
+    {
+      "name": "Chocolate Muffin",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "quantity": 3,
+      "revenue": 0
+    },
+    {
+      "name": "Hot Chocolate",
+      "quantity": 3,
+      "revenue": 0
+    },
+    {
+      "name": "Plain Croissant",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Iced Americano",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "quantity": 7,
+      "revenue": 0
+    },
+    {
+      "name": "Spinach Feta Croissant",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Flat White",
+      "quantity": 1,
+      "revenue": 0
+    }
+  ],
+  "byHour": {
+    "13": {
+      "orders": 0,
+      "revenue": 152.75
+    },
+    "12": {
+      "orders": 0,
+      "revenue": 58.19
+    },
+    "11": {
+      "orders": 0,
+      "revenue": 39.489999999999995
+    },
+    "10": {
+      "orders": 0,
+      "revenue": 37.65
+    },
+    "9": {
+      "orders": 0,
+      "revenue": 36.69
+    },
+    "8": {
+      "orders": 0,
+      "revenue": 75.63000000000001
+    },
+    "7": {
+      "orders": 0,
+      "revenue": 75.86
+    }
+  }
+}

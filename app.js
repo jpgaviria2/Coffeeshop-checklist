@@ -221,11 +221,6 @@ async function loadOpeningPastryInfo() {
 
         html += `</div>`;
 
-        const totalRevenue = todayFc.totalRevenue?.predicted;
-        if (totalRevenue) {
-            html += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid #a5d6a7;font-size:12px;color:#2e7d32;">💰 Predicted revenue today: <strong>$${totalRevenue}</strong></div>`;
-        }
-
         html += `</div>`;
         container.innerHTML = html;
     } catch (e) { console.error('Error loading opening pastry forecast:', e); }

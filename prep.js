@@ -265,19 +265,6 @@
 
     html += '</tbody></table></div></div>';
 
-    // Weekly revenue outlook
-    html += '<div class="card"><h2>💰 Revenue Outlook</h2><div class="week-grid">';
-    for (const date of dates) {
-      const fc = forecast.forecast[date];
-      const isToday = date === todayKey;
-      html += `<div class="week-cell ${isToday ? 'today' : ''}">
-        <div class="day">${fc.dayOfWeek.substring(0, 3)}</div>
-        <div class="count">$${fc.totalRevenue?.predicted || 0}</div>
-        <div style="font-size:10px;color:#999;">${date.substring(5)}</div>
-      </div>`;
-    }
-    html += '</div></div>';
-
     $weekView.innerHTML = html;
   }
 

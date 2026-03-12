@@ -57,10 +57,8 @@
       html += `</div>`;
     }
 
-    // Predicted revenue
+    // Top items
     if (todayFc && !todayFc.noData) {
-      html += `<div class="stat"><span>Predicted revenue</span><span class="val">$${todayFc.totalRevenue.predicted}</span></div>`;
-
       // Top 5 items
       const topItems = Object.entries(todayFc.items).sort((a, b) => b[1].predicted - a[1].predicted).slice(0, 5);
       if (topItems.length > 0) {
@@ -116,7 +114,6 @@
 
     // Today's actuals
     if (dailyToday) {
-      html += `<div class="stat"><span>Today's revenue</span><span class="val">$${dailyToday.totalRevenue}</span></div>`;
       html += `<div class="stat"><span>Orders</span><span class="val">${dailyToday.orderCount}</span></div>`;
     } else {
       html += `<div style="font-size:13px;color:#999;">Today's sales not synced yet.</div>`;
@@ -125,7 +122,6 @@
     // Tomorrow's prep
     if (tomorrowFc && !tomorrowFc.noData) {
       html += `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#666;">Tomorrow's prep:</div>`;
-      html += `<div class="stat"><span>Expected revenue</span><span class="val">$${tomorrowFc.totalRevenue.predicted}</span></div>`;
 
       const topItems = Object.entries(tomorrowFc.items).sort((a, b) => b[1].predicted - a[1].predicted).slice(0, 5);
       for (const [name, data] of topItems) {
@@ -231,7 +227,6 @@
       html += `<div style="font-size:13px;color:#666;margin-bottom:8px;">${fc.weather.emoji} ${fc.weather.temp}°C — ${fc.weather.condition}</div>`;
     }
 
-    html += `<div class="stat"><span>Predicted Revenue</span><span class="val">$${fc.totalRevenue.predicted}</span></div>`;
     html += '<h3>Top Items</h3>';
     for (const [name, data] of items.slice(0, 10)) {
       if (data.predicted === 0) continue;
@@ -246,10 +241,9 @@
     if (!daily) return '';
     let html = `<div class="card"><h2>📋 Yesterday — ${daily.date}</h2>`;
     html += `<div class="stat"><span>Orders</span><span class="val">${daily.orderCount}</span></div>`;
-    html += `<div class="stat"><span>Revenue</span><span class="val">$${daily.totalRevenue}</span></div>`;
     html += '<h3>Sales by Item</h3>';
     for (const item of (daily.items || []).slice(0, 12)) {
-      html += `<div class="stat"><span>${item.name}</span><span class="val">${item.quantity} — $${item.revenue.toFixed(0)}</span></div>`;
+      html += `<div class="stat"><span>${item.name}</span><span class="val">${item.quantity}</span></div>`;
     }
     if (daily.byHour && Object.keys(daily.byHour).length > 0) {
       html += '<h3>Sales by Hour</h3>';
@@ -261,7 +255,7 @@
         html += `<div class="bar-row">
           <span class="bar-label">${h}:00</span>
           <div class="bar" style="width:${pct}%"></div>
-          <span class="bar-val">${data.orders} ($${data.revenue.toFixed(0)})</span>
+          <span class="bar-val">${data.orders} orders</span>
         </div>`;
       }
     }
@@ -283,7 +277,6 @@
         <div class="day-name">${fc.dayOfWeek.substring(0, 3)}</div>
         <div style="color:#999;">${shortDate}</div>
         <div style="font-size:14px;">${weatherEmoji}</div>
-        <div class="day-rev">$${fc.totalRevenue?.predicted || 0}</div>
       </div>`;
     }
     html += '</div></div>';

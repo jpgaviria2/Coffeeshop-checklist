@@ -167,7 +167,6 @@
     html += `<div class="card"><h2>📋 Weekly Summary</h2>`;
     html += `<div class="stat"><span>Submissions this week</span><span class="val">${weekSubs.length}</span></div>`;
     html += `<div class="stat"><span>Items unaccounted</span><span class="val" style="color:${totalUnaccounted > 0 ? '#e53935' : '#4caf50'}">${totalUnaccounted}</span></div>`;
-    html += `<div class="stat"><span>Estimated loss</span><span class="val" style="color:${totalCost > 0 ? '#e53935' : '#4caf50'}">$${totalCost.toFixed(2)}</span></div>`;
     html += `</div>`;
 
     // Pattern alerts

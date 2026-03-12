@@ -48,21 +48,17 @@
     return allDaily.filter(d => d.date >= startStr && d.date <= endStr);
   }
 
-  function renderRevenue(thisWeek, lastWeek) {
-    const thisTotal = thisWeek.reduce((s, d) => s + (d.totalRevenue || 0), 0);
-    const lastTotal = lastWeek.reduce((s, d) => s + (d.totalRevenue || 0), 0);
-    const change = lastTotal > 0 ? ((thisTotal - lastTotal) / lastTotal * 100) : 0;
+  function renderOrderSummary(thisWeek, lastWeek) {
     const thisOrders = thisWeek.reduce((s, d) => s + (d.orderCount || 0), 0);
     const lastOrders = lastWeek.reduce((s, d) => s + (d.orderCount || 0), 0);
-
+    const change = lastOrders > 0 ? ((thisOrders - lastOrders) / lastOrders * 100) : 0;
     let trendClass = change > 0 ? 'trend-up' : change < 0 ? 'trend-down' : 'trend-flat';
     let arrow = change > 0 ? '↑' : change < 0 ? '↓' : '→';
 
-    let html = `<div class="card"><h2>💰 Revenue</h2>`;
-    html += `<div class="stat"><span>This week</span><span class="val">$${thisTotal.toFixed(0)}</span></div>`;
-    html += `<div class="stat"><span>Last week</span><span class="val">$${lastTotal.toFixed(0)}</span></div>`;
+    let html = `<div class="card"><h2>📊 Orders</h2>`;
+    html += `<div class="stat"><span>This week</span><span class="val">${thisOrders}</span></div>`;
+    html += `<div class="stat"><span>Last week</span><span class="val">${lastOrders}</span></div>`;
     html += `<div class="stat"><span>Change</span><span class="val ${trendClass}">${arrow} ${Math.abs(change).toFixed(1)}%</span></div>`;
-    html += `<div class="stat"><span>Orders</span><span class="val">${thisOrders} <span style="color:#999;font-weight:400">(last: ${lastOrders})</span></span></div>`;
     html += `</div>`;
     return html;
   }
@@ -72,9 +68,8 @@
       const items = {};
       for (const day of data) {
         for (const item of (day.items || [])) {
-          if (!items[item.name]) items[item.name] = { qty: 0, rev: 0 };
+          if (!items[item.name]) items[item.name] = { qty: 0 };
           items[item.name].qty += item.quantity || 0;
-          items[item.name].rev += item.revenue || 0;
         }
       }
       return items;
@@ -142,7 +137,7 @@
 
   function renderDailyBreakdown(thisWeek) {
     const { start } = getWeekBounds(weekOffset);
-    const maxRev = Math.max(...thisWeek.map(d => d.totalRevenue || 0), 1);
+    const maxOrders = Math.max(...thisWeek.map(d => d.orderCount || 0), 1);
 
     let html = `<div class="card"><h2>📅 Daily Breakdown</h2>`;
     for (let i = 0; i < 7; i++) {
@@ -150,15 +145,13 @@
       date.setDate(start.getDate() + i);
       const ds = dateStr(date);
       const day = thisWeek.find(d => d.date === ds);
-      const rev = day?.totalRevenue || 0;
       const orders = day?.orderCount || 0;
-      const pct = (rev / maxRev * 100).toFixed(0);
+      const pct = (orders / maxOrders * 100).toFixed(0);
 
       html += `<div class="daily-row">
         <span class="day">${DAYS[date.getDay()]}</span>
         <div class="daily-bar"><div class="daily-bar-fill" style="width:${pct}%"></div></div>
-        <span class="rev">$${rev.toFixed(0)}</span>
-        <span class="orders" style="width:50px;text-align:right;">${orders} ord</span>
+        <span class="orders" style="width:70px;text-align:right;">${orders} orders</span>
       </div>`;
     }
     html += `</div>`;
@@ -280,7 +273,7 @@
     }
 
     let html = '';
-    html += renderRevenue(thisWeek, lastWeek);
+    html += renderOrderSummary(thisWeek, lastWeek);
     html += renderDailyBreakdown(thisWeek);
     html += renderTopSellers(thisWeek, lastWeek);
     html += renderSlowMovers(thisWeek, lastWeek);

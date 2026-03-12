@@ -1,6 +1,16 @@
 // Nostr Checklist App - Mobile-friendly with direct nsec login + Schedule viewer
 // Using global NostrTools from CDN
 
+// Get local date string (YYYY-MM-DD) in Vancouver (Pacific) timezone.
+// Using Intl.DateTimeFormat with 'en-CA' gives YYYY-MM-DD format directly.
+// This avoids the UTC offset bug where toISOString() can return the wrong calendar
+// date for Vancouver (e.g. 8 PM PDT = next day UTC).
+function getVancouverDate(offsetDays = 0) {
+    const d = new Date();
+    if (offsetDays !== 0) d.setDate(d.getDate() + offsetDays);
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver' }).format(d);
+}
+
 let userKeys = null;
 let currentChecklist = 'opening';
 let currentWeekOffset = 0;
@@ -69,7 +79,7 @@ async function loadTodaysActivity() {
 
     try {
         const allEvents = await EVENT_CACHE.getAllEvents();
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getVancouverDate();
         const todayStart = Math.floor(new Date(todayStr).getTime() / 1000);
         const todayEnd = todayStart + 86400;
 
@@ -133,8 +143,7 @@ async function loadClosingFreezerPulls() {
         if (!fcRes.ok || !cfgRes.ok) return;
         const fcData = await fcRes.json();
         const cfgData = await cfgRes.json();
-        const d = new Date(); d.setDate(d.getDate() + 1);
-        const tomorrowKey = d.toISOString().substring(0, 10);
+        const tomorrowKey = getVancouverDate(1);
         const tomorrowFc = fcData.forecast?.[tomorrowKey];
         if (!tomorrowFc || !cfgData.thresholds) {
             container.innerHTML = '<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-bottom:15px;"><strong>⚠️ No forecast for tomorrow</strong> — check with manager for freezer pull quantities.</div>';
@@ -177,7 +186,7 @@ async function loadOpeningPastryInfo() {
         const fcRes = await fetch('data/forecast.json');
         if (!fcRes.ok) return;
         const fcData = await fcRes.json();
-        const todayKey = new Date().toISOString().substring(0, 10);
+        const todayKey = getVancouverDate();
         const todayFc = fcData.forecast?.[todayKey];
         if (!todayFc) {
             container.innerHTML = `<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-bottom:15px;"><strong>⚠️ No forecast available for today</strong> — contact manager for guidance.</div>`;
@@ -252,7 +261,7 @@ async function loadClosingReconciliation() {
             return;
         }
         const fcData = await fcRes.json();
-        const todayKey = new Date().toISOString().substring(0, 10);
+        const todayKey = getVancouverDate();
         const todayFc = fcData.forecast?.[todayKey];
 
         // Store forecast globally for use in submit handler
@@ -410,7 +419,7 @@ async function loadInventoryPredictions() {
         const res = await fetch('data/forecast.json');
         if (!res.ok) return;
         const fcData = await res.json();
-        const todayKey = new Date().toISOString().substring(0, 10);
+        const todayKey = getVancouverDate();
         const todayFc = fcData.forecast?.[todayKey];
         if (!todayFc) return;
 
@@ -517,6 +526,7 @@ document.getElementById('closingBtn').addEventListener('click', () => {
     document.getElementById('openingChecklist').style.display = 'none';
     document.getElementById('closingChecklist').style.display = 'block';
     document.getElementById('inventoryChecklist').style.display = 'none';
+    loadClosingFreezerPulls();
     loadClosingReconciliation();
 });
 
@@ -587,7 +597,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
           const fcRes = await fetch('data/forecast.json');
           if (fcRes.ok) {
             const fcData = await fcRes.json();
-            const todayKey = new Date().toISOString().substring(0, 10);
+            const todayKey = getVancouverDate();
             const todayFc = fcData.forecast?.[todayKey];
             if (todayFc) {
               varianceData = {
@@ -661,7 +671,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             }
             contentData.leftovers = leftovers;
             contentData.forecastAccuracy = forecastAccuracy;
-            contentData.forecastDate = new Date().toISOString().split('T')[0];
+            contentData.forecastDate = getVancouverDate();
         }
     }
     

@@ -169,33 +169,198 @@ async function loadClosingFreezerPulls() {
     } catch (e) { console.error('Error loading freezer pulls:', e); }
 }
 
-// Load dynamic opening pastry info (what was prepped last night = today's forecast)
+// Load dynamic opening pastry info — Today's Pastry Forecast
 async function loadOpeningPastryInfo() {
     const container = document.getElementById('openingPastryInfo');
     if (!container) return;
     try {
-        const [fcRes, cfgRes] = await Promise.all([fetch('data/forecast.json'), fetch('data/config.json')]);
-        if (!fcRes.ok || !cfgRes.ok) return;
+        const fcRes = await fetch('data/forecast.json');
+        if (!fcRes.ok) return;
         const fcData = await fcRes.json();
-        const cfgData = await cfgRes.json();
         const todayKey = new Date().toISOString().substring(0, 10);
         const todayFc = fcData.forecast?.[todayKey];
-        if (!todayFc || !cfgData.thresholds) return;
-        let items = [];
-        for (const [name, thresh] of Object.entries(cfgData.thresholds)) {
-            const predicted = todayFc.items?.[name]?.predicted || 0;
-            if (predicted > 0) items.push({ name, predicted, displayMin: thresh.displayMin });
+        if (!todayFc) {
+            container.innerHTML = `<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-bottom:15px;"><strong>⚠️ No forecast available for today</strong> — contact manager for guidance.</div>`;
+            return;
         }
-        if (items.length === 0) return;
-        items.sort((a, b) => b.predicted - a.predicted);
-        let html = `<div style="background:#e8f5e9;border:2px solid #4caf50;border-radius:10px;padding:12px;margin-bottom:15px;">`;
-        html += `<div style="font-weight:700;color:#2e7d32;font-size:14px;margin-bottom:6px;">📦 Expected Today (arrange thawed pastries)</div>`;
-        for (const item of items) {
-            html += `<div style="font-size:13px;padding:3px 0;">• <strong>${item.predicted}</strong> ${item.name} (display ${item.displayMin}+)</div>`;
+
+        // Pastry items we track (the ones we bake and sell)
+        const PASTRY_ITEMS = [
+            'Ham and Cheese Croissant',
+            'Chocolate Croissant',
+            'Plain Croissant',
+            'Banana Bread',
+            'Lemon cake',
+            'Cinnamon Bun',
+            'Cookie',
+            'Spinach Feta Croissant'
+        ];
+
+        const weather = todayFc.weather;
+        const weatherStr = weather ? ` · ${weather.emoji} ${weather.temp}°C ${weather.condition}` : '';
+
+        let html = `<div style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:2px solid #4caf50;border-radius:12px;padding:14px;margin-bottom:18px;">`;
+        html += `<div style="font-weight:700;color:#1b5e20;font-size:15px;margin-bottom:4px;">📊 Today's Pastry Forecast</div>`;
+        html += `<div style="font-size:12px;color:#2e7d32;margin-bottom:10px;font-style:italic;">Predicted sales for today — use this to confirm opening stock${weatherStr}</div>`;
+        html += `<div style="display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;">`;
+
+        let hasAny = false;
+        for (const name of PASTRY_ITEMS) {
+            const predicted = todayFc.items?.[name]?.predicted;
+            if (!predicted && predicted !== 0) continue;
+            hasAny = true;
+            const bar = '█'.repeat(Math.min(predicted, 12));
+            const barColor = predicted >= 8 ? '#1b5e20' : predicted >= 5 ? '#388e3c' : '#66bb6a';
+            html += `<div style="font-size:13px;color:#333;padding:3px 0;">${name}</div>`;
+            html += `<div style="font-size:13px;font-weight:700;color:#1b5e20;text-align:right;padding:3px 0;">×${predicted} <span style="font-size:10px;color:${barColor};">${bar}</span></div>`;
         }
+
+        if (!hasAny) {
+            html += `<div style="grid-column:1/-1;color:#666;font-size:13px;">No pastry forecast data for today.</div>`;
+        }
+
+        html += `</div>`;
+
+        const totalRevenue = todayFc.totalRevenue?.predicted;
+        if (totalRevenue) {
+            html += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid #a5d6a7;font-size:12px;color:#2e7d32;">💰 Predicted revenue today: <strong>$${totalRevenue}</strong></div>`;
+        }
+
         html += `</div>`;
         container.innerHTML = html;
-    } catch (e) { /* optional */ }
+    } catch (e) { console.error('Error loading opening pastry forecast:', e); }
+}
+
+// Pastry items tracked for reconciliation
+const RECONCILIATION_PASTRIES = [
+    { key: 'chocolateCroissant', name: 'Chocolate Croissant' },
+    { key: 'hamCheese', name: 'Ham and Cheese Croissant' },
+    { key: 'plainCroissant', name: 'Plain Croissant' },
+    { key: 'bananaBread', name: 'Banana Bread' },
+    { key: 'lemonCake', name: 'Lemon cake' },
+    { key: 'cinnamonBun', name: 'Cinnamon Bun' },
+    { key: 'cookie', name: 'Cookie' },
+    { key: 'spinachFeta', name: 'Spinach Feta Croissant' }
+];
+
+// Store forecast data for reconciliation (populated when closing tab loads)
+let closingForecastData = {};
+
+// Load closing pastry reconciliation section
+async function loadClosingReconciliation() {
+    const container = document.getElementById('closingReconciliation');
+    if (!container) return;
+    try {
+        const fcRes = await fetch('data/forecast.json');
+        if (!fcRes.ok) {
+            container.innerHTML = `<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-top:15px;"><strong>⚠️ Could not load forecast data</strong> for reconciliation.</div>`;
+            return;
+        }
+        const fcData = await fcRes.json();
+        const todayKey = new Date().toISOString().substring(0, 10);
+        const todayFc = fcData.forecast?.[todayKey];
+
+        // Store forecast globally for use in submit handler
+        closingForecastData = {};
+        if (todayFc) {
+            for (const p of RECONCILIATION_PASTRIES) {
+                closingForecastData[p.name] = todayFc.items?.[p.name]?.predicted ?? 0;
+            }
+        }
+
+        let html = `<div id="reconciliationBox" style="margin-top:20px;background:#fafafa;border:2px solid #667eea;border-radius:12px;overflow:hidden;">`;
+        html += `<div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 15px;">`;
+        html += `<div style="font-weight:700;font-size:15px;">🥐 Pastry Reconciliation</div>`;
+        html += `<div style="font-size:12px;opacity:0.9;margin-top:3px;">Enter leftover quantities at close — counts what's still on the shelf/rack</div>`;
+        html += `</div>`;
+
+        html += `<div style="padding:12px;">`;
+        html += `<div style="display:grid;grid-template-columns:1fr 60px 80px 60px;gap:6px;align-items:center;margin-bottom:8px;">`;
+        html += `<div style="font-size:11px;font-weight:600;color:#666;text-transform:uppercase;">Item</div>`;
+        html += `<div style="font-size:11px;font-weight:600;color:#667eea;text-align:center;text-transform:uppercase;">Forecast</div>`;
+        html += `<div style="font-size:11px;font-weight:600;color:#333;text-align:center;text-transform:uppercase;">Leftover</div>`;
+        html += `<div style="font-size:11px;font-weight:600;color:#333;text-align:center;text-transform:uppercase;">Status</div>`;
+        html += `</div>`;
+
+        for (const p of RECONCILIATION_PASTRIES) {
+            const predicted = closingForecastData[p.name] ?? 0;
+            html += `<div style="display:grid;grid-template-columns:1fr 60px 80px 60px;gap:6px;align-items:center;padding:6px 0;border-top:1px solid #eee;">`;
+            html += `<div style="font-size:13px;color:#333;">${p.name}</div>`;
+            html += `<div style="font-size:13px;color:#667eea;font-weight:600;text-align:center;">${predicted}</div>`;
+            html += `<div style="text-align:center;"><input type="number" id="leftover-${p.key}" min="0" value="0" oninput="updateReconciliationSummary()" style="width:60px;padding:6px;border:2px solid #e0e0e0;border-radius:6px;font-size:15px;text-align:center;font-weight:600;"></div>`;
+            html += `<div id="status-${p.key}" style="font-size:16px;text-align:center;">—</div>`;
+            html += `</div>`;
+        }
+
+        html += `</div>`;
+
+        // Summary section (updated live)
+        html += `<div id="reconciliationSummary" style="padding:10px 15px;background:#f8f9fa;border-top:1px solid #e0e0e0;font-size:13px;color:#666;">Enter leftover counts above to see summary.</div>`;
+
+        html += `</div>`;
+        container.innerHTML = html;
+
+    } catch (e) { console.error('Error loading closing reconciliation:', e); }
+}
+
+// Update the reconciliation summary and status icons live as staff type
+function updateReconciliationSummary() {
+    const overstock = [];
+    const understock = [];
+    const onTarget = [];
+
+    for (const p of RECONCILIATION_PASTRIES) {
+        const input = document.getElementById(`leftover-${p.key}`);
+        const statusEl = document.getElementById(`status-${p.key}`);
+        if (!input || !statusEl) continue;
+
+        const leftover = parseInt(input.value) || 0;
+        const predicted = closingForecastData[p.name] ?? 0;
+
+        // We don't have opening stock, so we compare leftover to forecast
+        // If leftover > 0, they made more than they sold → potential waste
+        // But we also need to know sold count. Without opening stock, use leftover as waste proxy.
+        // Status logic: compare (predicted - leftover) vs predicted
+        // High leftover relative to forecast → overstock/waste
+        // Zero leftover and sold > predicted → understock
+        // Estimated sold = forecast - leftover (rough, since opening stock = forecast + buffer)
+        const estimatedSold = Math.max(0, predicted - leftover);
+
+        if (leftover === 0 && predicted > 0) {
+            // Sold out — could be understocked
+            statusEl.textContent = '🟢';
+            statusEl.title = 'Sold out — possible understock risk';
+            understock.push(p.name);
+        } else if (leftover >= predicted * 0.5) {
+            // More than half left over — significant waste
+            statusEl.textContent = '🔴';
+            statusEl.title = `${leftover} leftover — overstock/waste`;
+            overstock.push(p.name);
+        } else if (leftover > 0 && leftover < predicted * 0.5) {
+            // Some leftover but reasonable
+            statusEl.textContent = '✅';
+            statusEl.title = `${leftover} leftover — on target`;
+            onTarget.push(p.name);
+        } else {
+            statusEl.textContent = '—';
+            onTarget.push(p.name);
+        }
+    }
+
+    const summaryEl = document.getElementById('reconciliationSummary');
+    if (!summaryEl) return;
+
+    let summaryHtml = '';
+    if (understock.length > 0) {
+        summaryHtml += `<div style="margin-bottom:4px;">🟢 <strong>Sold out (understock risk):</strong> ${understock.join(', ')}</div>`;
+    }
+    if (overstock.length > 0) {
+        summaryHtml += `<div style="margin-bottom:4px;">🔴 <strong>High waste/overstock:</strong> ${overstock.join(', ')}</div>`;
+    }
+    if (onTarget.length > 0) {
+        summaryHtml += `<div>✅ <strong>On target:</strong> ${onTarget.join(', ')}</div>`;
+    }
+    summaryEl.innerHTML = summaryHtml || '<span style="color:#999;">Enter leftover counts above to see summary.</span>';
 }
 
 // Show specific checklist
@@ -224,6 +389,7 @@ function showChecklist(type) {
         document.getElementById('closingBtn').classList.add('active');
         document.getElementById('closingChecklist').style.display = 'block';
         loadClosingFreezerPulls();
+        loadClosingReconciliation();
     } else if (type === 'inventory') {
         document.getElementById('checklistTitle').textContent = 'Inventory Handover';
         document.getElementById('inventoryBtn').classList.add('active');
@@ -356,6 +522,7 @@ document.getElementById('closingBtn').addEventListener('click', () => {
     document.getElementById('openingChecklist').style.display = 'none';
     document.getElementById('closingChecklist').style.display = 'block';
     document.getElementById('inventoryChecklist').style.display = 'none';
+    loadClosingReconciliation();
 });
 
 document.getElementById('inventoryBtn').addEventListener('click', () => {
@@ -481,6 +648,26 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             items: items,
             completionRate: `${completedCount}/${items.length}`
         };
+
+        // For closing checklist, attach pastry reconciliation data
+        if (currentChecklist === 'closing') {
+            const leftovers = {};
+            const forecastAccuracy = {};
+            for (const p of RECONCILIATION_PASTRIES) {
+                const input = document.getElementById(`leftover-${p.key}`);
+                const leftover = input ? (parseInt(input.value) || 0) : 0;
+                const predicted = closingForecastData[p.name] ?? 0;
+                leftovers[p.name] = leftover;
+                forecastAccuracy[p.name] = {
+                    predicted,
+                    leftover,
+                    delta: -leftover  // negative = leftover = less sold than if 0 leftover
+                };
+            }
+            contentData.leftovers = leftovers;
+            contentData.forecastAccuracy = forecastAccuracy;
+            contentData.forecastDate = new Date().toISOString().split('T')[0];
+        }
     }
     
     try {

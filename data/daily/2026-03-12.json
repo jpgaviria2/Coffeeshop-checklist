@@ -1,0 +1,169 @@
+{
+  "date": "2026-03-12",
+  "orderCount": 33,
+  "totalRevenue": 428.39,
+  "weather": {
+    "today": "Overcast 7\u00b0C",
+    "tomorrow": "Cloudy  6\u00b0C",
+    "multiplier": 1.05
+  },
+  "defrost": {
+    "Cinnamon Bun": 6,
+    "Ham and Cheese Croissant": 6,
+    "Chocolate Croissant": 7,
+    "Cookie": 4,
+    "Banana Bread": 4,
+    "Spinach Feta Croissant": 2,
+    "Plain Croissant": 3,
+    "Lemon cake": 3,
+    "Gluten Free Cheddar Scone": 1,
+    "GF Mini Doughnut": 1,
+    "Caprese Panini": 1
+  },
+  "supplyAlerts": [
+    "\u26a0\ufe0f 16oz Hot Cups: 4 days left \u2014 order soon",
+    "\ud83d\udea8 Hot Lids: only 0 days left \u2014 ORDER NOW"
+  ],
+  "items": [
+    {
+      "name": "Latte",
+      "quantity": 16,
+      "revenue": 0
+    },
+    {
+      "name": "Cinnamon Bun",
+      "quantity": 3,
+      "revenue": 0
+    },
+    {
+      "name": "Banana Bread",
+      "quantity": 5,
+      "revenue": 0
+    },
+    {
+      "name": "Cookie",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Iced Americano",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Cortado",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Coffee Beans",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Chai Latte",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Mocha",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "London Fog Latte",
+      "quantity": 3,
+      "revenue": 0
+    },
+    {
+      "name": "Americano",
+      "quantity": 3,
+      "revenue": 0
+    },
+    {
+      "name": "Chocolate Croissant",
+      "quantity": 3,
+      "revenue": 0
+    },
+    {
+      "name": "Drip Coffee",
+      "quantity": 9,
+      "revenue": 0
+    },
+    {
+      "name": "Ham and Cheese Croissant",
+      "quantity": 4,
+      "revenue": 0
+    },
+    {
+      "name": "Plain Croissant",
+      "quantity": 4,
+      "revenue": 0
+    },
+    {
+      "name": "Spinach Feta Croissant",
+      "quantity": 2,
+      "revenue": 0
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Chocolate Muffin",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Flat White",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Cappuccino",
+      "quantity": 1,
+      "revenue": 0
+    },
+    {
+      "name": "Hot Chocolate",
+      "quantity": 1,
+      "revenue": 0
+    }
+  ],
+  "byHour": {
+    "13": {
+      "orders": 0,
+      "revenue": 30.06
+    },
+    "12": {
+      "orders": 0,
+      "revenue": 10.19
+    },
+    "11": {
+      "orders": 0,
+      "revenue": 97.36999999999998
+    },
+    "10": {
+      "orders": 0,
+      "revenue": 65.71000000000001
+    },
+    "9": {
+      "orders": 0,
+      "revenue": 73.21
+    },
+    "8": {
+      "orders": 0,
+      "revenue": 90.42
+    },
+    "7": {
+      "orders": 0,
+      "revenue": 61.42999999999999
+    }
+  }
+}

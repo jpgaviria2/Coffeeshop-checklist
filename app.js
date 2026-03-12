@@ -135,44 +135,87 @@ async function loadTodaysActivity() {
 }
 
 // Load dynamic freezer pulls for closing checklist (based on TOMORROW's forecast)
+// This section renders at the TOP of the closing checklist — the most important close task
 async function loadClosingFreezerPulls() {
     const container = document.getElementById('closingFreezerPulls');
     if (!container) return;
     try {
-        const [fcRes, cfgRes] = await Promise.all([fetch('data/forecast.json'), fetch('data/config.json')]);
-        if (!fcRes.ok || !cfgRes.ok) return;
+        const fcRes = await fetch('data/forecast.json');
+        if (!fcRes.ok) return;
         const fcData = await fcRes.json();
-        const cfgData = await cfgRes.json();
         const tomorrowKey = getVancouverDate(1);
         const tomorrowFc = fcData.forecast?.[tomorrowKey];
-        if (!tomorrowFc || !cfgData.thresholds) {
-            container.innerHTML = '<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-bottom:15px;"><strong>⚠️ No forecast for tomorrow</strong> — check with manager for freezer pull quantities.</div>';
+
+        if (!tomorrowFc) {
+            container.innerHTML = `<div style="background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border:3px solid #FF8C00;border-radius:14px;padding:18px;margin-bottom:20px;box-shadow:0 4px 16px rgba(255,140,0,0.2);">
+                <div style="font-weight:800;color:#7B3F00;font-size:19px;margin-bottom:8px;">🧊 Freezer Pull</div>
+                <strong style="color:#8D4600;">⚠️ No forecast for tomorrow</strong> — check with manager for quantities.
+            </div>`;
             return;
         }
+
         const tomorrowDay = tomorrowFc.dayOfWeek || '';
+        const weather = tomorrowFc.weather;
+
+        // Format date label: "Thursday, Mar 12"
+        const [year, month, day] = tomorrowKey.split('-').map(Number);
+        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const dateLabel = `${tomorrowDay}, ${monthNames[month-1]} ${day}`;
+
+        // Pastry items to pull — ordered by priority
+        const PASTRY_ITEMS = [
+            'Chocolate Croissant',
+            'Plain Croissant',
+            'Ham and Cheese Croissant',
+            'Spinach Feta Croissant',
+            'Cinnamon Bun',
+            'Banana Bread',
+            'Lemon cake',
+            'Cookie',
+            'GF Mini Doughnut',
+            'Gluten Free Cheddar Scone'
+        ];
+        const bakeable = new Set(['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant']);
+
         let pulls = [];
-        const bakeable = ['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant'];
-        for (const [name, thresh] of Object.entries(cfgData.thresholds)) {
+        for (const name of PASTRY_ITEMS) {
             const predicted = tomorrowFc.items?.[name]?.predicted || 0;
-            if (predicted === 0) continue;
-            const totalNeeded = predicted + thresh.displayMin;
-            const pullQty = Math.max(0, Math.ceil(totalNeeded * 0.6));
-            if (pullQty > 0) {
-                pulls.push({ name, qty: pullQty, needsBaking: bakeable.includes(name), predicted });
+            if (predicted > 0) {
+                pulls.push({ name, qty: predicted, needsBaking: bakeable.has(name) });
             }
         }
+
+        // Weather banner
+        let weatherBanner = '';
+        if (weather) {
+            weatherBanner = `<div style="display:inline-block;background:rgba(255,255,255,0.55);border-radius:8px;padding:5px 12px;font-size:13px;color:#6D3400;font-weight:600;margin-bottom:14px;">
+                ${weather.emoji} ${weather.condition} · ${weather.temp}°C — quantities reflect tomorrow's forecast
+            </div>`;
+        }
+
+        // Build card
+        let html = `<div style="background:linear-gradient(135deg,#FFF3E0 0%,#FFE0B2 100%);border:3px solid #FF8C00;border-radius:14px;padding:18px 18px 14px;margin-bottom:20px;box-shadow:0 4px 20px rgba(255,140,0,0.28);">`;
+        html += `<div style="font-weight:800;color:#7B3F00;font-size:20px;margin-bottom:4px;letter-spacing:-0.2px;">🧊 Freezer Pull — ${dateLabel}</div>`;
+        html += `<div style="font-size:12px;color:#8D4600;font-weight:500;margin-bottom:10px;">Pull tonight → thaw on rack overnight → bake in AM</div>`;
+        html += weatherBanner;
+
         if (pulls.length === 0) {
-            container.innerHTML = '<div style="background:#e8f5e9;border:2px solid #4caf50;border-radius:10px;padding:12px;margin-bottom:15px;">✅ No freezer pulls needed for tomorrow.</div>';
-            return;
+            html += `<div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:10px;color:#555;">✅ No freezer pulls needed for tomorrow.</div>`;
+        } else {
+            html += `<div style="display:flex;flex-direction:column;gap:6px;">`;
+            for (const p of pulls) {
+                const id = `freezer-pull-${p.name.replace(/\s+/g,'-')}`;
+                const bakeNote = p.needsBaking
+                    ? `<span style="font-size:11px;background:#FF6B35;color:white;padding:2px 7px;border-radius:10px;margin-left:8px;font-weight:700;vertical-align:middle;">🔥 bake AM</span>`
+                    : '';
+                html += `<div class="checklist-item" style="background:rgba(255,255,255,0.72);border:1.5px solid rgba(255,140,0,0.35);margin-bottom:0;">
+                    <input type="checkbox" id="${id}">
+                    <label for="${id}" style="font-size:15px;font-weight:500;">Pull <strong style="font-size:16px;color:#5D2E00;">${p.qty}</strong> × ${p.name}${bakeNote}</label>
+                </div>`;
+            }
+            html += `</div>`;
         }
-        pulls.sort((a, b) => b.qty - a.qty);
-        let html = `<div style="background:#e3f2fd;border:2px solid #2196f3;border-radius:10px;padding:12px;margin-bottom:15px;">`;
-        html += `<div style="font-weight:700;color:#1565c0;font-size:15px;margin-bottom:8px;">🧊 Freezer Pulls for ${tomorrowDay} (${tomorrowKey})</div>`;
-        html += `<p style="font-size:12px;color:#555;margin-bottom:10px;">Based on tomorrow's forecast — pull these from freezer and place on rack to thaw overnight</p>`;
-        for (const p of pulls) {
-            const bakeIcon = p.needsBaking ? ' · 🔥 bake in AM' : '';
-            html += `<div class="checklist-item" style="background:white;"><input type="checkbox" id="freezer-pull-${p.name.replace(/\s+/g,'-')}"><label for="freezer-pull-${p.name.replace(/\s+/g,'-')}">Pull <strong>${p.qty} ${p.name}</strong> from freezer${bakeIcon}</label></div>`;
-        }
+
         html += `</div>`;
         container.innerHTML = html;
     } catch (e) { console.error('Error loading freezer pulls:', e); }

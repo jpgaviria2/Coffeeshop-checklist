@@ -1,169 +1,250 @@
 {
   "date": "2026-03-12",
-  "orderCount": 33,
-  "totalRevenue": 428.39,
-  "weather": {
-    "today": "Overcast 7\u00b0C",
-    "tomorrow": "Cloudy  6\u00b0C",
-    "multiplier": 1.05
-  },
-  "defrost": {
-    "Cinnamon Bun": 6,
-    "Ham and Cheese Croissant": 6,
-    "Chocolate Croissant": 7,
-    "Cookie": 4,
-    "Banana Bread": 4,
-    "Spinach Feta Croissant": 2,
-    "Plain Croissant": 3,
-    "Lemon cake": 3,
-    "Gluten Free Cheddar Scone": 1,
-    "GF Mini Doughnut": 1,
-    "Caprese Panini": 1
-  },
-  "supplyAlerts": [
-    "\u26a0\ufe0f 16oz Hot Cups: 4 days left \u2014 order soon",
-    "\ud83d\udea8 Hot Lids: only 0 days left \u2014 ORDER NOW"
-  ],
+  "orderCount": 43,
+  "totalRevenue": 572.81,
   "items": [
     {
       "name": "Latte",
+      "variations": {
+        "Medium": 11,
+        "Large": 5
+      },
       "quantity": 16,
-      "revenue": 0
-    },
-    {
-      "name": "Cinnamon Bun",
-      "quantity": 3,
-      "revenue": 0
-    },
-    {
-      "name": "Banana Bread",
-      "quantity": 5,
-      "revenue": 0
-    },
-    {
-      "name": "Cookie",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Hot Pure Matcha",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Iced Americano",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Cortado",
-      "quantity": 2,
-      "revenue": 0
-    },
-    {
-      "name": "Coffee Beans",
-      "quantity": 2,
-      "revenue": 0
-    },
-    {
-      "name": "Chai Latte",
-      "quantity": 2,
-      "revenue": 0
-    },
-    {
-      "name": "Mocha",
-      "quantity": 2,
-      "revenue": 0
-    },
-    {
-      "name": "London Fog Latte",
-      "quantity": 3,
-      "revenue": 0
-    },
-    {
-      "name": "Americano",
-      "quantity": 3,
-      "revenue": 0
-    },
-    {
-      "name": "Chocolate Croissant",
-      "quantity": 3,
-      "revenue": 0
+      "revenue": 85.25
     },
     {
       "name": "Drip Coffee",
+      "variations": {
+        "Large": 3,
+        "Medium": 6
+      },
       "quantity": 9,
-      "revenue": 0
+      "revenue": 31.5
+    },
+    {
+      "name": "Cinnamon Bun",
+      "variations": {
+        "Cream Cheese Icing": 8
+      },
+      "quantity": 8,
+      "revenue": 44
     },
     {
       "name": "Ham and Cheese Croissant",
-      "quantity": 4,
-      "revenue": 0
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 33
+    },
+    {
+      "name": "Banana Bread",
+      "variations": {
+        "Regular": 6
+      },
+      "quantity": 6,
+      "revenue": 25.5
+    },
+    {
+      "name": "London Fog Latte",
+      "variations": {
+        "Medium": 4,
+        "Large": 1
+      },
+      "quantity": 5,
+      "revenue": 29.25
     },
     {
       "name": "Plain Croissant",
+      "variations": {
+        "Regular": 4
+      },
       "quantity": 4,
-      "revenue": 0
+      "revenue": 16
     },
     {
-      "name": "Spinach Feta Croissant",
-      "quantity": 2,
-      "revenue": 0
+      "name": "Chocolate Croissant",
+      "variations": {
+        "Regular": 4
+      },
+      "quantity": 4,
+      "revenue": 20
     },
     {
-      "name": "Ginger Peach Iced Tea",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Chocolate Muffin",
-      "quantity": 1,
-      "revenue": 0
-    },
-    {
-      "name": "Flat White",
-      "quantity": 1,
-      "revenue": 0
+      "name": "Americano",
+      "variations": {
+        "Large": 1,
+        "Medium": 2
+      },
+      "quantity": 3,
+      "revenue": 12.25
     },
     {
       "name": "Cappuccino",
-      "quantity": 1,
-      "revenue": 0
+      "variations": {
+        "Medium": 3
+      },
+      "quantity": 3,
+      "revenue": 15
+    },
+    {
+      "name": "Lemon cake",
+      "variations": {
+        "Regular": 3
+      },
+      "quantity": 3,
+      "revenue": 12.75
+    },
+    {
+      "name": "Coffee Beans",
+      "variations": {
+        "1LB": 2
+      },
+      "quantity": 2,
+      "revenue": 60
+    },
+    {
+      "name": "Flat White",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 9.75
+    },
+    {
+      "name": "Mocha",
+      "variations": {
+        "Large": 2
+      },
+      "quantity": 2,
+      "revenue": 13
+    },
+    {
+      "name": "Chocolate Muffin",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 7.5
+    },
+    {
+      "name": "Spinach Feta Croissant",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 10.5
+    },
+    {
+      "name": "Chai Latte",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 13
+    },
+    {
+      "name": "Cortado",
+      "variations": {
+        "Regular": 2
+      },
+      "quantity": 2,
+      "revenue": 8
+    },
+    {
+      "name": "Hot Pure Matcha",
+      "variations": {
+        "Large": 1,
+        "Medium": 1
+      },
+      "quantity": 2,
+      "revenue": 12.25
+    },
+    {
+      "name": "Hot Tea",
+      "variations": {
+        "Medium": 2
+      },
+      "quantity": 2,
+      "revenue": 6
     },
     {
       "name": "Hot Chocolate",
+      "variations": {
+        "kids": 1
+      },
       "quantity": 1,
-      "revenue": 0
+      "revenue": 3.25
+    },
+    {
+      "name": "Ginger Peach Iced Tea",
+      "variations": {
+        "Medium 12oz": 1
+      },
+      "quantity": 1,
+      "revenue": 4.5
+    },
+    {
+      "name": "Iced Americano",
+      "variations": {
+        "Medium": 1
+      },
+      "quantity": 1,
+      "revenue": 4
+    },
+    {
+      "name": "Cookie",
+      "variations": {
+        "Regular": 1
+      },
+      "quantity": 1,
+      "revenue": 3.25
+    },
+    {
+      "name": "Mesh hat ",
+      "variations": {
+        "Maroon": 1
+      },
+      "quantity": 1,
+      "revenue": 25
     }
   ],
   "byHour": {
-    "13": {
-      "orders": 0,
-      "revenue": 30.06
+    "15": {
+      "orders": 2,
+      "revenue": 61.42999999999999
     },
-    "12": {
-      "orders": 0,
-      "revenue": 10.19
-    },
-    "11": {
-      "orders": 0,
-      "revenue": 97.36999999999998
-    },
-    "10": {
-      "orders": 0,
-      "revenue": 65.71000000000001
-    },
-    "9": {
-      "orders": 0,
-      "revenue": 73.21
-    },
-    "8": {
-      "orders": 0,
+    "16": {
+      "orders": 8,
       "revenue": 90.42
     },
-    "7": {
-      "orders": 0,
-      "revenue": 61.42999999999999
+    "17": {
+      "orders": 6,
+      "revenue": 73.21000000000001
+    },
+    "18": {
+      "orders": 6,
+      "revenue": 65.71000000000001
+    },
+    "19": {
+      "orders": 8,
+      "revenue": 97.37
+    },
+    "20": {
+      "orders": 1,
+      "revenue": 10.19
+    },
+    "21": {
+      "orders": 2,
+      "revenue": 30.06
+    },
+    "22": {
+      "orders": 8,
+      "revenue": 130.25
+    },
+    "23": {
+      "orders": 2,
+      "revenue": 14.17
     }
   }
 }

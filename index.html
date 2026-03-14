@@ -458,6 +458,9 @@
     </style>
 </head>
 <body>
+    <div id="update-banner" style="background:#1a1a2e;color:white;text-align:center;padding:8px;font-size:13px;cursor:pointer" onclick="forceRefresh()">
+      🔄 Tap here to refresh & update the app
+    </div>
     <div class="container">
         <div class="header">
             <h1 data-i18n="index.title">☕ Trails Coffee</h1>
@@ -875,10 +878,34 @@
     <!-- timeclock.js and schedule-data.js removed — Square Team app handles clock in/out and schedule -->
     <script src="app.js"></script>
     <script>
+      // Force refresh: clears all caches, unregisters service worker, reloads
+      async function forceRefresh() {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) await reg.unregister();
+        }
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+        window.location.reload(true);
+      }
+
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('sw.js')
-            .then(reg => console.log('SW registered:', reg.scope))
+            .then(reg => {
+              console.log('SW registered:', reg.scope);
+              // Listen for new service worker waiting to activate
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New version available — prompt user
+                    console.log('[SW] New version available — send SKIP_WAITING');
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  }
+                });
+              });
+            })
             .catch(err => console.log('SW registration failed:', err));
         });
       }

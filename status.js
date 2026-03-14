@@ -1,8 +1,22 @@
 // Status page - Load and display checklist submissions
 // Managers (JP, Charlene, Dayi) get auto-access with their own nsec
-// Own submissions decrypt with own key; shop mgmt key unlocks ALL submissions
+// Reads from local API backend (api.trailscoffee.com) via NIP-98 auth
 
 const SHOP_MGMT_PUBKEY = 'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37e0117d61f2';
+const API_BASE = 'https://api.trailscoffee.com';
+
+// NIP-98 HTTP Auth helper for status page
+async function buildNostrAuthHeader(method, url) {
+    if (!userPrivateKey) throw new Error('Not logged in');
+    const authEvent = {
+        kind: 27235,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [['u', url], ['method', method]],
+        content: ''
+    };
+    const signed = NostrTools.finalizeEvent(authEvent, userPrivateKey);
+    return 'Nostr ' + btoa(JSON.stringify(signed));
+}
 
 // Manager pubkeys — these users can view the status page
 const MANAGER_PUBKEYS = [
@@ -89,46 +103,55 @@ async function showManagerView() {
 
 async function loadSubmissions() {
     try {
-        // Show cached data first
-        const cachedEvents = await EVENT_CACHE.getAllEvents();
-        
-        if (cachedEvents.length > 0) {
-            const decrypted = await decryptEvents(cachedEvents);
-            const grouped = groupEventsByDate(decrypted);
-            renderSubmissions(grouped);
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('statusContent').style.display = 'block';
-            showUpdateIndicator();
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('loading').textContent = 'Loading submissions...';
+
+        const url = `${API_BASE}/api/v1/submissions?limit=200`;
+        const authHeader = await buildNostrAuthHeader('GET', url);
+
+        const response = await fetch(url, {
+            headers: { 'Authorization': authHeader }
+        });
+
+        if (response.status === 403) {
+            showAccessDenied();
+            return;
         }
-        
-        // Then fetch fresh from relay
-        await RELAY_FETCHER.fetchFromRelays();
-        
-        const allEvents = await EVENT_CACHE.getAllEvents();
-        
-        if (allEvents.length === 0) {
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.submissions || data.submissions.length === 0) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('emptyState').style.display = 'block';
-            hideUpdateIndicator();
             return;
         }
-        
-        const decrypted = await decryptEvents(allEvents);
-        const grouped = groupEventsByDate(decrypted);
+
+        // Convert API format to grouped-by-date format for renderSubmissions()
+        const grouped = {};
+        for (const sub of data.submissions) {
+            const dateKey = sub.submittedAt.substring(0, 10);
+            if (!grouped[dateKey]) grouped[dateKey] = [];
+            grouped[dateKey].push({
+                pubkey: sub.staffPubkey,
+                created_at: Math.floor(new Date(sub.submittedAt).getTime() / 1000),
+                _decryptedContent: JSON.stringify(sub.content),
+                _encrypted: false,
+                _staffName: sub.staffName,
+                _apiId: sub.id
+            });
+        }
+
         renderSubmissions(grouped);
-        
         document.getElementById('loading').style.display = 'none';
         document.getElementById('statusContent').style.display = 'block';
-        hideUpdateIndicator();
-        
+
     } catch (error) {
         console.error('Error loading submissions:', error);
-        const cachedEvents = await EVENT_CACHE.getAllEvents();
-        if (cachedEvents.length > 0) {
-            hideUpdateIndicator();
-            return;
-        }
-        document.getElementById('loading').textContent = 'Error: ' + error.message;
+        document.getElementById('loading').textContent = 'Error loading: ' + error.message;
     }
 }
 
@@ -199,10 +222,7 @@ function showUpdateIndicator() {
 function hideUpdateIndicator() {
     const indicator = document.getElementById('updateIndicator');
     if (indicator) {
-        EVENT_CACHE.getCount().then(c => {
-            indicator.textContent = `✅ ${c} submissions cached`;
-            setTimeout(() => { indicator.style.display = 'none'; }, 2000);
-        });
+        indicator.style.display = 'none';
     }
 }
 

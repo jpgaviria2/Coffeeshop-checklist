@@ -15,10 +15,87 @@ let userKeys = null;
 let currentChecklist = 'opening';
 let currentWeekOffset = 0;
 
-// Shop management pubkey — all submissions are encrypted to this key
+// Shop management pubkey — kept for reference
 const SHOP_MGMT_PUBKEY = 'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37e0117d61f2';
 
-// Nostr relay configuration
+// API backend
+const API_BASE = 'https://api.trailscoffee.com';
+
+// NIP-98 HTTP Auth helper — signs a kind:27235 event to authorize the HTTP request
+async function buildNostrAuthHeader(method, url) {
+    if (!userKeys) throw new Error('Not logged in');
+    const authEvent = {
+        kind: 27235,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [
+            ['u', url],
+            ['method', method]
+        ],
+        content: ''
+    };
+    const signed = NostrTools.finalizeEvent(authEvent, userKeys.privateKey);
+    return 'Nostr ' + btoa(JSON.stringify(signed));
+}
+
+// Submit a checklist to the local API backend (NIP-98 authenticated)
+async function submitToAPI(contentData) {
+    const url = `${API_BASE}/api/v1/submissions`;
+    const authHeader = await buildNostrAuthHeader('POST', url);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authHeader
+        },
+        body: JSON.stringify(contentData)
+    });
+
+    if (!response.ok) {
+        const err = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(err.error || `HTTP ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+// Offline queue — store failed submissions locally, retry on reconnect
+async function submitWithFallback(contentData) {
+    try {
+        return await submitToAPI(contentData);
+    } catch (err) {
+        console.warn('API submission failed, queuing locally:', err.message);
+        const queue = JSON.parse(localStorage.getItem('submission_queue') || '[]');
+        queue.push({
+            data: contentData,
+            queuedAt: new Date().toISOString(),
+            retryCount: 0
+        });
+        localStorage.setItem('submission_queue', JSON.stringify(queue));
+        throw new Error('Saved locally — will sync when connection is restored');
+    }
+}
+
+// Retry any locally-queued submissions (called on page load)
+async function retryQueuedSubmissions() {
+    const queue = JSON.parse(localStorage.getItem('submission_queue') || '[]');
+    if (queue.length === 0) return;
+    const remaining = [];
+    for (const item of queue) {
+        if (item.retryCount >= 3) continue;
+        try {
+            await submitToAPI(item.data);
+            console.log('✅ Queued submission synced:', item.data.checklist);
+        } catch (err) {
+            item.retryCount++;
+            remaining.push(item);
+        }
+    }
+    localStorage.setItem('submission_queue', JSON.stringify(remaining));
+    if (queue.length !== remaining.length) loadTodaysActivity();
+}
+
+// Legacy Nostr relay configuration (kept for compatibility — no longer used for submissions)
 const RELAYS = [
     'wss://relay.damus.io',
     'wss://relay.primal.net',
@@ -48,6 +125,8 @@ window.addEventListener('DOMContentLoaded', () => {
             };
             localStorage.setItem('nostr_pubkey', userKeys.publicKey);
             showLoggedInState();
+            // Retry any submissions that were queued while offline
+            retryQueuedSubmissions();
         } catch (error) {
             localStorage.removeItem('nostr_nsec');
         }
@@ -78,59 +157,47 @@ async function loadTodaysActivity() {
     if (!container || !userKeys) return;
 
     try {
-        const allEvents = await EVENT_CACHE.getAllEvents();
         const todayStr = getVancouverDate();
-        const todayStart = Math.floor(new Date(todayStr).getTime() / 1000);
-        const todayEnd = todayStart + 86400;
+        const url = `${API_BASE}/api/v1/submissions/mine?days=1`;
+        const authHeader = await buildNostrAuthHeader('GET', url);
 
-        const myTodayEvents = allEvents.filter(e => 
-            e.pubkey === userKeys.publicKey && 
-            e.created_at >= todayStart && 
-            e.created_at < todayEnd
-        );
+        const response = await fetch(url, { headers: { 'Authorization': authHeader } });
 
-        if (myTodayEvents.length === 0) {
+        if (!response.ok) {
+            container.innerHTML = '<div style="padding:12px;color:#999;text-align:center;font-size:13px;">Could not load today\'s activity</div>';
+            container.style.display = 'block';
+            return;
+        }
+
+        const data = await response.json();
+        const todaySubmissions = (data.submissions || []).filter(s => s.submittedAt && s.submittedAt.startsWith(todayStr));
+
+        if (todaySubmissions.length === 0) {
             container.innerHTML = '<div style="padding:12px;color:#999;text-align:center;font-size:13px;">No submissions yet today</div>';
             container.style.display = 'block';
             return;
         }
 
-        let html = '';
         const icons = { opening: '🌅', closing: '🌙', inventory: '📦' };
-        
-        for (const e of myTodayEvents) {
-            try {
-                // Decrypt own DMs (staff can decrypt their own sent messages)
-                let contentStr = e.content;
-                if (e.kind === 4) {
-                    try {
-                        contentStr = await NostrTools.nip04.decrypt(
-                            userKeys.privateKey, SHOP_MGMT_PUBKEY, e.content
-                        );
-                    } catch (decErr) {
-                        // If stored already decrypted (from cache), try parsing directly
-                    }
-                }
-                const content = JSON.parse(contentStr);
-                const time = new Date(e.created_at * 1000);
-                const timeStr = time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-                
-                if (content.checklist) {
-                    const type = content.checklist;
-                    const label = type.charAt(0).toUpperCase() + type.slice(1);
-                    const rate = content.completionRate ? ` (${content.completionRate})` : '';
-                    html += `<div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
-                        <span>${icons[type] || '📋'} ${label}${rate}</span>
-                        <span style="color:#28a745;font-size:13px;">${timeStr} ✅</span>
-                    </div>`;
-                }
-            } catch (err) {}
+        let html = '';
+
+        for (const s of todaySubmissions) {
+            const type = s.type;
+            const label = type.charAt(0).toUpperCase() + type.slice(1);
+            const rate = s.content?.completionRate ? ` (${s.content.completionRate})` : '';
+            const time = new Date(s.submittedAt);
+            const timeStr = time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            html += `<div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
+                <span>${icons[type] || '📋'} ${label}${rate}</span>
+                <span style="color:#28a745;font-size:13px;">${timeStr} ✅</span>
+            </div>`;
         }
 
-        container.innerHTML = html || '<div style="padding:12px;color:#999;text-align:center;font-size:13px;">No submissions yet today</div>';
+        container.innerHTML = html;
         container.style.display = 'block';
     } catch (err) {
         console.error('Error loading today\'s activity:', err);
+        // Fail silently — not critical
     }
 }
 
@@ -721,56 +788,28 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     try {
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('submitBtn').textContent = 'Submitting...';
-        
-        // Encrypt content as NIP-04 DM to shop management key
-        const plaintext = JSON.stringify(contentData);
-        const encryptedContent = await NostrTools.nip04.encrypt(
-            userKeys.privateKey, SHOP_MGMT_PUBKEY, plaintext
-        );
-        
-        const eventTemplate = {
-            kind: 4,
-            created_at: Math.floor(Date.now() / 1000),
-            tags: [
-                ['p', SHOP_MGMT_PUBKEY]
-            ],
-            content: encryptedContent
-        };
-        
-        // Sign event with private key
-        const signedEvent = NostrTools.finalizeEvent(eventTemplate, userKeys.privateKey);
-        
-        // Publish to relays
-        const relayCount = await publishToRelays(signedEvent);
-        
-        // Cache locally immediately
-        if (typeof EVENT_CACHE !== 'undefined') {
-            await EVENT_CACHE.storeEvents([signedEvent]);
-        }
-        
-        const successMsg = currentChecklist === 'inventory' 
-            ? `✅ Inventory handover published to ${relayCount}/${RELAYS.length} relays!`
-            : `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist published to ${relayCount}/${RELAYS.length} relays! (${contentData.completionRate} tasks completed)`;
-        
+
+        // POST to local API backend with NIP-98 Nostr auth
+        await submitWithFallback(contentData);
+
+        const successMsg = currentChecklist === 'inventory'
+            ? '✅ Inventory handover saved!'
+            : `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist saved! (${contentData.completionRate} tasks completed)`;
+
         showStatus('success', successMsg);
-        
+
         // Refresh today's activity
         loadTodaysActivity();
-        
-        // Verify event on relay in background
-        verifyEventOnRelay(signedEvent.id);
-        
+
         // Reset after successful submission
         setTimeout(() => {
             if (currentChecklist === 'inventory') {
-                // Reset inventory inputs
                 document.querySelectorAll('#inventoryChecklist input[type="number"]').forEach(input => input.value = 0);
             } else {
-                // Reset checkboxes
                 document.querySelectorAll(`#${currentChecklist}Checklist input[type="checkbox"]`).forEach(cb => cb.checked = false);
             }
         }, 2000);
-        
+
     } catch (error) {
         showStatus('error', 'Submission failed: ' + error.message);
     } finally {

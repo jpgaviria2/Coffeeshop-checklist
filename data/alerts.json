@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-14T06:23:38.242Z",
+  "generated": "2026-03-14T15:07:26.127Z",
   "reorder": [
     {
       "item": "Oat Milk 1L",
@@ -46,7 +46,7 @@
   ],
   "weather": {
     "tomorrow": {
-      "temp": 5.9,
+      "temp": 6.1,
       "condition": "Snow",
       "emoji": "❄️",
       "adjustment": "+15% hot drinks, -20% iced drinks"

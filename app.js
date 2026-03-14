@@ -21,6 +21,21 @@ const SHOP_MGMT_PUBKEY = 'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37
 // API backend
 const API_BASE = 'https://api.trailscoffee.com';
 
+// ─── API Config ──────────────────────────────────────────────────────────────
+// Dashboard API key — Bearer token for read-only GET /api/* endpoints.
+// This key is safe to store here since this app is staff-only.
+const DASHBOARD_API_KEY = '794ee28efee105ed74601cf0d8b7da9bd7776ac2bc5cd8a87174f04b703dab64';
+
+// Fetch helper with Bearer auth (for read endpoints)
+async function apiFetch(path) {
+    const url = `${API_BASE}${path}`;
+    const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${DASHBOARD_API_KEY}` }
+    });
+    if (!res.ok) throw new Error(`API ${path} returned ${res.status}`);
+    return res.json();
+}
+
 // NIP-98 HTTP Auth helper — signs a kind:27235 event to authorize the HTTP request
 async function buildNostrAuthHeader(method, url) {
     if (!userKeys) throw new Error('Not logged in');
@@ -202,18 +217,41 @@ async function loadTodaysActivity() {
 }
 
 // Load dynamic freezer pulls for closing checklist (based on TOMORROW's forecast)
-// This section renders at the TOP of the closing checklist — the most important close task
+// Fetches from /api/bakery/forecast/tomorrow — the most important close task
 async function loadClosingFreezerPulls() {
     const container = document.getElementById('closingFreezerPulls');
     if (!container) return;
     try {
-        const fcRes = await fetch('data/forecast.json');
-        if (!fcRes.ok) return;
-        const fcData = await fcRes.json();
-        const tomorrowKey = getVancouverDate(1);
-        const tomorrowFc = fcData.forecast?.[tomorrowKey];
+        let fc;
+        try {
+            fc = await apiFetch('/api/bakery/forecast/tomorrow');
+        } catch (apiErr) {
+            console.warn('Bakery API unavailable, falling back to forecast.json:', apiErr.message);
+            // Fallback: try local forecast.json
+            try {
+                const fcRes = await fetch('data/forecast.json');
+                if (!fcRes.ok) throw new Error('forecast.json not available');
+                const fcData = await fcRes.json();
+                const tomorrowKey = getVancouverDate(1);
+                const tomorrowFc = fcData.forecast?.[tomorrowKey];
+                if (tomorrowFc) {
+                    // Convert old format to new API format
+                    const items = Object.entries(tomorrowFc.items || {})
+                        .filter(([, v]) => v.predicted > 0)
+                        .map(([name, v]) => ({ name, recommended: v.predicted, parQty: v.predicted }));
+                    fc = {
+                        date: tomorrowKey,
+                        dayOfWeek: tomorrowFc.dayOfWeek || '',
+                        weatherNote: '',
+                        items
+                    };
+                }
+            } catch (fbErr) {
+                fc = null;
+            }
+        }
 
-        if (!tomorrowFc) {
+        if (!fc || !fc.items || fc.items.length === 0) {
             container.innerHTML = `<div style="background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border:3px solid #FF8C00;border-radius:14px;padding:18px;margin-bottom:20px;box-shadow:0 4px 16px rgba(255,140,0,0.2);">
                 <div style="font-weight:800;color:#7B3F00;font-size:19px;margin-bottom:8px;">🧊 Freezer Pull</div>
                 <strong style="color:#8D4600;">⚠️ No forecast for tomorrow</strong> — check with manager for quantities.
@@ -221,63 +259,40 @@ async function loadClosingFreezerPulls() {
             return;
         }
 
-        const tomorrowDay = tomorrowFc.dayOfWeek || '';
-        const weather = tomorrowFc.weather;
-
-        // Format date label: "Thursday, Mar 12"
-        const [year, month, day] = tomorrowKey.split('-').map(Number);
+        const tomorrowDay = fc.dayOfWeek || '';
+        const [year, month, day] = (fc.date || getVancouverDate(1)).split('-').map(Number);
         const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const dateLabel = `${tomorrowDay}, ${monthNames[month-1]} ${day}`;
 
-        // Pastry items to pull — ordered by priority
-        const PASTRY_ITEMS = [
-            'Chocolate Croissant',
-            'Plain Croissant',
-            'Ham and Cheese Croissant',
-            'Spinach Feta Croissant',
-            'Cinnamon Bun',
-            'Banana Bread',
-            'Lemon cake',
-            'Cookie',
-            'GF Mini Doughnut',
-            'Gluten Free Cheddar Scone'
-        ];
         const bakeable = new Set(['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant']);
-
-        let pulls = [];
-        for (const name of PASTRY_ITEMS) {
-            const predicted = tomorrowFc.items?.[name]?.predicted || 0;
-            if (predicted > 0) {
-                pulls.push({ name, qty: predicted, needsBaking: bakeable.has(name) });
-            }
-        }
-
-        // Weather banner
-        let weatherBanner = '';
-        if (weather) {
-            weatherBanner = `<div style="display:inline-block;background:rgba(255,255,255,0.55);border-radius:8px;padding:5px 12px;font-size:13px;color:#6D3400;font-weight:600;margin-bottom:14px;">
-                ${weather.emoji} ${weather.condition} · ${weather.temp}°C — quantities reflect tomorrow's forecast
-            </div>`;
-        }
 
         // Build card
         let html = `<div style="background:linear-gradient(135deg,#FFF3E0 0%,#FFE0B2 100%);border:3px solid #FF8C00;border-radius:14px;padding:18px 18px 14px;margin-bottom:20px;box-shadow:0 4px 20px rgba(255,140,0,0.28);">`;
-        html += `<div style="font-weight:800;color:#7B3F00;font-size:20px;margin-bottom:4px;letter-spacing:-0.2px;">🧊 Freezer Pull — ${dateLabel}</div>`;
+        html += `<div style="font-weight:800;color:#7B3F00;font-size:20px;margin-bottom:4px;letter-spacing:-0.2px;">🌙 Tonight's Freezer Pull — ${dateLabel}</div>`;
         html += `<div style="font-size:12px;color:#8D4600;font-weight:500;margin-bottom:10px;">Pull tonight → thaw on rack overnight → bake in AM</div>`;
-        html += weatherBanner;
+
+        if (fc.weatherNote) {
+            html += `<div style="display:inline-block;background:rgba(255,255,255,0.55);border-radius:8px;padding:5px 12px;font-size:13px;color:#6D3400;font-weight:600;margin-bottom:14px;">${fc.weatherNote}</div>`;
+        }
+
+        const pulls = (fc.items || []).filter(item => item.recommended > 0);
 
         if (pulls.length === 0) {
             html += `<div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:10px;color:#555;">✅ No freezer pulls needed for tomorrow.</div>`;
         } else {
             html += `<div style="display:flex;flex-direction:column;gap:6px;">`;
-            for (const p of pulls) {
-                const id = `freezer-pull-${p.name.replace(/\s+/g,'-')}`;
-                const bakeNote = p.needsBaking
+            for (const item of pulls) {
+                const id = `freezer-pull-${item.name.replace(/\s+/g,'-')}`;
+                const needsBaking = bakeable.has(item.name);
+                const earlySelloutNote = item.earlySellout
+                    ? `<span style="font-size:11px;background:#c0392b;color:white;padding:2px 7px;border-radius:10px;margin-left:8px;font-weight:700;vertical-align:middle;">⚠️ put out at 8am</span>`
+                    : '';
+                const bakeNote = needsBaking
                     ? `<span style="font-size:11px;background:#FF6B35;color:white;padding:2px 7px;border-radius:10px;margin-left:8px;font-weight:700;vertical-align:middle;">🔥 bake AM</span>`
                     : '';
                 html += `<div class="checklist-item" style="background:rgba(255,255,255,0.72);border:1.5px solid rgba(255,140,0,0.35);margin-bottom:0;">
                     <input type="checkbox" id="${id}">
-                    <label for="${id}" style="font-size:15px;font-weight:500;">Pull <strong style="font-size:16px;color:#5D2E00;">${p.qty}</strong> × ${p.name}${bakeNote}</label>
+                    <label for="${id}" style="font-size:15px;font-weight:500;">Pull <strong style="font-size:16px;color:#5D2E00;">${item.recommended}</strong> × ${item.name}${bakeNote}${earlySelloutNote}</label>
                 </div>`;
             }
             html += `</div>`;
@@ -288,61 +303,92 @@ async function loadClosingFreezerPulls() {
     } catch (e) { console.error('Error loading freezer pulls:', e); }
 }
 
-// Load dynamic opening pastry info — Today's Pastry Forecast
+// Load dynamic opening pastry info — Today's PAR forecast + Last night's defrost pull
 async function loadOpeningPastryInfo() {
     const container = document.getElementById('openingPastryInfo');
     if (!container) return;
     try {
-        const fcRes = await fetch('data/forecast.json');
-        if (!fcRes.ok) return;
-        const fcData = await fcRes.json();
-        const todayKey = getVancouverDate();
-        const todayFc = fcData.forecast?.[todayKey];
-        if (!todayFc) {
-            container.innerHTML = `<div style="background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:12px;margin-bottom:15px;"><strong>⚠️ No forecast available for today</strong> — contact manager for guidance.</div>`;
-            return;
+        let todayFc = null;
+        let lastNightPull = null;
+
+        // Try to fetch today's forecast from API
+        try {
+            const todayKey = getVancouverDate();
+            todayFc = await apiFetch(`/api/bakery/forecast/${todayKey}`);
+        } catch (apiErr) {
+            console.warn('Bakery API unavailable for today forecast, falling back:', apiErr.message);
+            // Fallback to local forecast.json
+            try {
+                const fcRes = await fetch('data/forecast.json');
+                if (fcRes.ok) {
+                    const fcData = await fcRes.json();
+                    const todayKey = getVancouverDate();
+                    const raw = fcData.forecast?.[todayKey];
+                    if (raw) {
+                        todayFc = {
+                            items: Object.entries(raw.items || {}).map(([name, v]) => ({ name, recommended: v.predicted })),
+                            weatherNote: ''
+                        };
+                    }
+                }
+            } catch (e) {}
         }
 
-        // Pastry items we track (the ones we bake and sell)
-        const PASTRY_ITEMS = [
-            'Ham and Cheese Croissant',
-            'Chocolate Croissant',
-            'Plain Croissant',
-            'Banana Bread',
-            'Lemon cake',
-            'Cinnamon Bun',
-            'Cookie',
-            'Spinach Feta Croissant'
-        ];
-
-        const weather = todayFc.weather;
-        const weatherStr = weather ? ` · ${weather.emoji} ${weather.temp}°C ${weather.condition}` : '';
-
-        let html = `<div style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:2px solid #4caf50;border-radius:12px;padding:14px;margin-bottom:18px;">`;
-        html += `<div style="font-weight:700;color:#1b5e20;font-size:15px;margin-bottom:4px;">📊 Today's Pastry Forecast</div>`;
-        html += `<div style="font-size:12px;color:#2e7d32;margin-bottom:10px;font-style:italic;">Predicted sales for today — use this to confirm opening stock${weatherStr}</div>`;
-        html += `<div style="display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;">`;
-
-        let hasAny = false;
-        for (const name of PASTRY_ITEMS) {
-            const predicted = todayFc.items?.[name]?.predicted;
-            if (!predicted && predicted !== 0) continue;
-            hasAny = true;
-            const bar = '█'.repeat(Math.min(predicted, 12));
-            const barColor = predicted >= 8 ? '#1b5e20' : predicted >= 5 ? '#388e3c' : '#66bb6a';
-            html += `<div style="font-size:13px;color:#333;padding:3px 0;">${name}</div>`;
-            html += `<div style="font-size:13px;font-weight:700;color:#1b5e20;text-align:right;padding:3px 0;">×${predicted} <span style="font-size:10px;color:${barColor};">${bar}</span></div>`;
+        // Fetch last night's defrost list (yesterday's forecast = today's thaw)
+        try {
+            const yesterdayKey = getVancouverDate(-1);
+            const yesterdayFc = await apiFetch(`/api/bakery/forecast/${yesterdayKey}`);
+            if (yesterdayFc?.items?.length) {
+                lastNightPull = yesterdayFc.items.filter(i => i.recommended > 0);
+            }
+        } catch (e) {
+            console.warn('Could not fetch last night\'s pull:', e.message);
         }
 
-        if (!hasAny) {
-            html += `<div style="grid-column:1/-1;color:#666;font-size:13px;">No pastry forecast data for today.</div>`;
-        }
+        let html = '';
 
+        // Last night's pull banner (at the top)
+        html += `<div style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border:2px solid #1976d2;border-radius:12px;padding:14px;margin-bottom:14px;">`;
+        html += `<div style="font-weight:700;color:#0d47a1;font-size:15px;margin-bottom:6px;">📋 Last Night's Defrost Pull</div>`;
+        if (lastNightPull && lastNightPull.length > 0) {
+            html += `<div style="font-size:12px;color:#1565c0;margin-bottom:8px;font-style:italic;">Items pulled from freezer last night — confirm these are thawed and on the rack</div>`;
+            html += `<div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+            for (const item of lastNightPull) {
+                html += `<div style="background:white;border:1px solid #90caf9;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600;color:#0d47a1;">${item.recommended} × ${item.name}</div>`;
+            }
+            html += `</div>`;
+        } else {
+            html += `<div style="color:#555;font-size:13px;">⚠️ No defrost data for last night — check with the closing shift.</div>`;
+        }
         html += `</div>`;
 
-        html += `</div>`;
+        // Today's forecast
+        if (todayFc) {
+            const items = todayFc.items || [];
+            html += `<div style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:2px solid #4caf50;border-radius:12px;padding:14px;margin-bottom:18px;">`;
+            html += `<div style="font-weight:700;color:#1b5e20;font-size:15px;margin-bottom:4px;">📊 Today's Pastry PAR</div>`;
+            html += `<div style="font-size:12px;color:#2e7d32;margin-bottom:10px;font-style:italic;">Target quantities for today${todayFc.weatherNote ? ' · ' + todayFc.weatherNote : ''}</div>`;
+            html += `<div style="display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;">`;
+
+            let hasAny = false;
+            for (const item of items) {
+                if (!item.recommended) continue;
+                hasAny = true;
+                const bar = '█'.repeat(Math.min(item.recommended, 12));
+                const barColor = item.recommended >= 8 ? '#1b5e20' : item.recommended >= 5 ? '#388e3c' : '#66bb6a';
+                html += `<div style="font-size:13px;color:#333;padding:3px 0;">${item.name}</div>`;
+                html += `<div style="font-size:13px;font-weight:700;color:#1b5e20;text-align:right;padding:3px 0;">×${item.recommended} <span style="font-size:10px;color:${barColor};">${bar}</span></div>`;
+            }
+
+            if (!hasAny) {
+                html += `<div style="grid-column:1/-1;color:#666;font-size:13px;">No pastry PAR data for today.</div>`;
+            }
+
+            html += `</div></div>`;
+        }
+
         container.innerHTML = html;
-    } catch (e) { console.error('Error loading opening pastry forecast:', e); }
+    } catch (e) { console.error('Error loading opening pastry info:', e); }
 }
 
 // Pastry items tracked for reconciliation
@@ -782,6 +828,26 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             contentData.leftovers = leftovers;
             contentData.forecastAccuracy = forecastAccuracy;
             contentData.forecastDate = getVancouverDate();
+
+            // Also POST leftovers to bakery API (best-effort — don't block checklist submission)
+            const todayDate = getVancouverDate();
+            const bakeryUrl = `${API_BASE}/api/bakery/leftovers`;
+            try {
+                const bakeryAuthHeader = await buildNostrAuthHeader('POST', bakeryUrl);
+                fetch(bakeryUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': bakeryAuthHeader
+                    },
+                    body: JSON.stringify({ date: todayDate, leftovers })
+                }).then(r => {
+                    if (r.ok) console.log('✅ Leftovers posted to bakery API');
+                    else r.json().then(e => console.warn('Bakery API leftovers error:', e));
+                }).catch(e => console.warn('Bakery API unreachable:', e.message));
+            } catch (e) {
+                console.warn('Could not post to bakery API:', e.message);
+            }
         }
     }
     

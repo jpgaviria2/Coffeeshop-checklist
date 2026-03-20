@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-20T06:27:20.965Z",
+  "generated": "2026-03-20T15:17:03.100Z",
   "reorder": [
     {
       "item": "Oat Milk 1L",
@@ -46,7 +46,7 @@
   ],
   "weather": {
     "tomorrow": {
-      "temp": 7.9,
+      "temp": 7.1,
       "condition": "Overcast",
       "emoji": "⛅",
       "adjustment": "Normal demand expected"

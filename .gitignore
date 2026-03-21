@@ -3,3 +3,4 @@ node_modules/
 data/daily/*.json
 data/*.json
 !data/daily/.gitkeep
+coverage/

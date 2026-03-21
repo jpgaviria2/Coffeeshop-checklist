@@ -515,6 +515,18 @@
                 <button class="action-btn" onclick="showChecklist('opening')" data-i18n="index.btn.opening">📋 Open Opening Checklist</button>
                 <button class="action-btn" onclick="showChecklist('closing')" data-i18n="index.btn.closing">📋 Open Closing Checklist</button>
                 <button class="action-btn" onclick="showChecklist('inventory')" data-i18n="index.btn.inventory">📦 Inventory Handover</button>
+                <button class="action-btn" id="adminViewBtn" onclick="loadAdminView()" style="display:none;background:linear-gradient(135deg,#764ba2,#667eea);color:white;border:none;">📊 Submission History</button>
+            </div>
+
+            <!-- Admin View (managers only) -->
+            <div id="adminSection" style="display:none;margin-top:15px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:linear-gradient(135deg,#764ba2,#667eea);border-radius:10px 10px 0 0;">
+                    <span style="color:white;font-weight:700;font-size:15px;">📊 Submission History</span>
+                    <button onclick="closeAdminView()" style="background:rgba(255,255,255,0.2);color:white;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;">✕ Close</button>
+                </div>
+                <div id="adminTableContainer" style="background:white;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 10px 10px;overflow:auto;max-height:400px;">
+                    <p style="color:#999;text-align:center;padding:20px;">Loading…</p>
+                </div>
             </div>
             
             <!-- Schedule removed — managed via Square Team app -->

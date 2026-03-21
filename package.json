@@ -3,10 +3,29 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "decrypt": "node scripts/decrypt-submissions.mjs"
+    "decrypt": "node scripts/decrypt-submissions.mjs",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest --coverage"
   },
   "dependencies": {
     "nostr-tools": "^2.7.2",
     "websocket-polyfill": "^0.0.3"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.1",
+    "vitest": "^1.6.1"
+  },
+  "vitest": {
+    "include": ["tests/**/*.test.js"],
+    "coverage": {
+      "provider": "v8",
+      "include": ["src/**/*.js"],
+      "reporter": ["text", "json-summary"],
+      "thresholds": {
+        "lines": 95,
+        "functions": 95,
+        "branches": 90
+      }
+    }
   }
 }

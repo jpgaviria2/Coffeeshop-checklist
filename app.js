@@ -1,5 +1,7 @@
-// Nostr Checklist App - Mobile-friendly with direct nsec login + Schedule viewer
+// Nostr Checklist App - Mobile-friendly with direct nsec login
 // Using global NostrTools from CDN
+// Architecture: Nostr = AUTH ONLY. Submissions POST directly to trails-api (NIP-98).
+// Offline queue: failed submissions stored in localStorage, retried on reconnect.
 
 // Get local date string (YYYY-MM-DD) in Vancouver (Pacific) timezone.
 // Using Intl.DateTimeFormat with 'en-CA' gives YYYY-MM-DD format directly.
@@ -25,6 +27,16 @@ const API_BASE = 'https://api.trailscoffee.com';
 // Dashboard API key — Bearer token for read-only GET /api/* endpoints.
 // This key is safe to store here since this app is staff-only.
 const DASHBOARD_API_KEY = '794ee28efee105ed74601cf0d8b7da9bd7776ac2bc5cd8a87174f04b703dab64';
+
+// Manager pubkeys — can access admin view (submission history)
+const MANAGER_PUBKEYS = new Set([
+    'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd', // JP
+    '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba', // JP alt
+    'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37e0117d61f2', // JP shop mgmt
+    '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f', // Charlene
+    '4287e0cdcccb4789f0c1d4c27caae092f19f0c266c0d0638b571558d09317911', // Dayana
+    '6d3907327333dfb1b6f6100f9fdd1c6cbaa50b3acc801cf4cf5d937b838ee80b', // Dayana alt
+]);
 
 // Fetch helper with Bearer auth (for read endpoints)
 async function apiFetch(path) {
@@ -110,16 +122,6 @@ async function retryQueuedSubmissions() {
     if (queue.length !== remaining.length) loadTodaysActivity();
 }
 
-// Legacy Nostr relay configuration (kept for compatibility — no longer used for submissions)
-const RELAYS = [
-    'wss://relay.damus.io',
-    'wss://relay.primal.net',
-    'wss://relay.anmore.me',
-    'wss://nos.lol',
-    'wss://relay.nostr.band',
-    'wss://nostr.mutinywallet.com'
-];
-
 // Page load
 window.addEventListener('DOMContentLoaded', () => {
     
@@ -162,8 +164,90 @@ function showLoggedInState() {
     // Show Square Team app notice
     const squareNotice = document.getElementById('squareNotice');
     if (squareNotice) squareNotice.style.display = 'block';
+    // Show admin button for managers
+    const adminBtn = document.getElementById('adminViewBtn');
+    if (adminBtn && userKeys && MANAGER_PUBKEYS.has(userKeys.publicKey)) {
+        adminBtn.style.display = 'block';
+    }
     // Load today's activity
     loadTodaysActivity();
+}
+
+// ─── Admin View ──────────────────────────────────────────────────────────────
+
+// Load and render the admin submission history view
+async function loadAdminView() {
+    const container = document.getElementById('adminSection');
+    const tableContainer = document.getElementById('adminTableContainer');
+    if (!container || !tableContainer) return;
+
+    container.style.display = 'block';
+    document.getElementById('quickActions').style.display = 'none';
+    tableContainer.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Loading submissions…</p>';
+
+    try {
+        const limit = 50;
+        const offset = parseInt(container.dataset.offset || 0);
+        const qs = new URLSearchParams({ limit, offset }).toString();
+        const url = `${API_BASE}/api/v1/submissions?${qs}`;
+        const authHeader = await buildNostrAuthHeader('GET', url);
+        const res = await fetch(url, { headers: { Authorization: authHeader } });
+
+        if (res.status === 403) {
+            tableContainer.innerHTML = '<p style="color:#c00;text-align:center;padding:20px;">Access denied — manager role required.</p>';
+            return;
+        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+        const submissions = data.submissions || [];
+
+        if (submissions.length === 0) {
+            tableContainer.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">No submissions found.</p>';
+            return;
+        }
+
+        const icons = { opening: '🌅', closing: '🌙', inventory: '📦' };
+        const rows = submissions.map(s => {
+            const date = s.submittedAt ? new Date(s.submittedAt).toLocaleString('en-CA', {
+                timeZone: 'America/Vancouver',
+                month: 'short', day: 'numeric',
+                hour: 'numeric', minute: '2-digit'
+            }) : '—';
+            const icon = icons[s.type] || '📋';
+            const staff = s.staffName || (s.staffPubkey ? s.staffPubkey.slice(0, 8) + '…' : '—');
+            const rate = s.content?.completionRate || (s.type === 'inventory' ? '📦 inventory' : '—');
+            return `<tr>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;">${date}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;font-weight:600;">${staff}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;">${icon} ${s.type}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;text-align:center;">${rate}</td>
+            </tr>`;
+        }).join('');
+
+        tableContainer.innerHTML = `
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f0f0f0;">
+                <th style="padding:8px 10px;text-align:left;font-size:12px;color:#555;text-transform:uppercase;">Date</th>
+                <th style="padding:8px 10px;text-align:left;font-size:12px;color:#555;text-transform:uppercase;">Staff</th>
+                <th style="padding:8px 10px;text-align:left;font-size:12px;color:#555;text-transform:uppercase;">Type</th>
+                <th style="padding:8px 10px;text-align:center;font-size:12px;color:#555;text-transform:uppercase;">Completion</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+
+    } catch (err) {
+        console.error('Admin view error:', err);
+        tableContainer.innerHTML = `<p style="color:#c00;text-align:center;padding:20px;">Error loading submissions: ${err.message}</p>`;
+    }
+}
+
+function closeAdminView() {
+    const container = document.getElementById('adminSection');
+    if (container) container.style.display = 'none';
+    document.getElementById('quickActions').style.display = 'flex';
 }
 
 // Load and display today's submissions
@@ -884,122 +968,8 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     }
 });
 
-// Publish event to Nostr relays
-async function publishToRelays(event) {
-    let successCount = 0;
-    let errors = [];
-    
-    const promises = RELAYS.map(relay => {
-        return new Promise((resolve) => {
-            const ws = new WebSocket(relay);
-            
-            const timeout = setTimeout(() => {
-                if (ws.readyState !== WebSocket.CLOSED) {
-                    ws.close();
-                    errors.push(`${relay}: Timeout`);
-                    resolve(false);
-                }
-            }, 5000);
-            
-            ws.onopen = () => {
-                ws.send(JSON.stringify(['EVENT', event]));
-            };
-            
-            ws.onmessage = (msg) => {
-                const response = JSON.parse(msg.data);
-                if (response[0] === 'OK') {
-                    const [, eventId, success, message] = response;
-                    clearTimeout(timeout);
-                    ws.close();
-                    
-                    if (success) {
-                        console.log(`✅ Published to ${relay}`);
-                        successCount++;
-                        resolve(true);
-                    } else {
-                        console.error(`❌ Rejected by ${relay}: ${message}`);
-                        errors.push(`${relay}: ${message}`);
-                        resolve(false);
-                    }
-                } else if (response[0] === 'NOTICE') {
-                    clearTimeout(timeout);
-                    ws.close();
-                    console.error(`⚠️ Notice from ${relay}: ${response[1]}`);
-                    errors.push(`${relay}: ${response[1]}`);
-                    resolve(false);
-                }
-            };
-            
-            ws.onerror = (error) => {
-                clearTimeout(timeout);
-                console.error(`⚠️ Connection error: ${relay}`, error);
-                errors.push(`${relay}: Connection failed`);
-                resolve(false);
-            };
-        });
-    });
-    
-    // Wait for all relays to respond
-    await Promise.all(promises);
-    
-    console.log(`\n📊 Results: ${successCount}/${RELAYS.length} relays succeeded`);
-    
-    if (successCount === 0) {
-        console.error('❌ All relays failed:', errors);
-        showStatus('error', `❌ Failed to publish to any relay! Please check your connection and try again.`);
-        // Add retry button
-        const statusEl = document.getElementById('statusMessage');
-        const retryBtn = document.createElement('button');
-        retryBtn.textContent = '🔄 Retry';
-        retryBtn.style.cssText = 'margin-top:10px;padding:8px 20px;background:#dc3545;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;';
-        retryBtn.onclick = () => document.getElementById('submitBtn').click();
-        statusEl.appendChild(retryBtn);
-        throw new Error(`Failed to publish to any relay`);
-    }
-    
-    if (errors.length > 0) {
-        console.warn('⚠️  Some relays failed:', errors);
-    }
-    
-    return successCount;
-}
-
-// Verify event was stored on at least one relay
-async function verifyEventOnRelay(eventId) {
-    const statusEl = document.getElementById('statusMessage');
-    for (const relay of RELAYS) {
-        try {
-            const verified = await new Promise((resolve) => {
-                const ws = new WebSocket(relay);
-                const timeout = setTimeout(() => { ws.close(); resolve(false); }, 5000);
-                ws.onopen = () => {
-                    const subId = 'verify-' + Math.random().toString(36).substring(7);
-                    ws.send(JSON.stringify(['REQ', subId, { ids: [eventId], limit: 1 }]));
-                };
-                ws.onmessage = (msg) => {
-                    const data = JSON.parse(msg.data);
-                    if (data[0] === 'EVENT' && data[2] && data[2].id === eventId) {
-                        clearTimeout(timeout); ws.close(); resolve(true);
-                    } else if (data[0] === 'EOSE') {
-                        clearTimeout(timeout); ws.close(); resolve(false);
-                    }
-                };
-                ws.onerror = () => { clearTimeout(timeout); resolve(false); };
-            });
-            if (verified) {
-                if (statusEl && statusEl.style.display !== 'none') {
-                    statusEl.textContent += ' — ✅ Verified on relay';
-                }
-                console.log(`✅ Event verified on ${relay}`);
-                return true;
-            }
-        } catch (e) {}
-    }
-    if (statusEl && statusEl.style.display !== 'none') {
-        statusEl.textContent += ' — ⚠️ Could not verify on relays';
-    }
-    return false;
-}
+// Note: Nostr relay publishing removed — Nostr is used for AUTH ONLY (NIP-98).
+// Submissions go directly to trails-api via submitWithFallback().
 
 // Show status message
 function showStatus(type, message) {

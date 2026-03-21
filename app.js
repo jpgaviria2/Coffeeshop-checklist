@@ -861,49 +861,70 @@ async function loadInventoryPredictions() {
 }
 
 // Login with nsec
-document.getElementById('loginBtn').addEventListener('click', async () => {
-    const nsecInput = document.getElementById('nsecInput').value.trim();
-    
-    if (!nsecInput) {
-        alert('Please enter your nsec key');
-        return;
-    }
-    
-    document.getElementById('loginBtn').disabled = true;
-    document.getElementById('loginBtn').textContent = 'Logging in...';
-    
-    // Small delay to show loading state
-    setTimeout(() => {
-        try {
-            // Decode nsec to get private key
-            const decoded = NostrTools.nip19.decode(nsecInput);
-            
-            if (decoded.type !== 'nsec') {
-                throw new Error('Invalid nsec key');
-            }
-            
-            const privateKey = decoded.data;
-            const publicKey = NostrTools.getPublicKey(privateKey);
-            
-            userKeys = { privateKey, publicKey };
-            
-            // Save to localStorage for persistence across sessions
-            localStorage.setItem('nostr_nsec', nsecInput);
-            localStorage.setItem('nostr_pubkey', publicKey);
-            
-            // Show logged in state
-            showLoggedInState();
-            
-            // Clear input
-            document.getElementById('nsecInput').value = '';
-            
-        } catch (error) {
-            alert('Invalid nsec key. Please check and try again.');
-            document.getElementById('loginBtn').disabled = false;
-            document.getElementById('loginBtn').textContent = 'Login';
+(function attachLoginListener() {
+    const btn = document.getElementById('loginBtn');
+    if (!btn) { console.error('[Login] loginBtn not found in DOM'); return; }
+
+    function showLoginError(msg) {
+        let errEl = document.getElementById('loginError');
+        if (!errEl) {
+            errEl = document.createElement('p');
+            errEl.id = 'loginError';
+            errEl.style.cssText = 'color:#e63946;font-size:14px;text-align:center;margin:8px 0 0;font-weight:600;';
+            btn.parentNode.insertBefore(errEl, btn.nextSibling);
         }
-    }, 500);
-});
+        errEl.textContent = msg;
+    }
+
+    function clearLoginError() {
+        const errEl = document.getElementById('loginError');
+        if (errEl) errEl.textContent = '';
+    }
+
+    btn.addEventListener('click', async () => {
+        const nsecInput = document.getElementById('nsecInput').value.trim();
+
+        if (!nsecInput) {
+            showLoginError('Please enter your nsec key.');
+            return;
+        }
+
+        clearLoginError();
+        btn.disabled = true;
+        btn.textContent = 'Logging in...';
+
+        setTimeout(() => {
+            try {
+                if (typeof NostrTools === 'undefined') throw new Error('App not ready — please refresh.');
+
+                const decoded = NostrTools.nip19.decode(nsecInput);
+
+                if (decoded.type !== 'nsec') {
+                    throw new Error('Key must start with nsec1…');
+                }
+
+                const privateKey = decoded.data;
+                const publicKey = NostrTools.getPublicKey(privateKey);
+
+                userKeys = { privateKey, publicKey };
+
+                localStorage.setItem('nostr_nsec', nsecInput);
+                localStorage.setItem('nostr_pubkey', publicKey);
+
+                showLoggedInState();
+
+                document.getElementById('nsecInput').value = '';
+
+            } catch (error) {
+                showLoginError('Invalid nsec key — ' + (error.message || 'please check and try again.'));
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        }, 300);
+    });
+
+    console.log('[Login] listener attached');
+})();
 
 // Allow Enter key to login
 document.getElementById('nsecInput').addEventListener('keypress', (e) => {

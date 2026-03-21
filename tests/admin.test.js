@@ -58,8 +58,9 @@ describe('renderAdminTable', () => {
   it('renders a table with correct row count', () => {
     const html = renderAdminTable(sampleSubmissions);
     expect(html).toContain('<table');
-    // 3 data rows
-    expect((html.match(/<tr>/g) || []).length).toBe(3);
+    // 3 data rows + 1 header row = 4 total <tr> elements (style attr included)
+    const rowMatches = (html.match(/<tr[\s>]/g) || []).length;
+    expect(rowMatches).toBe(4); // 1 header + 3 data rows
   });
 
   it('renders staff names', () => {
@@ -69,7 +70,7 @@ describe('renderAdminTable', () => {
     expect(html).toContain('Aziza');
   });
 
-  it('renders completion rates', () => {
+  it('renders completion rates from completionRate field (legacy)', () => {
     const html = renderAdminTable(sampleSubmissions);
     expect(html).toContain('18/20');
     expect(html).toContain('22/22');
@@ -103,12 +104,85 @@ describe('renderAdminTable', () => {
     expect(html).toContain('inventory');
   });
 
-  it('renders table headers', () => {
+  it('renders table headers (Pass Rate instead of Completion)', () => {
     const html = renderAdminTable(sampleSubmissions);
     expect(html).toMatch(/Date/i);
     expect(html).toMatch(/Staff/i);
     expect(html).toMatch(/Type/i);
-    expect(html).toMatch(/Completion/i);
+    expect(html).toMatch(/Pass Rate/i);
+  });
+
+  it('shows FAIL badge for submissions with failures', () => {
+    const subWithFail = {
+      id: 'x',
+      staffName: 'Test',
+      staffPubkey: 'abc'.padEnd(64, '0'),
+      type: 'opening',
+      submittedAt: '2026-03-21T08:00:00.000Z',
+      content: {
+        items: [
+          { taskId: 'o-1', status: 'pass' },
+          { taskId: 'o-2', status: 'fail', comment: 'Broken', photoData: null }
+        ]
+      }
+    };
+    const html = renderAdminTable([subWithFail]);
+    expect(html).toContain('FAIL');
+    expect(html).toContain('dc3545'); // red color
+  });
+
+  it('does NOT show FAIL badge for all-pass submissions', () => {
+    const subAllPass = {
+      id: 'x',
+      staffName: 'Test',
+      staffPubkey: 'abc'.padEnd(64, '0'),
+      type: 'opening',
+      submittedAt: '2026-03-21T08:00:00.000Z',
+      content: {
+        items: [
+          { taskId: 'o-1', status: 'pass' },
+          { taskId: 'o-2', status: 'pass' }
+        ]
+      }
+    };
+    const html = renderAdminTable([subAllPass]);
+    // No red fail badge
+    expect(html).not.toContain('fff5f5');
+  });
+
+  it('filters to failure-only when showFailuresOnly=true', () => {
+    const subWithFail = {
+      id: 'fail-id',
+      staffName: 'FailStaff',
+      staffPubkey: 'fail'.padEnd(64, '0'),
+      type: 'opening',
+      submittedAt: '2026-03-21T08:00:00.000Z',
+      content: { items: [{ taskId: 'o-1', status: 'fail', comment: 'bad', photoData: null }] }
+    };
+    const subAllPass = {
+      id: 'pass-id',
+      staffName: 'PassStaff',
+      staffPubkey: 'pass'.padEnd(64, '0'),
+      type: 'closing',
+      submittedAt: '2026-03-21T16:00:00.000Z',
+      content: { items: [{ taskId: 'c-1', status: 'pass' }] }
+    };
+    const html = renderAdminTable([subWithFail, subAllPass], true);
+    expect(html).toContain('FailStaff');
+    expect(html).not.toContain('PassStaff');
+  });
+
+  it('returns failures-not-found message when showFailuresOnly and no failures', () => {
+    const subAllPass = {
+      id: 'pass-id',
+      staffName: 'PassStaff',
+      staffPubkey: 'pass'.padEnd(64, '0'),
+      type: 'closing',
+      submittedAt: '2026-03-21T16:00:00.000Z',
+      content: { items: [{ taskId: 'c-1', status: 'pass' }] }
+    };
+    const html = renderAdminTable([subAllPass], true);
+    expect(html).toContain('No submissions with failures found');
   });
 });
 
@@ -223,5 +297,58 @@ describe('fetchAdminSubmissions', () => {
     const result = await fetchAdminSubmissions({}, mockKeys, mockNostrTools, mockFetch);
     expect(result.submissions).toHaveLength(3);
     expect(result.count).toBe(3);
+  });
+
+  it('includes failures_only param when failuresOnly=true', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true, status: 200,
+      json: async () => ({ submissions: [], count: 0 })
+    });
+    await fetchAdminSubmissions({ failuresOnly: true }, mockKeys, mockNostrTools, mockFetch);
+    const [url] = mockFetch.mock.calls[0];
+    expect(url).toContain('failures_only=1');
+  });
+});
+
+// ── renderSubmissionDetail branch coverage ─────────────────────────────────────
+import { renderSubmissionDetail } from '../src/checklist-api.js';
+
+describe('renderSubmissionDetail — branch coverage', () => {
+  it('renders empty items fallback message', () => {
+    const html = renderSubmissionDetail({ content: { items: [] } });
+    expect(html).toContain('No item data available');
+  });
+
+  it('renders without rateSummary when no items', () => {
+    const html = renderSubmissionDetail({ content: {} });
+    // Should not throw, should render container
+    expect(html).toContain('<div');
+  });
+
+  it('renders findings with photo but no text', () => {
+    const sub = {
+      content: {
+        items: [{ taskId: 'o-1', taskLabel: 'Task', status: 'pass' }],
+        findings: null,
+        findingsPhoto: 'data:image/jpeg;base64,/9j/abc'
+      }
+    };
+    const html = renderSubmissionDetail(sub);
+    expect(html).toContain('Findings');
+    expect(html).toContain('data:image/jpeg');
+  });
+
+  it('renders findings text with no photo', () => {
+    const sub = {
+      content: {
+        items: [{ taskId: 'o-1', taskLabel: 'Task', status: 'pass' }],
+        findings: 'Steam wand leaking',
+        findingsPhoto: null
+      }
+    };
+    const html = renderSubmissionDetail(sub);
+    expect(html).toContain('Steam wand leaking');
+    // No img for photo
+    expect(html).not.toContain('<img src="null"');
   });
 });

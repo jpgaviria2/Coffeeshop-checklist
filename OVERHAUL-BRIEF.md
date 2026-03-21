@@ -112,3 +112,45 @@ Phone/email contacts are in MEMORY.md — use those to seed the sheet.
 - Keep the UX simple for staff — they shouldn't notice any change except it working reliably
 - The admin menu already exists in the app — extend it, don't rebuild it
 - Employee Directory sheet should be shared with jP, Charlene, and Dayana (managers only)
+
+---
+
+## Phase 2: World-Class Checklist UX (requested Mar 21, 2026)
+
+### Per-Item UX Overhaul
+Every checklist item must have:
+- **Pass / Fail** buttons (replace the simple checkbox)
+  - ✅ PASS = task completed correctly
+  - ❌ FAIL = task was not done or found incorrect
+- **📷 Photo button** — tap to open camera or file picker, attach image as evidence
+- **💬 Comment field** — optional text note per item
+- **If FAIL is selected**: photo + comment become REQUIRED before moving on (enforce this)
+- Keep it clean — collapsed by default, expand on tap or on Fail
+
+### Bottom of Checklist — Findings & Suggestions
+A dedicated section at the end of every checklist:
+- Free-text field: "Any findings, issues, or suggestions for improving this checklist?"
+- Optional photo attachment for findings
+- This data is saved with the submission and visible to admins
+
+### Checklist Content — World-Class Standard Evaluation
+Do a comprehensive audit: for an independent coffee shop (Anmore, BC), what does a world-class opening AND closing checklist look like? Reference hospitality/food service standards. Identify gaps in the current checklist and propose additions. The checklist should cover EVERYTHING — nothing should be done from memory.
+
+Categories to ensure are covered:
+- Food safety (temps, labels, dates)
+- Equipment (espresso machine, grinder, oven, dishwasher, fridge)
+- Prep (pastries, concentrates, milk, coffee)
+- Station setup (POS, display, cups, lids, condiments)
+- Cleanliness (counters, floors, washrooms, waste)
+- Opening communications (music, Square, inventory update)
+- Closing: safe shutdown, cleaning, restocking, waste, locking up
+
+### Admin View Enhancements
+- Show FAIL items prominently (red) with attached photos and comments
+- Filter submissions by: pass rate, staff member, date, location
+- Export to CSV/Google Sheets on demand
+
+### Technical Notes
+- Photos: use the browser's `capture="environment"` input (camera on mobile, file picker on desktop)
+- Store photos: base64 in localStorage for offline queue, upload as multipart to trails-api on submit
+- trails-api: update `/submissions` schema to store per-item `{status: "pass"|"fail", comment: string, photoUrl: string}` + findings section

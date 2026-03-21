@@ -185,10 +185,15 @@ async function loadAdminView() {
     document.getElementById('quickActions').style.display = 'none';
     tableContainer.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Loading submissions…</p>';
 
+    const failuresOnly = document.getElementById('adminFailuresOnly')?.checked || false;
+
     try {
         const limit = 50;
         const offset = parseInt(container.dataset.offset || 0);
-        const qs = new URLSearchParams({ limit, offset }).toString();
+        const qs = new URLSearchParams({
+            limit, offset,
+            ...(failuresOnly ? { failures_only: '1' } : {})
+        }).toString();
         const url = `${API_BASE}/api/v1/submissions?${qs}`;
         const authHeader = await buildNostrAuthHeader('GET', url);
         const res = await fetch(url, { headers: { Authorization: authHeader } });
@@ -202,13 +207,40 @@ async function loadAdminView() {
         const data = await res.json();
         const submissions = data.submissions || [];
 
+        // Use renderAdminTable from checklist-api.js (imported via src/checklist-api.js)
+        // For now inline the rendering here since app.js isn't a module
         if (submissions.length === 0) {
             tableContainer.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">No submissions found.</p>';
             return;
         }
 
         const icons = { opening: '🌅', closing: '🌙', inventory: '📦' };
+
+        function getPassRateDisplay(s) {
+            if (s.type === 'inventory') return '📦 inventory';
+            const items = s.content?.items;
+            if (Array.isArray(items) && items.length > 0) {
+                const first = items[0];
+                if ('status' in first) {
+                    const passed = items.filter(i => i.status === 'pass').length;
+                    const failed = items.filter(i => i.status === 'fail').length;
+                    const actedOn = passed + failed;
+                    if (failed > 0) return `${passed}/${actedOn} ✅ · ${failed} ❌`;
+                    if (actedOn > 0) return `${passed}/${actedOn}`;
+                }
+            }
+            return s.content?.completionRate || '—';
+        }
+
+        function getFailCountLocal(s) {
+            const items = s.content?.items;
+            if (!Array.isArray(items)) return 0;
+            return items.filter(i => i.status === 'fail').length;
+        }
+
         const rows = submissions.map(s => {
+            const failCount = getFailCountLocal(s);
+            const hasFail = failCount > 0;
             const date = s.submittedAt ? new Date(s.submittedAt).toLocaleString('en-CA', {
                 timeZone: 'America/Vancouver',
                 month: 'short', day: 'numeric',
@@ -216,23 +248,27 @@ async function loadAdminView() {
             }) : '—';
             const icon = icons[s.type] || '📋';
             const staff = s.staffName || (s.staffPubkey ? s.staffPubkey.slice(0, 8) + '…' : '—');
-            const rate = s.content?.completionRate || (s.type === 'inventory' ? '📦 inventory' : '—');
-            return `<tr>
+            const rate = getPassRateDisplay(s);
+            const failBadge = hasFail
+                ? `<span style="display:inline-block;background:#dc3545;color:white;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:5px;font-weight:600;">⚠️ ${failCount}</span>`
+                : '';
+            const rowStyle = hasFail ? 'background:#fff5f5;border-left:3px solid #dc3545;' : '';
+            return `<tr style="${rowStyle}" onclick="openAdminDetail('${s.id || ''}')" style="cursor:pointer;${rowStyle}">
               <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;">${date}</td>
               <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;font-weight:600;">${staff}</td>
-              <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;">${icon} ${s.type}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;">${icon} ${s.type}${failBadge}</td>
               <td style="padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;text-align:center;">${rate}</td>
             </tr>`;
         }).join('');
 
         tableContainer.innerHTML = `
-          <table style="width:100%;border-collapse:collapse;">
+          <table style="width:100%;border-collapse:collapse;cursor:pointer;">
             <thead>
               <tr style="background:#f0f0f0;">
                 <th style="padding:8px 10px;text-align:left;font-size:12px;color:#555;text-transform:uppercase;">Date</th>
                 <th style="padding:8px 10px;text-align:left;font-size:12px;color:#555;text-transform:uppercase;">Staff</th>
                 <th style="padding:8px 10px;text-align:left;font-size:12px;color:#555;text-transform:uppercase;">Type</th>
-                <th style="padding:8px 10px;text-align:center;font-size:12px;color:#555;text-transform:uppercase;">Completion</th>
+                <th style="padding:8px 10px;text-align:center;font-size:12px;color:#555;text-transform:uppercase;">Pass Rate</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -241,6 +277,105 @@ async function loadAdminView() {
     } catch (err) {
         console.error('Admin view error:', err);
         tableContainer.innerHTML = `<p style="color:#c00;text-align:center;padding:20px;">Error loading submissions: ${err.message}</p>`;
+    }
+}
+
+// Open a detailed submission view in a modal/overlay
+async function openAdminDetail(submissionId) {
+    if (!submissionId) return;
+
+    // Simple inline detail overlay
+    const existing = document.getElementById('adminDetailOverlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'adminDetailOverlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:9999;overflow-y:auto;padding:16px;';
+
+    overlay.innerHTML = `
+        <div style="background:white;border-radius:14px;max-width:600px;margin:0 auto;overflow:hidden;">
+            <div style="background:linear-gradient(135deg,#764ba2,#667eea);color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-weight:700;font-size:15px;">📋 Submission Detail</span>
+                <button onclick="document.getElementById('adminDetailOverlay').remove()" style="background:rgba(255,255,255,0.2);color:white;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;">✕ Close</button>
+            </div>
+            <div id="adminDetailContent" style="padding:16px;">
+                <p style="color:#999;text-align:center;">Loading…</p>
+            </div>
+        </div>`;
+
+    document.body.appendChild(overlay);
+
+    try {
+        const url = `${API_BASE}/api/v1/submissions/${submissionId}`;
+        const authHeader = await buildNostrAuthHeader('GET', url);
+        const res = await fetch(url, { headers: { Authorization: authHeader } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const submission = await res.json();
+
+        const content = submission.content || {};
+        const items = content.items || [];
+        const findings = content.findings || '';
+        const findingsPhoto = content.findingsPhoto || null;
+
+        // Compute pass rate
+        let passedN = 0, failedN = 0, skippedN = 0;
+        if (items.length > 0 && 'status' in items[0]) {
+            passedN = items.filter(i => i.status === 'pass').length;
+            failedN = items.filter(i => i.status === 'fail').length;
+            skippedN = items.filter(i => i.status === 'skipped').length;
+        } else {
+            passedN = items.filter(i => i.completed).length;
+        }
+
+        let summaryHtml = '';
+        if (passedN + failedN > 0) {
+            summaryHtml = `<div style="background:#e8f5e9;padding:10px 12px;border-radius:8px;margin-bottom:12px;font-size:13px;">
+                <strong>${passedN} passed</strong>${failedN > 0 ? ` · <span style="color:#dc3545;font-weight:700;">${failedN} failed</span>` : ''}${skippedN > 0 ? ` · ${skippedN} skipped` : ''} of ${items.length} tasks
+            </div>`;
+        }
+
+        let itemsHtml = items.map(item => {
+            const isNew = 'status' in item;
+            const label = item.taskLabel || item.task || '(unknown)';
+            let badge = '', rowStyle = 'padding:8px 12px;border-bottom:1px solid #eee;';
+            if (isNew) {
+                if (item.status === 'pass') badge = '<span style="color:#28a745;font-weight:700;">✅ PASS</span>';
+                else if (item.status === 'fail') { badge = '<span style="color:#dc3545;font-weight:700;">❌ FAIL</span>'; rowStyle += 'background:#fff5f5;border-left:3px solid #dc3545;'; }
+                else badge = '<span style="color:#999;">— skipped</span>';
+            } else {
+                badge = item.completed ? '<span style="color:#28a745;">✅</span>' : '<span style="color:#999;">☐</span>';
+            }
+            let evidence = '';
+            if (item.comment) evidence += `<div style="margin-top:4px;font-size:12px;color:#555;background:#f8f9fa;padding:6px;border-radius:6px;">💬 ${item.comment}</div>`;
+            if (item.photoData) evidence += `<div style="margin-top:6px;"><img src="${item.photoData}" alt="Evidence" style="max-width:200px;border-radius:6px;border:1px solid #ddd;"></div>`;
+            return `<div style="${rowStyle}"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><span style="font-size:13px;color:#333;flex:1;">${label}</span><span style="margin-left:10px;">${badge}</span></div>${evidence}</div>`;
+        }).join('');
+
+        let findingsHtml = '';
+        if (findings || findingsPhoto) {
+            findingsHtml = `<div style="margin-top:16px;border-top:2px solid #e0e0e0;padding-top:12px;">
+                <div style="font-weight:600;color:#555;margin-bottom:8px;">📝 Findings &amp; Suggestions</div>
+                ${findings ? `<div style="font-size:13px;color:#333;background:#f8f9fa;padding:10px;border-radius:8px;">${findings}</div>` : ''}
+                ${findingsPhoto ? `<div style="margin-top:8px;"><img src="${findingsPhoto}" alt="Findings photo" style="max-width:250px;border-radius:8px;border:1px solid #ddd;"></div>` : ''}
+            </div>`;
+        }
+
+        const staffName = submission.staffName || '?';
+        const date = submission.submittedAt ? new Date(submission.submittedAt).toLocaleString('en-CA', {
+            timeZone: 'America/Vancouver', dateStyle: 'medium', timeStyle: 'short'
+        }) : '—';
+
+        document.getElementById('adminDetailContent').innerHTML = `
+            <div style="font-size:13px;color:#666;margin-bottom:12px;">
+                <strong>${staffName}</strong> · ${submission.type} · ${date}
+            </div>
+            ${summaryHtml}
+            <div style="border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;">
+                ${itemsHtml || '<p style="padding:12px;color:#999;">No item data.</p>'}
+            </div>
+            ${findingsHtml}`;
+    } catch (err) {
+        document.getElementById('adminDetailContent').innerHTML = `<p style="color:#c00;">Error: ${err.message}</p>`;
     }
 }
 
@@ -628,18 +763,25 @@ function showChecklist(type) {
         document.getElementById('openingBtn').classList.add('active');
         document.getElementById('openingChecklist').style.display = 'block';
         loadOpeningPastryInfo();
+        initPassFail(document.getElementById('openingChecklist'));
+        showFindingsSection();
     } else if (type === 'closing') {
         document.getElementById('checklistTitle').textContent = 'Closing Checklist';
         document.getElementById('closingBtn').classList.add('active');
         document.getElementById('closingChecklist').style.display = 'block';
         loadClosingFreezerPulls();
         loadClosingReconciliation();
+        initPassFail(document.getElementById('closingChecklist'));
+        showFindingsSection();
     } else if (type === 'inventory') {
         document.getElementById('checklistTitle').textContent = 'Inventory Handover';
         document.getElementById('inventoryBtn').classList.add('active');
         document.getElementById('inventoryChecklist').style.display = 'block';
         // Show predicted usage hints
         loadInventoryPredictions();
+        // Inventory doesn't use pass/fail per-item — it's numeric entry
+        hideFindingsSection(); // will be shown after loadInventoryPredictions if needed
+        showFindingsSection(); // findings still apply to inventory
     }
     
     // Scroll to checklist
@@ -650,6 +792,7 @@ function showChecklist(type) {
 function closeChecklist() {
     document.getElementById('checklistSection').style.display = 'none';
     document.getElementById('quickActions').style.display = 'flex';
+    hideFindingsSection();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -755,6 +898,8 @@ document.getElementById('openingBtn').addEventListener('click', () => {
     document.getElementById('openingChecklist').style.display = 'block';
     document.getElementById('closingChecklist').style.display = 'none';
     document.getElementById('inventoryChecklist').style.display = 'none';
+    initPassFail(document.getElementById('openingChecklist'));
+    showFindingsSection();
 });
 
 document.getElementById('closingBtn').addEventListener('click', () => {
@@ -768,6 +913,8 @@ document.getElementById('closingBtn').addEventListener('click', () => {
     document.getElementById('inventoryChecklist').style.display = 'none';
     loadClosingFreezerPulls();
     loadClosingReconciliation();
+    initPassFail(document.getElementById('closingChecklist'));
+    showFindingsSection();
 });
 
 document.getElementById('inventoryBtn').addEventListener('click', () => {
@@ -779,6 +926,7 @@ document.getElementById('inventoryBtn').addEventListener('click', () => {
     document.getElementById('openingChecklist').style.display = 'none';
     document.getElementById('closingChecklist').style.display = 'none';
     document.getElementById('inventoryChecklist').style.display = 'block';
+    showFindingsSection();
 });
 
 // Submit checklist
@@ -867,31 +1015,76 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         };
         
     } else {
-        // Handle opening/closing checklist
-        const checklistDiv = currentChecklist === 'opening' ? 
-            document.getElementById('openingChecklist') : 
-            document.getElementById('closingChecklist');
-        
-        const checkboxes = checklistDiv.querySelectorAll('input[type="checkbox"]');
-        let completedCount = 0;
-        
-        checkboxes.forEach(checkbox => {
-            const label = checkbox.nextElementSibling.textContent;
-            const checked = checkbox.checked;
-            items.push({ task: label, completed: checked });
-            if (checked) completedCount++;
-        });
-        
-        if (completedCount === 0) {
-            alert('Please complete at least one task before submitting.');
+        // Handle opening/closing checklist — new pass/fail format
+        const checklistDiv = currentChecklist === 'opening'
+            ? document.getElementById('openingChecklist')
+            : document.getElementById('closingChecklist');
+
+        clearAllItemErrors(checklistDiv);
+
+        // Collect all pass/fail items
+        const pfItems = checklistDiv.querySelectorAll('.checklist-item.pf-enhanced');
+
+        if (pfItems.length === 0) {
+            alert('No checklist items found. Please refresh and try again.');
             return;
         }
-        
+
+        // Check at least one item has been acted on (pass or fail)
+        const actedCount = Array.from(pfItems).filter(i => i.dataset.status === 'pass' || i.dataset.status === 'fail').length;
+        if (actedCount === 0) {
+            alert('Please mark at least one task as PASS or FAIL before submitting.');
+            return;
+        }
+
+        // Validate FAIL items — must have comment or photo
+        let validationFailed = false;
+        for (const item of pfItems) {
+            if (item.dataset.status === 'fail') {
+                const comment = item.querySelector('.item-comment')?.value?.trim() || '';
+                const photoInput = item.querySelector('.item-photo-input');
+                const hasPhoto = photoInput && photoInput.files && photoInput.files.length > 0;
+                if (!comment && !hasPhoto) {
+                    showItemError(item, 'FAIL items require a comment or photo');
+                    if (!validationFailed) validationFailed = true;
+                }
+            }
+        }
+
+        if (validationFailed) {
+            showStatus('error', '⚠️ Some FAIL items are missing required evidence (comment or photo). Please review.');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Submit Checklist';
+            return;
+        }
+
+        // Collect photo data async
+        const itemDataPromises = Array.from(pfItems).map(async (item) => {
+            const photoInput = item.querySelector('.item-photo-input');
+            const file = photoInput && photoInput.files && photoInput.files[0];
+            const photoData = file ? await readPhotoAsBase64(file) : null;
+            return {
+                taskId: item.dataset.taskId || '',
+                taskLabel: item.dataset.taskLabel || '',
+                status: item.dataset.status || 'skipped',
+                comment: item.querySelector('.item-comment')?.value?.trim() || null,
+                photoData: photoData || null
+            };
+        });
+
+        items = await Promise.all(itemDataPromises);
+
+        const passedCount = items.filter(i => i.status === 'pass').length;
+        const failedCount = items.filter(i => i.status === 'fail').length;
+        const total = items.length;
+
         contentData = {
             checklist: currentChecklist,
             timestamp: new Date().toISOString(),
-            items: items,
-            completionRate: `${completedCount}/${items.length}`
+            items,
+            completionRate: `${passedCount + failedCount}/${total}`,
+            passCount: passedCount,
+            failCount: failedCount
         };
 
         // For closing checklist, attach pastry reconciliation data
@@ -935,6 +1128,16 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         }
     }
     
+    // Collect Findings & Suggestions (applies to all checklist types)
+    const findingsText = document.getElementById('findingsText')?.value?.trim() || '';
+    const findingsPhotoInput = document.getElementById('findingsPhotoInput');
+    const findingsPhotoFile = findingsPhotoInput?.files?.[0];
+    const findingsPhoto = findingsPhotoFile ? await readPhotoAsBase64(findingsPhotoFile) : null;
+    if (findingsText || findingsPhoto) {
+        contentData.findings = findingsText || null;
+        contentData.findingsPhoto = findingsPhoto || null;
+    }
+
     try {
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('submitBtn').textContent = 'Submitting...';
@@ -942,9 +1145,15 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         // POST to local API backend with NIP-98 Nostr auth
         await submitWithFallback(contentData);
 
-        const successMsg = currentChecklist === 'inventory'
-            ? '✅ Inventory handover saved!'
-            : `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist saved! (${contentData.completionRate} tasks completed)`;
+        let successMsg;
+        if (currentChecklist === 'inventory') {
+            successMsg = '✅ Inventory handover saved!';
+        } else {
+            const p = contentData.passCount ?? 0;
+            const f = contentData.failCount ?? 0;
+            const t = contentData.items?.length ?? 0;
+            successMsg = `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist saved! ${p}/${p + f} passed${f > 0 ? ` · ${f} ❌ flagged` : ''}`;
+        }
 
         showStatus('success', successMsg);
 
@@ -956,8 +1165,33 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             if (currentChecklist === 'inventory') {
                 document.querySelectorAll('#inventoryChecklist input[type="number"]').forEach(input => input.value = 0);
             } else {
-                document.querySelectorAll(`#${currentChecklist}Checklist input[type="checkbox"]`).forEach(cb => cb.checked = false);
+                // Reset pass/fail items
+                const checklistDiv = document.getElementById(`${currentChecklist}Checklist`);
+                checklistDiv.querySelectorAll('.checklist-item.pf-enhanced').forEach(item => {
+                    item.dataset.status = '';
+                    item.classList.remove('status-pass', 'status-fail');
+                    item.querySelectorAll('.btn-pass, .btn-fail').forEach(b => b.classList.remove('selected'));
+                    const detail = item.querySelector('.item-detail');
+                    if (detail) detail.classList.remove('expanded');
+                    const comment = item.querySelector('.item-comment');
+                    if (comment) comment.value = '';
+                    const photoInput = item.querySelector('.item-photo-input');
+                    if (photoInput) photoInput.value = '';
+                    const photoName = item.querySelector('.item-photo-name');
+                    if (photoName) { photoName.textContent = ''; photoName.style.display = 'none'; }
+                    const photoPreview = item.querySelector('.item-photo-preview');
+                    if (photoPreview) { photoPreview.style.display = 'none'; photoPreview.src = ''; }
+                });
             }
+            // Reset findings
+            const findingsText = document.getElementById('findingsText');
+            if (findingsText) findingsText.value = '';
+            const findingsPhotoInput = document.getElementById('findingsPhotoInput');
+            if (findingsPhotoInput) findingsPhotoInput.value = '';
+            const findingsPhotoName = document.getElementById('findingsPhotoName');
+            if (findingsPhotoName) findingsPhotoName.textContent = '';
+            const findingsPhotoPreview = document.getElementById('findingsPhotoPreview');
+            if (findingsPhotoPreview) { findingsPhotoPreview.style.display = 'none'; findingsPhotoPreview.src = ''; }
         }, 2000);
 
     } catch (error) {
@@ -970,6 +1204,212 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
 
 // Note: Nostr relay publishing removed — Nostr is used for AUTH ONLY (NIP-98).
 // Submissions go directly to trails-api via submitWithFallback().
+
+// ─── Pass/Fail UX ────────────────────────────────────────────────────────────
+
+/**
+ * Compress a File image to max 1024px wide, quality 0.75.
+ * Returns a data URL (base64).
+ */
+async function compressPhoto(file, maxWidth = 1024, quality = 0.75) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+        img.src = url;
+    });
+}
+
+/**
+ * Read a File as a base64 data URL (with compression for images).
+ */
+async function readPhotoAsBase64(file) {
+    if (!file) return null;
+    if (file.type.startsWith('image/')) {
+        return compressPhoto(file);
+    }
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
+ * Enhance all un-enhanced .checklist-item elements in a container with Pass/Fail UX.
+ * Replaces checkboxes with PASS/FAIL buttons and expandable photo/comment fields.
+ * @param {HTMLElement} container - the checklist div to scan
+ */
+function initPassFail(container) {
+    if (!container) return;
+    container.querySelectorAll('.checklist-item:not(.pf-enhanced)').forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (!checkbox) return; // skip non-checkbox items (e.g. inventory inputs)
+
+        const labelEl = item.querySelector('label');
+        const taskId = checkbox.id || ('task-' + Math.random().toString(36).slice(2));
+        const taskLabelText = labelEl ? labelEl.textContent.trim() : taskId;
+        const taskLabelHtml = labelEl ? labelEl.innerHTML : taskLabelText;
+
+        item.classList.add('pf-enhanced');
+        item.dataset.taskId = taskId;
+        item.dataset.taskLabel = taskLabelText;
+        item.dataset.status = '';
+
+        item.innerHTML = `
+            <div class="item-main">
+                <div class="item-label">${taskLabelHtml}</div>
+                <div class="item-buttons">
+                    <button class="btn-pass" type="button" aria-label="Pass">✅ PASS</button>
+                    <button class="btn-fail" type="button" aria-label="Fail">❌ FAIL</button>
+                    <button class="btn-expand" type="button" title="Add photo/comment">⋯</button>
+                </div>
+            </div>
+            <div class="item-detail">
+                <textarea class="item-comment" placeholder="💬 Comment (required if FAIL)" rows="2"></textarea>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <label class="item-photo-label">
+                        📷 Photo
+                        <input type="file" accept="image/*" capture="environment" class="item-photo-input">
+                    </label>
+                    <span class="item-photo-name"></span>
+                </div>
+                <img class="item-photo-preview" alt="Preview" style="display:none;max-width:120px;border-radius:6px;border:1px solid #ddd;margin-top:4px;">
+                <div class="item-error"></div>
+            </div>`;
+
+        // Restore data attrs (innerHTML wiped them)
+        item.dataset.taskId = taskId;
+        item.dataset.taskLabel = taskLabelText;
+        item.dataset.status = '';
+
+        const passBtn = item.querySelector('.btn-pass');
+        const failBtn = item.querySelector('.btn-fail');
+        const expandBtn = item.querySelector('.btn-expand');
+        const detail = item.querySelector('.item-detail');
+        const commentEl = item.querySelector('.item-comment');
+        const photoInput = item.querySelector('.item-photo-input');
+        const photoName = item.querySelector('.item-photo-name');
+        const photoPreview = item.querySelector('.item-photo-preview');
+        const errorEl = item.querySelector('.item-error');
+
+        function clearError() {
+            if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
+        }
+
+        passBtn.addEventListener('click', () => {
+            item.dataset.status = 'pass';
+            passBtn.classList.add('selected');
+            failBtn.classList.remove('selected');
+            item.classList.add('status-pass');
+            item.classList.remove('status-fail');
+            detail.classList.remove('expanded');
+            clearError();
+        });
+
+        failBtn.addEventListener('click', () => {
+            item.dataset.status = 'fail';
+            failBtn.classList.add('selected');
+            passBtn.classList.remove('selected');
+            item.classList.add('status-fail');
+            item.classList.remove('status-pass');
+            detail.classList.add('expanded');
+            commentEl.focus();
+            clearError();
+        });
+
+        expandBtn.addEventListener('click', () => {
+            detail.classList.toggle('expanded');
+        });
+
+        photoInput.addEventListener('change', () => {
+            const file = photoInput.files && photoInput.files[0];
+            if (file) {
+                photoName.textContent = '📎 ' + file.name;
+                photoName.style.display = 'inline';
+                const previewUrl = URL.createObjectURL(file);
+                photoPreview.src = previewUrl;
+                photoPreview.style.display = 'block';
+                photoPreview.onload = () => URL.revokeObjectURL(previewUrl);
+            } else {
+                photoName.style.display = 'none';
+                photoPreview.style.display = 'none';
+            }
+        });
+    });
+}
+
+/**
+ * Show validation error on a specific item.
+ */
+function showItemError(item, message) {
+    const errorEl = item.querySelector('.item-error');
+    const detail = item.querySelector('.item-detail');
+    if (errorEl) {
+        errorEl.textContent = '⚠️ ' + message;
+        errorEl.style.display = 'block';
+    }
+    if (detail) detail.classList.add('expanded');
+    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/**
+ * Clear all item validation errors in a container.
+ */
+function clearAllItemErrors(container) {
+    if (!container) return;
+    container.querySelectorAll('.item-error').forEach(el => {
+        el.style.display = 'none';
+        el.textContent = '';
+    });
+}
+
+/**
+ * Setup the Findings section for a given checklist type.
+ */
+function showFindingsSection() {
+    const section = document.getElementById('findingsSection');
+    if (section) section.style.display = 'block';
+}
+
+function hideFindingsSection() {
+    const section = document.getElementById('findingsSection');
+    if (section) section.style.display = 'none';
+}
+
+// Setup findings photo preview
+(function setupFindingsPhoto() {
+    const input = document.getElementById('findingsPhotoInput');
+    const nameEl = document.getElementById('findingsPhotoName');
+    const preview = document.getElementById('findingsPhotoPreview');
+    if (!input) return;
+    input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        if (file) {
+            if (nameEl) { nameEl.textContent = '📎 ' + file.name; }
+            if (preview) {
+                const url = URL.createObjectURL(file);
+                preview.src = url;
+                preview.style.display = 'block';
+                preview.onload = () => URL.revokeObjectURL(url);
+            }
+        } else {
+            if (nameEl) nameEl.textContent = '';
+            if (preview) preview.style.display = 'none';
+        }
+    });
+})();
 
 // Show status message
 function showStatus(type, message) {

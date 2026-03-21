@@ -281,30 +281,290 @@
             font-size: 1.1em;
         }
         
+        /* ── Pass/Fail item card ─────────────────────────────────────── */
         .checklist-item {
             background: #f8f9fa;
-            padding: 15px;
             margin-bottom: 10px;
-            border-radius: 8px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            overflow: hidden;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        /* Legacy checkbox items (inventory freezer pulls, etc.) */
+        .checklist-item:not(.pf-enhanced) {
+            padding: 15px;
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
-        .checklist-item input[type="checkbox"] {
+
+        .checklist-item:not(.pf-enhanced) input[type="checkbox"] {
             width: 22px;
             height: 22px;
             cursor: pointer;
             accent-color: #667eea;
             flex-shrink: 0;
         }
-        
-        .checklist-item label {
+
+        .checklist-item:not(.pf-enhanced) label {
             flex: 1;
             cursor: pointer;
             font-size: 14px;
             color: #333;
             line-height: 1.4;
+        }
+
+        /* Enhanced pass/fail items */
+        .checklist-item.pf-enhanced {
+            padding: 0;
+        }
+
+        .checklist-item.status-pass {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .checklist-item.status-fail {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .item-main {
+            padding: 12px 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .item-label {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.45;
+            padding-top: 2px;
+        }
+
+        .item-label a {
+            color: #667eea;
+        }
+
+        .item-buttons {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            align-items: flex-start;
+        }
+
+        .btn-pass, .btn-fail {
+            border: none;
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-pass {
+            background: #e9f7ef;
+            color: #28a745;
+        }
+
+        .btn-pass:active, .btn-pass.selected {
+            background: #28a745;
+            color: white;
+            transform: scale(0.97);
+        }
+
+        .btn-fail {
+            background: #fdecea;
+            color: #dc3545;
+        }
+
+        .btn-fail:active, .btn-fail.selected {
+            background: #dc3545;
+            color: white;
+            transform: scale(0.97);
+        }
+
+        .btn-expand {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 6px;
+            line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .item-detail {
+            padding: 0 14px 12px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-detail.expanded {
+            display: flex;
+        }
+
+        .item-comment {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+            transition: border-color 0.2s;
+        }
+
+        .item-comment:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .item-photo-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #e8ebf7;
+            color: #667eea;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            align-self: flex-start;
+        }
+
+        .item-photo-label:active {
+            background: #d0d5f0;
+        }
+
+        .item-photo-label input[type="file"] {
+            display: none;
+        }
+
+        .item-photo-name {
+            display: none;
+            font-size: 12px;
+            color: #667eea;
+            padding: 2px 0;
+        }
+
+        .item-photo-preview {
+            display: none;
+            max-width: 120px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .item-error {
+            display: none;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 0;
+        }
+
+        .item-required-badge {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 8px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        /* ── Findings & Suggestions section ────────────────────────── */
+        .findings-section {
+            margin-top: 24px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .findings-header {
+            font-size: 15px;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 4px;
+        }
+
+        .findings-sub {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 12px;
+        }
+
+        .findings-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .findings-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .findings-photo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .findings-photo-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8f9fa;
+            border: 1.5px solid #e0e0e0;
+            color: #555;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .findings-photo-label:active {
+            background: #e8ebf7;
+        }
+
+        .findings-photo-label input[type="file"] {
+            display: none;
+        }
+
+        .findings-photo-name {
+            font-size: 12px;
+            color: #667eea;
+        }
+
+        .findings-photo-preview {
+            display: none;
+            max-width: 100px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            margin-top: 8px;
         }
         
         .user-info {
@@ -523,6 +783,12 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:linear-gradient(135deg,#764ba2,#667eea);border-radius:10px 10px 0 0;">
                     <span style="color:white;font-weight:700;font-size:15px;">📊 Submission History</span>
                     <button onclick="closeAdminView()" style="background:rgba(255,255,255,0.2);color:white;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;">✕ Close</button>
+                </div>
+                <div style="background:#f8f9fa;border:1px solid #e0e0e0;border-top:none;padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
+                        <input type="checkbox" id="adminFailuresOnly" onchange="loadAdminView()" style="accent-color:#dc3545;">
+                        <span>⚠️ Show only submissions with failures</span>
+                    </label>
                 </div>
                 <div id="adminTableContainer" style="background:white;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 10px 10px;overflow:auto;max-height:400px;">
                     <p style="color:#999;text-align:center;padding:20px;">Loading…</p>
@@ -874,6 +1140,21 @@
                     </div>
                 </div>
                 
+                <!-- Findings & Suggestions (injected by app.js per checklist type) -->
+                <div id="findingsSection" class="findings-section" style="display:none;">
+                    <div class="findings-header">📝 Findings &amp; Suggestions</div>
+                    <div class="findings-sub">Notice anything wrong, missing, or have ideas to improve? Write it here.</div>
+                    <textarea id="findingsText" class="findings-textarea" placeholder="e.g. The oven door seal is loose, or we should add a step to check the pastry temps..."></textarea>
+                    <div class="findings-photo-row">
+                        <label class="findings-photo-label" id="findingsPhotoLabel">
+                            📷 Attach photo (optional)
+                            <input type="file" accept="image/*" capture="environment" id="findingsPhotoInput">
+                        </label>
+                        <span class="findings-photo-name" id="findingsPhotoName"></span>
+                    </div>
+                    <img id="findingsPhotoPreview" class="findings-photo-preview" alt="Findings photo preview">
+                </div>
+
                 <div class="submit-section">
                     <button class="btn" id="submitBtn" data-i18n="index.submit">Submit Checklist</button>
                     <div class="status" id="statusMessage"></div>

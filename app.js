@@ -589,7 +589,9 @@ function loadAdminView() {
     }).then(function(res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
-    }).then(function(subs) {
+    }).then(function(data) {
+        // API returns { submissions: [...], total: N } or a plain array
+        var subs = Array.isArray(data) ? data : (data.submissions || data.data || []);
         if (!subs || subs.length === 0) {
             container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">No submissions yet.</p>';
             return;

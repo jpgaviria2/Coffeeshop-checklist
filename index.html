@@ -9,22 +9,17 @@
     <meta name="apple-mobile-web-app-title" content="Trails Coffee">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192x192.png">
-    <title>Trails Coffee - Staff Portal</title>
+    <title>Trails Coffee — Staff Portal</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 10px;
         }
-        
+
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -33,1361 +28,301 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             overflow: hidden;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
         }
-        
-        .header h1 {
-            font-size: 1.5em;
-            margin-bottom: 5px;
+        .header h1 { font-size: 1.5em; margin-bottom: 5px; }
+        .header p  { opacity: 0.9; font-size: 0.9em; }
+        .settings-btn {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            border-radius: 8px; padding: 6px 10px; font-size: 18px; cursor: pointer;
         }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 0.9em;
-        }
-        
-        .content {
-            padding: 20px;
-        }
-        
-        /* Schedule Section */
-        .schedule-section {
-            margin-bottom: 30px;
-        }
-        
-        .schedule-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .schedule-header h2 {
-            font-size: 1.2em;
-            color: #333;
-        }
-        
-        .week-nav {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .week-nav button {
-            background: #667eea;
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .week-nav button:active {
-            transform: scale(0.95);
-        }
-        
-        .week-info {
+
+        /* Settings panel */
+        #settingsPanel {
+            display: none;
             background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 13px;
-            color: #666;
+            border-bottom: 1px solid #ddd;
+            padding: 16px;
         }
-        
-        .week-info strong {
-            color: #333;
-            display: block;
-            margin-bottom: 3px;
+        #settingsPanel h3 { font-size: 15px; color: #333; margin-bottom: 12px; }
+        .settings-clear-btn {
+            width: 100%; padding: 12px; background: #e63946; color: white;
+            border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;
         }
-        
-        .schedule-grid {
-            background: #f8f9fa;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .schedule-day {
-            padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .schedule-day:last-child {
-            border-bottom: none;
-        }
-        
-        .day-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .day-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .day-date {
-            color: #666;
-            font-size: 13px;
-        }
-        
-        .day-shifts {
-            font-size: 13px;
-            color: #555;
-            line-height: 1.6;
-        }
-        
-        .lead-shift {
-            font-weight: 600;
-            color: #667eea;
-        }
-        
-        .helper-shift {
-            color: #666;
-            margin-left: 5px;
-        }
-        
-        .hours-badge {
-            display: inline-block;
-            background: #e8ebf7;
-            color: #667eea;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            margin-left: 5px;
-        }
-        
-        /* Auth Section */
-        .auth-section {
-            text-align: center;
-            padding: 20px 10px;
-            border-top: 2px solid #f0f0f0;
-            margin-top: 20px;
-        }
-        
-        .auth-section h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        
-        .auth-section p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            font-size: 0.9em;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        
+        .settings-note { text-align: center; font-size: 11px; color: #999; margin-top: 6px; }
+
+        .content { padding: 20px; }
+
+        /* Auth */
+        .auth-section { text-align: center; padding: 10px 0; }
+        .auth-section h2 { color: #333; margin-bottom: 10px; font-size: 1.2em; }
+        .auth-section > p { color: #666; margin-bottom: 20px; line-height: 1.5; font-size: 0.9em; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 0.9em; }
         .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: monospace;
-            transition: border-color 0.3s;
+            width: 100%; padding: 12px;
+            border: 2px solid #e0e0e0; border-radius: 8px;
+            font-size: 14px; font-family: monospace;
         }
-        
-        .input-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
+        .input-group input:focus { outline: none; border-color: #667eea; }
+
+        /* Buttons */
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
+            color: white; border: none; padding: 15px 30px;
+            border-radius: 8px; font-size: 16px; font-weight: 600;
+            cursor: pointer; width: 100%;
         }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .checklist-section {
-            display: none;
-            border-top: 2px solid #f0f0f0;
-            margin-top: 20px;
-            padding-top: 20px;
-        }
-        
-        .checklist-type {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .checklist-type button {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 8px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .checklist-type button.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: #667eea;
-        }
-        
-        .checklist {
-            margin-top: 15px;
-        }
-        
-        .checklist h3 {
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 1.1em;
-        }
-        
-        /* ── Pass/Fail item card ─────────────────────────────────────── */
-        .checklist-item {
-            background: #f8f9fa;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            overflow: hidden;
-            transition: border-color 0.2s, background 0.2s;
-        }
+        .btn:active  { opacity: 0.85; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Legacy checkbox items (inventory freezer pulls, etc.) */
-        .checklist-item:not(.pf-enhanced) {
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .checklist-item:not(.pf-enhanced) input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-            accent-color: #667eea;
-            flex-shrink: 0;
-        }
-
-        .checklist-item:not(.pf-enhanced) label {
-            flex: 1;
-            cursor: pointer;
-            font-size: 14px;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        /* Enhanced pass/fail items */
-        .checklist-item.pf-enhanced {
-            padding: 0;
-        }
-
-        .checklist-item.status-pass {
-            border-color: #28a745;
-            background: #f0fff4;
-        }
-
-        .checklist-item.status-fail {
-            border-color: #dc3545;
-            background: #fff5f5;
-        }
-
-        .item-main {
-            padding: 12px 14px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .item-label {
-            flex: 1;
-            font-size: 14px;
-            color: #333;
-            line-height: 1.45;
-            padding-top: 2px;
-        }
-
-        .item-label a {
-            color: #667eea;
-        }
-
-        .item-buttons {
-            display: flex;
-            gap: 6px;
-            flex-shrink: 0;
-            align-items: flex-start;
-        }
-
-        .btn-pass, .btn-fail {
-            border: none;
-            border-radius: 8px;
-            padding: 7px 12px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-            white-space: nowrap;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .btn-pass {
-            background: #e9f7ef;
-            color: #28a745;
-        }
-
-        .btn-pass:active, .btn-pass.selected {
-            background: #28a745;
-            color: white;
-            transform: scale(0.97);
-        }
-
-        .btn-fail {
-            background: #fdecea;
-            color: #dc3545;
-        }
-
-        .btn-fail:active, .btn-fail.selected {
-            background: #dc3545;
-            color: white;
-            transform: scale(0.97);
-        }
-
-        .btn-expand {
-            background: none;
-            border: none;
-            color: #999;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px 6px;
-            line-height: 1;
-            -webkit-tap-highlight-color: transparent;
-            flex-shrink: 0;
-        }
-
-        .item-detail {
-            padding: 0 14px 12px;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .item-detail.expanded {
-            display: flex;
-        }
-
-        .item-comment {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 60px;
-            transition: border-color 0.2s;
-        }
-
-        .item-comment:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .item-photo-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #e8ebf7;
-            color: #667eea;
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-            align-self: flex-start;
-        }
-
-        .item-photo-label:active {
-            background: #d0d5f0;
-        }
-
-        .item-photo-label input[type="file"] {
-            display: none;
-        }
-
-        .item-photo-name {
-            display: none;
-            font-size: 12px;
-            color: #667eea;
-            padding: 2px 0;
-        }
-
-        .item-photo-preview {
-            display: none;
-            max-width: 120px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-
-        .item-error {
-            display: none;
-            color: #dc3545;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 0;
-        }
-
-        .item-required-badge {
-            display: inline-block;
-            background: #dc3545;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 8px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-
-        /* ── Findings & Suggestions section ────────────────────────── */
-        .findings-section {
-            margin-top: 24px;
-            border-top: 2px solid #e0e0e0;
-            padding-top: 20px;
-        }
-
-        .findings-header {
-            font-size: 15px;
-            font-weight: 700;
-            color: #444;
-            margin-bottom: 4px;
-        }
-
-        .findings-sub {
-            font-size: 12px;
-            color: #777;
-            margin-bottom: 12px;
-        }
-
-        .findings-textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 80px;
-            transition: border-color 0.2s;
-            box-sizing: border-box;
-        }
-
-        .findings-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .findings-photo-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .findings-photo-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #f8f9fa;
-            border: 1.5px solid #e0e0e0;
-            color: #555;
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .findings-photo-label:active {
-            background: #e8ebf7;
-        }
-
-        .findings-photo-label input[type="file"] {
-            display: none;
-        }
-
-        .findings-photo-name {
-            font-size: 12px;
-            color: #667eea;
-        }
-
-        .findings-photo-preview {
-            display: none;
-            max-width: 100px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            margin-top: 8px;
-        }
-        
+        /* User badge */
         .user-info {
-            background: #d4edda;
-            border: 2px solid #28a745;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #155724;
-            text-align: center;
+            background: #d4edda; border: 2px solid #28a745;
+            padding: 12px; border-radius: 8px; margin-bottom: 20px;
+            font-size: 14px; color: #155724; text-align: center;
         }
-        
-        .user-info strong {
-            color: #155724;
-            font-size: 15px;
-        }
-        
+        .user-info strong { font-size: 15px; }
         .logout-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            float: right;
+            background: #dc3545; color: white; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+            font-size: 12px; float: right;
         }
-        
+
+        /* Quick action grid */
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
-        
         .action-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            color: white; border: none; padding: 18px;
+            border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(102,126,234,0.3);
         }
-        
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-        
+        .action-btn:active { opacity: 0.85; }
+
+        /* Admin section */
+        #adminSection { margin-top: 15px; }
+
+        /* Checklist view */
         .checklist-header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea;
         }
-        
-        .checklist-header-bar h2 {
-            color: #667eea;
-            font-size: 1.3em;
-            margin: 0;
-        }
-        
+        .checklist-header-bar h2 { color: #667eea; font-size: 1.3em; margin: 0; }
         .close-checklist-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
+            background: #6c757d; color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-size: 14px; font-weight: 600;
         }
-        
-        .close-checklist-btn:active {
-            transform: scale(0.95);
+        .close-checklist-btn:active { opacity: 0.85; }
+
+        /* Pass/Fail item cards */
+        .checklist-item {
+            background: #f8f9fa; margin-bottom: 10px;
+            border-radius: 10px; border: 2px solid transparent; overflow: hidden;
         }
-        
-        .inventory-section {
-            margin-bottom: 20px;
+        .checklist-item.pf-enhanced { padding: 0; }
+        .checklist-item.status-pass { border-color: #28a745; background: #f0fff4; }
+        .checklist-item.status-fail { border-color: #dc3545; background: #fff5f5; }
+
+        .item-main {
+            padding: 12px 14px;
+            display: flex; align-items: flex-start; gap: 10px;
         }
-        
+        .item-label {
+            flex: 1; font-size: 14px; color: #333;
+            line-height: 1.45; padding-top: 2px;
+        }
+        .item-label a { color: #667eea; }
+        .item-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .btn-pass, .btn-fail {
+            border: none; border-radius: 8px; padding: 8px 13px;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-pass { background: #e9f7ef; color: #28a745; }
+        .btn-pass.selected, .btn-pass:active { background: #28a745; color: white; }
+        .btn-fail { background: #fdecea; color: #dc3545; }
+        .btn-fail.selected, .btn-fail:active { background: #dc3545; color: white; }
+
+        .item-detail {
+            display: none; flex-direction: column; gap: 8px;
+            padding: 0 14px 12px;
+        }
+        .item-comment {
+            width: 100%; padding: 8px 10px;
+            border: 1.5px solid #e0e0e0; border-radius: 8px;
+            font-size: 14px; font-family: inherit;
+            resize: vertical; min-height: 60px;
+        }
+        .item-comment:focus { outline: none; border-color: #667eea; }
+        .item-photo-label {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #e8ebf7; color: #667eea; padding: 7px 12px;
+            border-radius: 8px; font-size: 13px; font-weight: 600;
+            cursor: pointer; align-self: flex-start;
+        }
+        .item-photo-label input[type="file"] { display: none; }
+        .item-photo-name  { font-size: 12px; color: #667eea; }
+        .item-photo-preview {
+            display: block; max-width: 120px;
+            border-radius: 6px; border: 1px solid #ddd;
+        }
+        .item-error { display: none; color: #dc3545; font-size: 12px; font-weight: 600; }
+
+        /* Inventory */
+        .inventory-section { margin-bottom: 20px; }
+        .inventory-section h4 { color: #667eea; margin: 15px 0 10px 0; }
         .inventory-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8f9fa;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #f8f9fa; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px;
         }
-        
-        .inventory-item label {
-            font-size: 14px;
-            color: #333;
-            font-weight: 500;
-        }
-        
+        .inventory-item label { font-size: 14px; color: #333; font-weight: 500; }
         .inventory-item input[type="number"] {
-            width: 80px;
-            padding: 8px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 16px;
-            text-align: center;
-            font-weight: 600;
+            width: 80px; padding: 8px; border: 2px solid #e0e0e0;
+            border-radius: 6px; font-size: 16px; text-align: center; font-weight: 600;
         }
-        
-        .inventory-item input[type="number"]:focus {
-            outline: none;
-            border-color: #667eea;
+        .inventory-item input[type="number"]:focus { outline: none; border-color: #667eea; }
+
+        /* Shift notes */
+        .findings-section { margin-top: 24px; border-top: 2px solid #e0e0e0; padding-top: 20px; }
+        .findings-header  { font-size: 15px; font-weight: 700; color: #444; margin-bottom: 4px; }
+        .findings-sub     { font-size: 12px; color: #777; margin-bottom: 12px; }
+        .findings-textarea {
+            width: 100%; padding: 10px 12px;
+            border: 1.5px solid #e0e0e0; border-radius: 10px;
+            font-size: 14px; font-family: inherit;
+            resize: vertical; min-height: 80px; box-sizing: border-box;
         }
-        
-        .submit-section {
-            margin-top: 20px;
-            text-align: center;
-        }
-        
+        .findings-textarea:focus { outline: none; border-color: #667eea; }
+
+        /* Submit section */
+        .submit-section { margin-top: 20px; text-align: center; }
+
+        /* Status messages */
         .status {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            display: none;
-            font-size: 14px;
+            display: none; margin-top: 12px; padding: 12px;
+            border-radius: 8px; font-size: 14px; text-align: center;
         }
-        
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 15px;
-            color: #666;
-            font-size: 12px;
+        .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status.error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Success screen */
+        #successScreen {
+            background: #f0fff4; border: 2px solid #28a745;
+            border-radius: 14px; padding: 20px; margin-top: 16px;
         }
 
-        /* Autosave fade-in/out */
-        @keyframes fadeInOut {
-            0%   { opacity: 0; }
-            15%  { opacity: 1; }
-            70%  { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        .autosave-flash {
-            animation: fadeInOut 2s ease forwards;
+        .footer {
+            text-align: center; padding: 15px;
+            color: #666; font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <div id="update-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#2d6a4f;color:white;text-align:center;padding:14px 20px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 -3px 12px rgba(0,0,0,0.3);border-top:3px solid #52b788;" onclick="applyUpdate()">
-      🆕 New version available — tap to update
+<div class="container">
+
+    <div class="header">
+        <h1>☕ Trails Coffee</h1>
+        <p>Staff Portal</p>
+        <button class="settings-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
     </div>
-    <div class="container">
-        <div class="header" style="position:relative;">
-            <h1 data-i18n="index.title">☕ Trails Coffee</h1>
-            <p data-i18n="index.subtitle">Staff Portal</p>
-            <button onclick="toggleSettings()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.15);border:none;color:white;border-radius:8px;padding:6px 10px;font-size:18px;cursor:pointer;" title="Settings">⚙️</button>
-        </div>
 
-        <!-- Settings Panel -->
-        <div id="settingsPanel" style="display:none;background:#f8f9fa;border:1px solid #ddd;border-radius:12px;padding:16px;margin-bottom:16px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <strong style="font-size:15px;color:#333;">⚙️ Settings</strong>
-                <button onclick="toggleSettings()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#999;">✕</button>
-            </div>
-            <button onclick="checkForUpdates()" id="updateCheckBtn" style="width:100%;padding:12px;background:#2d6a4f;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">
-                🔄 Check for Updates
-            </button>
-            <p id="updateCheckStatus" style="text-align:center;font-size:13px;color:#666;margin:0 0 10px;min-height:18px;"></p>
-            <button onclick="forceReload()" style="width:100%;padding:10px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">
-                ⚡ Force Reload (clears cache)
-            </button>
-            <p style="text-align:center;font-size:11px;color:#999;margin:6px 0 0;">Use this if the app looks outdated</p>
-        </div>
-        
-        <div class="nav-bar"></div>
-        <script src="translations.js"></script>
-    <script src="i18n.js"></script>
-    <script src="nostr.bundle.js"></script>
-    <script src="roles.js"></script>
-    <script src="nav.js"></script>
-        <script>initNav('checklists');</script>
-        
-        <div class="content">
-            <!-- Authentication Section (Moved to Top) -->
-            <div class="auth-section" id="authSection">
-                <h2 data-i18n="index.login.title">🔑 Staff Login</h2>
-                <p data-i18n="index.login.desc">Enter your nsec to access checklists</p>
-                
+    <!-- Settings Panel -->
+    <div id="settingsPanel">
+        <h3>⚙️ Settings</h3>
+        <button class="settings-clear-btn" onclick="clearCache()">🗑️ Clear Cache &amp; Reload</button>
+        <p class="settings-note">Use this if the app looks outdated or something is broken.</p>
+    </div>
+
+    <div class="content">
+
+        <!-- ── Login View ──────────────────────────────────────── -->
+        <div id="loginView">
+            <div class="auth-section">
+                <h2>🔑 Staff Login</h2>
+                <p>Enter your nsec to access checklists</p>
                 <div class="input-group">
-                    <label for="nsecInput" data-i18n="index.login.label">Your nsec key:</label>
-                    <input type="password" id="nsecInput" placeholder="nsec1..." data-i18n-placeholder="index.login.placeholder" autocomplete="off">
+                    <label for="nsecInput">Your nsec key:</label>
+                    <input type="password" id="nsecInput" placeholder="nsec1…" autocomplete="off">
                 </div>
-                
-                <button class="btn" id="loginBtn" onclick="handleLogin()" data-i18n="index.login.btn">Login</button>
-                
-                <p style="margin-top: 20px; font-size: 12px; color: #999;">
-                    <span data-i18n="index.login.nokey">Don't have an nsec? Ask your manager for one.</span>
-                </p>
+                <button class="btn" onclick="handleLogin()">Login</button>
+                <div id="loginStatus" class="status"></div>
+                <p style="margin-top:20px;font-size:12px;color:#999;">Don't have an nsec? Ask your manager for one.</p>
             </div>
-            
-            <!-- User Info (shown when logged in) -->
-            <div class="user-info" id="userInfo" style="display: none;">
-                <strong data-i18n="index.loggedin">✅ Logged in</strong>
-                <button class="logout-btn" onclick="logout()" data-i18n="index.logout">Logout</button>
-            </div>
-            
-            <!-- Square Team App Notice -->
-            <div id="squareNotice" style="display:none; padding:15px; text-align:center; background:#e8ebf7; border-radius:12px; margin-bottom:15px;">
-                <div style="font-size:1.1em; font-weight:600; color:#667eea; margin-bottom:8px;"><span data-i18n="index.square.title">⏱️ Hours &amp; Schedule</span></div>
-                <div style="color:#555; font-size:0.9em; line-height:1.6;"><span data-i18n="index.square.desc">Clock in/out and view your schedule in the <strong>Square Team app</strong>.<br>Download it from the App Store or Google Play.</span></div>
+        </div>
+
+        <!-- ── Home View ───────────────────────────────────────── -->
+        <div id="homeView" style="display:none">
+            <div id="userBadge"></div>
+
+            <div class="quick-actions">
+                <button class="action-btn" onclick="showChecklist('opening')">🌅 Opening Checklist</button>
+                <button class="action-btn" onclick="showChecklist('closing')">🌙 Closing Checklist</button>
+                <button class="action-btn" onclick="showChecklist('inventory')">📦 Inventory Handover</button>
+                <button class="action-btn" id="adminBtn"
+                    style="display:none;background:linear-gradient(135deg,#764ba2,#667eea)"
+                    onclick="toggleAdminView()">📊 Submission History</button>
             </div>
 
-            <!-- Today's Activity (shown when logged in) -->
-            <div id="todaysActivity" style="display:none;background:#f8f9fa;border-radius:10px;margin-bottom:15px;overflow:hidden;">
-                <div style="padding:10px 12px;background:#e8ebf7;font-weight:600;color:#667eea;font-size:14px;"><span data-i18n="index.activity.title">📋 Today's Activity</span></div>
-            </div>
-
-            <!-- Quick Actions (shown when logged in) -->
-            <div class="quick-actions" id="quickActions" style="display:none;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
-                <button class="action-btn" onclick="showChecklist('opening')" data-i18n="index.btn.opening">📋 Open Opening Checklist</button>
-                <button class="action-btn" onclick="showChecklist('closing')" data-i18n="index.btn.closing">📋 Open Closing Checklist</button>
-                <button class="action-btn" onclick="showChecklist('inventory')" data-i18n="index.btn.inventory">📦 Inventory Handover</button>
-                <button class="action-btn" id="adminViewBtn" onclick="loadAdminView()" style="display:none;background:linear-gradient(135deg,#764ba2,#667eea);color:white;border:none;">📊 Submission History</button>
-            </div>
-
-            <!-- Admin View (managers only) -->
-            <div id="adminSection" style="display:none;margin-top:15px;">
+            <!-- Admin Section (managers only) -->
+            <div id="adminSection" style="display:none">
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:linear-gradient(135deg,#764ba2,#667eea);border-radius:10px 10px 0 0;">
                     <span style="color:white;font-weight:700;font-size:15px;">📊 Submission History</span>
                     <button onclick="closeAdminView()" style="background:rgba(255,255,255,0.2);color:white;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;">✕ Close</button>
-                </div>
-                <div style="background:#f8f9fa;border:1px solid #e0e0e0;border-top:none;padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-                        <input type="checkbox" id="adminFailuresOnly" onchange="loadAdminView()" style="accent-color:#dc3545;">
-                        <span>⚠️ Show only submissions with failures</span>
-                    </label>
                 </div>
                 <div id="adminTableContainer" style="background:white;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 10px 10px;overflow:auto;max-height:400px;">
                     <p style="color:#999;text-align:center;padding:20px;">Loading…</p>
                 </div>
             </div>
-            
-            <!-- Schedule removed — managed via Square Team app -->
-            
-            <!-- Checklist Section -->
-            <div class="checklist-section" id="checklistSection" style="display: none;">
-                <div class="checklist-header-bar">
-                    <h2 id="checklistTitle" data-i18n="index.opening.title">Opening Checklist</h2>
-                    <button class="close-checklist-btn" onclick="closeChecklist()" data-i18n="index.checklist.close">✕ Close</button>
-                </div>
+        </div>
 
-                <!-- Draft resume banner -->
-                <div id="draftResumeBanner" style="display:none;background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:14px;">
-                    <div style="margin-bottom:8px;">📂 <strong>You have a saved draft</strong> from <span id="draftSavedTime">—</span>. Resume?</div>
-                    <div style="display:flex;gap:8px;">
-                        <button onclick="resumeDraft()" style="background:#28a745;color:white;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;">▶ Resume</button>
-                        <button onclick="startFresh()" style="background:#6c757d;color:white;border:none;border-radius:6px;padding:7px 16px;font-size:13px;cursor:pointer;">🗑 Start Fresh</button>
-                    </div>
-                </div>
-
-                <!-- Autosave indicator -->
-                <div id="autosaveIndicator" style="display:none;font-size:12px;color:#28a745;text-align:right;padding:2px 4px;margin-bottom:4px;transition:opacity 0.5s;">✓ Saved</div>
-
-                <div class="checklist-type">
-                    <button id="openingBtn" class="active" data-i18n="index.tab.opening">🌅 Opening</button>
-                    <button id="closingBtn" data-i18n="index.tab.closing">🌙 Closing</button>
-                    <button id="inventoryBtn" data-i18n="index.tab.inventory">📦 Inventory</button>
-                </div>
-                
-                <div class="checklist" id="openingChecklist">
-                    <div id="openingPastryInfo"></div>
-                    <h3 data-i18n="opening.title">Opening Tasks</h3>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-0a">
-                        <label for="opening-0a" data-i18n="opening.0a">🧼 Handwash before handling any food or drinks</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-0b">
-                        <label for="opening-0b" data-i18n="opening.0b">📋 Check for shift notes from previous shift — check the whiteboard in the kitchen and any messages in the staff group chat</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-1">
-                        <label for="opening-1" data-i18n="opening.1">Turn on lights, plug in coffee brewer, turn on espresso machine</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-1b">
-                        <label for="opening-1b" data-i18n="opening.1b">Turn on the grinder</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-2">
-                        <label for="opening-2" data-i18n="opening.2">Take pastries out of fridge and place on baking trays if needed — pastries may already be arranged on trays from the previous night</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-3">
-                        <label for="opening-3" data-i18n="opening.3">Flush coffee brewer (top up 200-300ml water)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-4">
-                        <label for="opening-4" data-i18n="opening.4">Prepare egg wash (crack & stir, do NOT apply yet)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-5">
-                        <label for="opening-5" data-i18n="opening.5">Brew coffee: 70g coffee for 1.9L water (make 2 batches)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-6">
-                        <label for="opening-6" data-i18n="opening.6">Calibrate grinder (18-19g per 2-sec shot)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-7">
-                        <label for="opening-7" data-i18n="opening.7">Calibrate espresso (38-40g in 20-30 sec, tamper at 11)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-8">
-                        <label for="opening-8" data-i18n="opening.8">Bake pastries: apply egg, 2 trays, 10 min + rotate + 4-5 min</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-9">
-                        <label for="opening-9" data-i18n="opening.9">Turn on POS (check customer display), turn on music</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-9b">
-                        <label for="opening-9b" data-i18n="opening.9b">Check KDS tablet (blue iPad) is charging & connected — do a test print from Square: More → Settings → Hardware → select tablet → Print Test (<a href="procedure-kds-printer.html" target="_blank" style="color: #667eea;">troubleshooting</a>)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-10">
-                        <label for="opening-10" data-i18n="opening.10">Restock concentrates. Set out cream &amp; milk for customer table — only ¼ full (prevents expiry)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-11">
-                        <label for="opening-11" data-i18n="opening.11">Set out outside tables, chairs & garbage bin</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-12">
-                        <label for="opening-12" data-i18n="opening.12">Verify dishwasher is empty and turn it on for the day</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-12b">
-                        <label for="opening-12b" data-i18n="opening.12b">Verify fresh coffee is ready and in the top heater</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-13">
-                        <label for="opening-13" data-i18n="opening.13">Restock cups, lids & supplies from storage drawers (see <a href="storage.html" target="_blank" style="color: #667eea;">📦 Storage Map</a>)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-14">
-                        <label for="opening-14" data-i18n="opening.14">Check fridge & freezer temps — record in Health Binder</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-15">
-                        <label for="opening-15" data-i18n="opening.15">Test Quats sanitizer level with test strip — should read 200ppm. Record in Health Binder (shelf above sink). If low, prepare fresh solution.</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-15b">
-                        <label for="opening-15b" data-i18n="opening.15b">🧴 Fill sanitizer spray bottle with cleaning vinegar solution — ready for counters and surfaces</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-14b">
-                        <label for="opening-14b" data-i18n="opening.14b">🥛 Check milk/dairy expiry dates — discard anything expired or off-smell</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="opening-16">
-                        <label for="opening-16" data-i18n="opening.16">🥐 Update Square inventory on hand for all pastries after baking (More → Items → search item → Available On Hand → Inventory Received → Save)</label>
-                    </div>
-                </div>
-                
-                <div class="checklist" id="closingChecklist" style="display: none;">
-                    <div id="closingFreezerPulls"></div>
-                    <h3 data-i18n="closing.title">Closing Tasks</h3>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-1">
-                        <label for="closing-1" data-i18n="closing.1">Put all leftover pastries into white containers, refrigerate if necessary, if not leave on top of the oven</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-2">
-                        <label for="closing-2" data-i18n="closing.2">Vacuum out and wipe pastries display case</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-3">
-                        <label for="closing-3" data-i18n="closing.3">Clean plates and put them back in the pastries case ready to be filled for the morning</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-4">
-                        <label for="closing-4" data-i18n="closing.4">Wipe all counters and surrounding area</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-4b">
-                        <label for="closing-4b" data-i18n="closing.4b">Wipe out the grinder and grinder tray, turn off grinder</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-4c">
-                        <label for="closing-4c" data-i18n="closing.4c">Clean out knockbox, put a clean compost bag inside</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-5">
-                        <label for="closing-5" data-i18n="closing.5">Clean inside the oven</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-5b">
-                        <label for="closing-5b" data-i18n="closing.5b">Wipe all covered doors and appliances</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-6">
-                        <label for="closing-6" data-i18n="closing.6">Wipe down point of sale</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-7">
-                        <label for="closing-7" data-i18n="closing.7">Espresso machine: complete the special cleaning function, wipe all sides and tops, rinse out the removable tray in the sink</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-8">
-                        <label for="closing-8" data-i18n="closing.8">Restock all cups and lids</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-8b">
-                        <label for="closing-8b" data-i18n="closing.8b">Restock espresso machine area and the purple cart</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-9">
-                        <label for="closing-9" data-i18n="closing.9">Refill all decaf and hot chocolate packages, refill water, refill sprinkle containers and dried strawberries</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-10">
-                        <label for="closing-10" data-i18n="closing.10">Do all the dishes and shut off the dishwasher</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-11">
-                        <label for="closing-11" data-i18n="closing.11">Take all cups and syrup, wipe the counter, clean the pitcher dispenser, restock all cups on the counter beside espresso and on the purple cart</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-12">
-                        <label for="closing-12" data-i18n="closing.12">Ensure decaf coffee is ground and brew coffee is ground — set out 70g in a filter ready for the morning</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-13">
-                        <label for="closing-13" data-i18n="closing.13">Drip coffee: turn off the drip coffee machine by unplugging, make sure everything is off</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-14">
-                        <label for="closing-14" data-i18n="closing.14">Restock homo milk, 2% milk, coffee cream, whipped cream, almond milk, oat milk, and soy milk — ensure there is enough for the next person</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-15">
-                        <label for="closing-15" data-i18n="closing.15">Clean milk and cream pitchers, put them through the dishwasher and leave on counter</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-16">
-                        <label for="closing-16" data-i18n="closing.16">Sweep and mop floors (front of house + back of house)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-16c">
-                        <label for="closing-16c" data-i18n="closing.16c">Take out the black mats and shake them outside</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-17">
-                        <label for="closing-17" data-i18n="closing.17">Wipe inside and outside of door and door handle, windows, windowsills, benches, tables inside and outside, customer side of counter and front of counter bar, coffee table — with Quats sanitizer</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-18">
-                        <label for="closing-18" data-i18n="closing.18">Wipe down the bases of the tables and black tables, ensure legs of chairs are not wobbly</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-20">
-                        <label for="closing-20" data-i18n="closing.20">Take out garbage and put the recycling in the blue bin in the parking lot</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-21">
-                        <label for="closing-21" data-i18n="closing.21">Pull tomorrow's pastries from freezer (based on sales forecast)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-22">
-                        <label for="closing-22" data-i18n="closing.22">Put La Marzocco on standby</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-23">
-                        <label for="closing-23" data-i18n="closing.23">Bring in all tables and chairs from outside</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-24">
-                        <label for="closing-24" data-i18n="closing.24">Turn off lights and shut off music</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-25">
-                        <label for="closing-25" data-i18n="closing.25">Lock the door</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-26">
-                        <label for="closing-26" data-i18n="closing.26">Clean out sinks</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-fs1">
-                        <label for="closing-fs1" data-i18n="closing.fs1">🏷️ Label and date any prepped items going into fridge/freezer</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-fs2">
-                        <label for="closing-fs2" data-i18n="closing.fs2">🥛 Check all dairy expiry — discard anything expiring today</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-sec1">
-                        <label for="closing-sec1" data-i18n="closing.sec1">💰 Drop cash — leave till with only float ($XXX — confirm amount with manager)</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-sec2">
-                        <label for="closing-sec2" data-i18n="closing.sec2">🔒 Lock back door and verify it is secure</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-sec3">
-                        <label for="closing-sec3" data-i18n="closing.sec3">🚨 Set alarm before leaving</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-sh1">
-                        <label for="closing-sh1" data-i18n="closing.sh1">📝 Write shift notes — anything unusual, out of stock, or needed for tomorrow</label>
-                    </div>
-                    
-                    <!-- Pastry Reconciliation Section — loaded dynamically by app.js -->
-                    <div id="closingReconciliation"></div>
-                </div>
-                
-                <div class="checklist" id="inventoryChecklist" style="display: none;">
-                    <h3 data-i18n="inv.title">Inventory Handover</h3>
-                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;"><span data-i18n="inv.desc">Count remaining items at end of shift</span></p>
-                    
-                    <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.milk.title">🥛 Milk &amp; Dairy Products</span></h4>
-                        <div class="inventory-item">
-                            <label for="inv-milk-35" data-i18n="inv.milk35">3.5% Milk (jugs):</label>
-                            <input type="number" id="inv-milk-35" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-milk-2" data-i18n="inv.milk2">2% Milk (jugs):</label>
-                            <input type="number" id="inv-milk-2" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-oat-milk-1l" data-i18n="inv.oat1l">Oat Milk (1L):</label>
-                            <input type="number" id="inv-oat-milk-1l" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-soy-milk-1l" data-i18n="inv.soy1l">Soy Milk (1L):</label>
-                            <input type="number" id="inv-soy-milk-1l" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-half-and-half" data-i18n="inv.halfhalf">Half & Half 10% (1L):</label>
-                            <input type="number" id="inv-half-and-half" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-whipping-cream" data-i18n="inv.whipping">Whipping Cream 33% (1L):</label>
-                            <input type="number" id="inv-whipping-cream" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-greek-yogurt" data-i18n="inv.yogurt">Greek Yogurt (3kg jar):</label>
-                            <input type="number" id="inv-greek-yogurt" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-whole-milk" data-i18n="inv.whole">Whole Milk (jugs):</label>
-                            <input type="number" id="inv-whole-milk" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-almond-milk" data-i18n="inv.almond">Almond Milk (jugs):</label>
-                            <input type="number" id="inv-almond-milk" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-soy-milk" data-i18n="inv.soy">Soy Milk (jugs):</label>
-                            <input type="number" id="inv-soy-milk" min="0" value="0">
-                        </div>
-                    </div>
-                    
-                    <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.beans.title">☕ Coffee Beans</span></h4>
-                        <div class="inventory-item">
-                            <label for="inv-beans-regular" data-i18n="inv.regular">Regular Beans (5lb bags):</label>
-                            <input type="number" id="inv-beans-regular" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-beans-decaf" data-i18n="inv.decaf">Decaf Beans (5lb bags):</label>
-                            <input type="number" id="inv-beans-decaf" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-coffee-bags" data-i18n="inv.coffeebags">Coffee Bags for Sale (1lb):</label>
-                            <input type="number" id="inv-coffee-bags" min="0" value="0">
-                        </div>
-                    </div>
-                    
-                    <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.pastry.title">🥐 Pastries</span></h4>
-                        <div class="inventory-item">
-                            <label for="inv-ham-cheese" data-i18n="inv.hamcheese">Ham & Cheese Croissants:</label>
-                            <input type="number" id="inv-ham-cheese" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-chocolate" data-i18n="inv.chocolate">Chocolate Croissants:</label>
-                            <input type="number" id="inv-chocolate" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-plain" data-i18n="inv.plain">Plain Croissants:</label>
-                            <input type="number" id="inv-plain" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-banana-bread" data-i18n="inv.banana">Banana Bread:</label>
-                            <input type="number" id="inv-banana-bread" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-lemon-loaf" data-i18n="inv.lemon">Lemon Loaf:</label>
-                            <input type="number" id="inv-lemon-loaf" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-cinnamon-buns" data-i18n="inv.cinnamon">Cinnamon Buns:</label>
-                            <input type="number" id="inv-cinnamon-buns" min="0" value="0">
-                        </div>
-                    </div>
-                    
-                    <div class="inventory-section">
-                        <h4 style="color: #667eea; margin: 15px 0 10px 0;"><span data-i18n="inv.freezer.title">🧊 Freezer Stock (target ~30 each)</span></h4>
-                        <div class="inventory-item">
-                            <label for="inv-freezer-ham-cheese" data-i18n="inv.freezer.hamcheese">Ham & Cheese (freezer):</label>
-                            <input type="number" id="inv-freezer-ham-cheese" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-freezer-chocolate" data-i18n="inv.freezer.chocolate">Chocolate Croissants (freezer):</label>
-                            <input type="number" id="inv-freezer-chocolate" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-freezer-plain" data-i18n="inv.freezer.plain">Plain Croissants (freezer):</label>
-                            <input type="number" id="inv-freezer-plain" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-freezer-cinnamon" data-i18n="inv.freezer.cinnamon">Cinnamon Buns (freezer):</label>
-                            <input type="number" id="inv-freezer-cinnamon" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-freezer-banana" data-i18n="inv.freezer.banana">Banana Bread (freezer):</label>
-                            <input type="number" id="inv-freezer-banana" min="0" value="0">
-                        </div>
-                        <div class="inventory-item">
-                            <label for="inv-freezer-lemon" data-i18n="inv.freezer.lemon">Lemon Loaf (freezer):</label>
-                            <input type="number" id="inv-freezer-lemon" min="0" value="0">
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Shift Handover Notes (closing checklist only) -->
-                <div id="shiftNotesSection" class="findings-section" style="display:none;">
-                    <div class="findings-header">📋 Shift Handover Notes</div>
-                    <div class="findings-sub">Anything the next shift needs to know — stock issues, equipment problems, special requests, etc.</div>
-                    <textarea id="shiftNotesText" class="findings-textarea" placeholder="e.g. We're low on oat milk (2 cartons left), the espresso machine was running hot all afternoon, customer asked us to hold a cake for tomorrow..."></textarea>
-                </div>
-
-                <!-- Findings & Suggestions (injected by app.js per checklist type) -->
-                <div id="findingsSection" class="findings-section" style="display:none;">
-                    <div class="findings-header">📝 Findings &amp; Suggestions</div>
-                    <div class="findings-sub">Notice anything wrong, missing, or have ideas to improve? Write it here.</div>
-                    <textarea id="findingsText" class="findings-textarea" placeholder="e.g. The oven door seal is loose, or we should add a step to check the pastry temps..."></textarea>
-                    <div class="findings-photo-row">
-                        <label class="findings-photo-label" id="findingsPhotoLabel">
-                            📷 Attach photo (optional)
-                            <input type="file" accept="image/*" capture="environment" id="findingsPhotoInput">
-                        </label>
-                        <span class="findings-photo-name" id="findingsPhotoName"></span>
-                    </div>
-                    <img id="findingsPhotoPreview" class="findings-photo-preview" alt="Findings photo preview">
-                </div>
-
-                <div class="submit-section">
-                    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;">
-                        <button type="button" id="saveProgressBtn" onclick="saveChecklistDraft()" style="background:#6c757d;color:white;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;">💾 Save Progress</button>
-                        <button class="btn" id="submitBtn" data-i18n="index.submit">Submit Checklist</button>
-                    </div>
-                    <div class="status" id="statusMessage"></div>
-                </div>
-
-                <!-- Post-Submit Summary Screen -->
-                <div id="submissionSummary" style="display:none;background:#f0fff4;border:2px solid #28a745;border-radius:14px;padding:20px;margin-top:16px;">
-                    <div style="font-size:22px;font-weight:800;color:#155724;margin-bottom:6px;">✅ Successfully submitted!</div>
-                    <div id="summaryMeta" style="font-size:13px;color:#555;margin-bottom:14px;"></div>
-                    <div id="summaryPassRate" style="background:#d4edda;border-radius:8px;padding:10px 14px;font-size:15px;font-weight:700;color:#155724;margin-bottom:14px;"></div>
-                    <div id="summaryFailedItems" style="margin-bottom:14px;"></div>
-                    <div id="summaryFindings" style="margin-bottom:14px;"></div>
-                    <button onclick="startNewChecklist()" style="background:#667eea;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;width:100%;">📋 Start New Checklist</button>
-                </div>
+        <!-- ── Checklist View ──────────────────────────────────── -->
+        <div id="checklistView" style="display:none">
+            <div class="checklist-header-bar">
+                <h2 id="checklistTitle"></h2>
+                <button class="close-checklist-btn" onclick="closeChecklist()">✕ Close</button>
             </div>
+
+            <!-- Items rendered here by app.js -->
+            <div id="checklistItems"></div>
+
+            <!-- Shift Handover Notes (closing only) -->
+            <div id="shiftNotesSection" class="findings-section" style="display:none">
+                <div class="findings-header">📋 Shift Handover Notes</div>
+                <div class="findings-sub">Anything the next shift needs to know — stock issues, equipment problems, etc.</div>
+                <textarea id="shiftNotesText" class="findings-textarea"
+                    placeholder="e.g. We're low on oat milk (2 cartons left), espresso machine running hot…"></textarea>
+            </div>
+
+            <div class="submit-section">
+                <button class="btn" id="submitBtn" onclick="submitChecklist()">Submit Checklist</button>
+                <div id="submitStatus" class="status"></div>
+            </div>
+
+            <!-- Success Screen -->
+            <div id="successScreen" style="display:none"></div>
         </div>
-        
-        <div class="footer">
-            Powered by Nostr 🟣 | Trails Coffee ☕
-        </div>
-    </div>
-    
-    <script src="event-cache.js"></script>
-    <!-- timeclock.js and schedule-data.js removed — Square Team app handles clock in/out and schedule -->
-    <script src="app.js"></script>
-    <script>
-      // Force refresh: clears all caches, unregisters service worker, reloads
-      async function forceRefresh() {
-        if ('serviceWorker' in navigator) {
-          const regs = await navigator.serviceWorker.getRegistrations();
-          for (const reg of regs) await reg.unregister();
-        }
-        const keys = await caches.keys();
-        await Promise.all(keys.map(k => caches.delete(k)));
-        window.location.reload(true);
-      }
 
-      let swRegistration = null;
-      let waitingWorker = null;
+    </div><!-- /.content -->
 
-      async function forceReload() {
-        // Preserve auth keys across the forced reload
-        const savedNsec = localStorage.getItem('nostr_nsec');
-        const savedPubkey = localStorage.getItem('nostr_pubkey');
-        try {
-          // Unregister all service workers
-          const regs = await navigator.serviceWorker.getRegistrations();
-          for (const reg of regs) await reg.unregister();
-          // Clear all caches (Cache API only — does not affect localStorage)
-          const keys = await caches.keys();
-          await Promise.all(keys.map(k => caches.delete(k)));
-        } catch(e) {}
-        // Restore auth keys in case anything wiped them
-        if (savedNsec) localStorage.setItem('nostr_nsec', savedNsec);
-        if (savedPubkey) localStorage.setItem('nostr_pubkey', savedPubkey);
-        window.location.reload(true);
-      }
+    <div class="footer">Powered by Nostr 🟣 | Trails Coffee ☕</div>
 
-      function toggleSettings() {
-        const panel = document.getElementById('settingsPanel');
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        document.getElementById('updateCheckStatus').textContent = '';
-      }
+</div><!-- /.container -->
 
-      async function checkForUpdates() {
-        const btn = document.getElementById('updateCheckBtn');
-        const status = document.getElementById('updateCheckStatus');
-        btn.disabled = true;
-        btn.textContent = '🔄 Checking…';
-        status.textContent = '';
-        try {
-          if (swRegistration) {
-            await swRegistration.update();
-          }
-          // Give the SW a moment to detect changes
-          await new Promise(r => setTimeout(r, 1500));
-          if (waitingWorker) {
-            status.textContent = '✅ Update ready! Tap "Apply Update" below.';
-            btn.textContent = '⬆️ Apply Update Now';
-            btn.onclick = applyUpdate;
-            btn.disabled = false;
-            btn.style.background = '#e63946';
-          } else {
-            status.textContent = '✅ You\'re on the latest version.';
-            btn.textContent = '🔄 Check for Updates';
-            btn.disabled = false;
-          }
-        } catch(e) {
-          status.textContent = '⚠️ Could not check — are you online?';
-          btn.textContent = '🔄 Check for Updates';
-          btn.disabled = false;
-        }
-      }
-
-      function showUpdateBanner() {
-        document.getElementById('update-banner').style.display = 'block';
-      }
-
-      function applyUpdate() {
-        // Listener MUST be added before postMessage to avoid race on fast browsers/iOS
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          window.location.reload();
-        });
-        if (waitingWorker) {
-          waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-        } else {
-          // No tracked waiting worker — reload anyway; new SW will activate
-          window.location.reload(true);
-        }
-        // Fallback: if controllerchange never fires within 3s, reload anyway
-        setTimeout(() => window.location.reload(true), 3000);
-      }
-
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js')
-            .then(reg => {
-              swRegistration = reg;
-              console.log('[SW] Registered:', reg.scope);
-
-              // Already a waiting worker (e.g. user opened app while update was pending)
-              if (reg.waiting) {
-                waitingWorker = reg.waiting;
-                showUpdateBanner();
-              }
-
-              // New SW found during this session
-              reg.addEventListener('updatefound', () => {
-                const newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    waitingWorker = newWorker;
-                    showUpdateBanner();
-                  }
-                });
-              });
-
-              // Periodically check for updates (every 60s while app is open)
-              setInterval(() => reg.update(), 60000);
-            })
-            .catch(err => console.warn('[SW] Registration failed:', err));
-        });
-      }
-    </script>
+<script src="nostr.bundle.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

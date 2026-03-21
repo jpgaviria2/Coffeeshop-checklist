@@ -926,60 +926,65 @@ function handleLogin() {
 // Also support Enter key in nsec field
 
 // Allow Enter key to login
-document.getElementById('nsecInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        handleLogin();
-    }
-});
+(function() {
+    const el = document.getElementById('nsecInput');
+    if (el) el.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
+})();
 
-// Checklist type switching
-document.getElementById('openingBtn').addEventListener('click', () => {
-    currentChecklist = 'opening';
-    document.getElementById('checklistTitle').textContent = 'Opening Checklist';
-    document.getElementById('openingBtn').classList.add('active');
-    document.getElementById('closingBtn').classList.remove('active');
-    document.getElementById('inventoryBtn').classList.remove('active');
-    document.getElementById('openingChecklist').style.display = 'block';
-    document.getElementById('closingChecklist').style.display = 'none';
-    document.getElementById('inventoryChecklist').style.display = 'none';
-    initPassFail(document.getElementById('openingChecklist'));
-    hideShiftNotesSection();
-    showFindingsSection();
-});
+// Checklist type switching (tab buttons inside checklist view)
+(function initTabListeners() {
+    const openingBtn = document.getElementById('openingBtn');
+    const closingBtn = document.getElementById('closingBtn');
+    const inventoryBtn = document.getElementById('inventoryBtn');
 
-document.getElementById('closingBtn').addEventListener('click', () => {
-    currentChecklist = 'closing';
-    document.getElementById('checklistTitle').textContent = 'Closing Checklist';
-    document.getElementById('closingBtn').classList.add('active');
-    document.getElementById('openingBtn').classList.remove('active');
-    document.getElementById('inventoryBtn').classList.remove('active');
-    document.getElementById('openingChecklist').style.display = 'none';
-    document.getElementById('closingChecklist').style.display = 'block';
-    document.getElementById('inventoryChecklist').style.display = 'none';
-    loadClosingFreezerPulls();
-    loadClosingReconciliation();
-    initPassFail(document.getElementById('closingChecklist'));
-    showShiftNotesSection();
-    showFindingsSection();
-});
+    if (openingBtn) openingBtn.addEventListener('click', () => {
+        currentChecklist = 'opening';
+        document.getElementById('checklistTitle').textContent = 'Opening Checklist';
+        openingBtn.classList.add('active');
+        if (closingBtn) closingBtn.classList.remove('active');
+        if (inventoryBtn) inventoryBtn.classList.remove('active');
+        document.getElementById('openingChecklist').style.display = 'block';
+        document.getElementById('closingChecklist').style.display = 'none';
+        document.getElementById('inventoryChecklist').style.display = 'none';
+        initPassFail(document.getElementById('openingChecklist'));
+        hideShiftNotesSection();
+        showFindingsSection();
+    });
 
-document.getElementById('inventoryBtn').addEventListener('click', () => {
-    currentChecklist = 'inventory';
-    document.getElementById('checklistTitle').textContent = 'Inventory Handover';
-    document.getElementById('inventoryBtn').classList.add('active');
-    document.getElementById('openingBtn').classList.remove('active');
-    document.getElementById('closingBtn').classList.remove('active');
-    document.getElementById('openingChecklist').style.display = 'none';
-    document.getElementById('closingChecklist').style.display = 'none';
-    document.getElementById('inventoryChecklist').style.display = 'block';
-    hideShiftNotesSection();
-    showFindingsSection();
-});
+    if (closingBtn) closingBtn.addEventListener('click', () => {
+        currentChecklist = 'closing';
+        document.getElementById('checklistTitle').textContent = 'Closing Checklist';
+        closingBtn.classList.add('active');
+        if (openingBtn) openingBtn.classList.remove('active');
+        if (inventoryBtn) inventoryBtn.classList.remove('active');
+        document.getElementById('openingChecklist').style.display = 'none';
+        document.getElementById('closingChecklist').style.display = 'block';
+        document.getElementById('inventoryChecklist').style.display = 'none';
+        loadClosingFreezerPulls();
+        loadClosingReconciliation();
+        initPassFail(document.getElementById('closingChecklist'));
+        showShiftNotesSection();
+        showFindingsSection();
+    });
+
+    if (inventoryBtn) inventoryBtn.addEventListener('click', () => {
+        currentChecklist = 'inventory';
+        document.getElementById('checklistTitle').textContent = 'Inventory Handover';
+        inventoryBtn.classList.add('active');
+        if (openingBtn) openingBtn.classList.remove('active');
+        if (closingBtn) closingBtn.classList.remove('active');
+        document.getElementById('openingChecklist').style.display = 'none';
+        document.getElementById('closingChecklist').style.display = 'none';
+        document.getElementById('inventoryChecklist').style.display = 'block';
+        hideShiftNotesSection();
+        showFindingsSection();
+    });
+})();
 
 // Submit checklist
-document.getElementById('submitBtn').addEventListener('click', async () => {
+(document.getElementById('submitBtn') || {addEventListener: ()=>{}}).addEventListener('click', async () => {
     if (!userKeys) {
-        alert('Not logged in');
+        showStatus('error', '⚠️ Not logged in. Please log in with your nsec key.');
         return;
     }
     
@@ -1073,14 +1078,14 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         const pfItems = checklistDiv.querySelectorAll('.checklist-item.pf-enhanced');
 
         if (pfItems.length === 0) {
-            alert('No checklist items found. Please refresh and try again.');
+            showStatus('error', '⚠️ No checklist items found. Please close and reopen the checklist.');
             return;
         }
 
         // Check at least one item has been acted on (pass or fail)
         const actedCount = Array.from(pfItems).filter(i => i.dataset.status === 'pass' || i.dataset.status === 'fail').length;
         if (actedCount === 0) {
-            alert('Please mark at least one task as PASS or FAIL before submitting.');
+            showStatus('error', '⚠️ Please mark at least one task as PASS or FAIL before submitting.');
             return;
         }
 

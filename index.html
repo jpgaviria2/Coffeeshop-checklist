@@ -737,7 +737,11 @@
             <button onclick="checkForUpdates()" id="updateCheckBtn" style="width:100%;padding:12px;background:#2d6a4f;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">
                 🔄 Check for Updates
             </button>
-            <p id="updateCheckStatus" style="text-align:center;font-size:13px;color:#666;margin:0;min-height:18px;"></p>
+            <p id="updateCheckStatus" style="text-align:center;font-size:13px;color:#666;margin:0 0 10px;min-height:18px;"></p>
+            <button onclick="forceReload()" style="width:100%;padding:10px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">
+                ⚡ Force Reload (clears cache)
+            </button>
+            <p style="text-align:center;font-size:11px;color:#999;margin:6px 0 0;">Use this if the app looks outdated</p>
         </div>
         
         <div class="nav-bar"></div>
@@ -784,7 +788,7 @@
             </div>
 
             <!-- Quick Actions (shown when logged in) -->
-            <div class="quick-actions" id="quickActions" style="display: none;">
+            <div class="quick-actions" id="quickActions" style="display:none;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
                 <button class="action-btn" onclick="showChecklist('opening')" data-i18n="index.btn.opening">📋 Open Opening Checklist</button>
                 <button class="action-btn" onclick="showChecklist('closing')" data-i18n="index.btn.closing">📋 Open Closing Checklist</button>
                 <button class="action-btn" onclick="showChecklist('inventory')" data-i18n="index.btn.inventory">📦 Inventory Handover</button>
@@ -1236,6 +1240,18 @@
 
       let swRegistration = null;
       let waitingWorker = null;
+
+      async function forceReload() {
+        try {
+          // Unregister all service workers
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) await reg.unregister();
+          // Clear all caches
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        } catch(e) {}
+        window.location.reload(true);
+      }
 
       function toggleSettings() {
         const panel = document.getElementById('settingsPanel');

@@ -160,7 +160,7 @@ function loadSchedule(weekOffset) { return; }
 function showLoggedInState() {
     document.getElementById('authSection').style.display = 'none';
     document.getElementById('userInfo').style.display = 'block';
-    document.getElementById('quickActions').style.display = 'flex';
+    document.getElementById('quickActions').style.display = 'grid';
     // Show Square Team app notice
     const squareNotice = document.getElementById('squareNotice');
     if (squareNotice) squareNotice.style.display = 'block';
@@ -382,7 +382,7 @@ async function openAdminDetail(submissionId) {
 function closeAdminView() {
     const container = document.getElementById('adminSection');
     if (container) container.style.display = 'none';
-    document.getElementById('quickActions').style.display = 'flex';
+    document.getElementById('quickActions').style.display = 'grid';
 }
 
 // Load and display today's submissions
@@ -794,7 +794,7 @@ function showChecklist(type) {
 // Close checklist
 function closeChecklist() {
     document.getElementById('checklistSection').style.display = 'none';
-    document.getElementById('quickActions').style.display = 'flex';
+    document.getElementById('quickActions').style.display = 'grid';
     hideFindingsSection();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }

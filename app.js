@@ -860,76 +860,75 @@ async function loadInventoryPredictions() {
     } catch (e) { /* optional enhancement */ }
 }
 
-// Login with nsec
-(function attachLoginListener() {
+// Login error helper
+function showLoginError(msg) {
+    let errEl = document.getElementById('loginError');
+    if (!errEl) {
+        errEl = document.createElement('p');
+        errEl.id = 'loginError';
+        errEl.style.cssText = 'color:#e63946;font-size:14px;text-align:center;margin:8px 0 0;font-weight:600;';
+        const btn = document.getElementById('loginBtn');
+        if (btn) btn.parentNode.insertBefore(errEl, btn.nextSibling);
+        else document.getElementById('authSection').appendChild(errEl);
+    }
+    errEl.textContent = msg;
+}
+
+function clearLoginError() {
+    const errEl = document.getElementById('loginError');
+    if (errEl) errEl.textContent = '';
+}
+
+// Global login handler — called via onclick attribute on loginBtn (most reliable on iOS PWA)
+function handleLogin() {
+    const nsecInput = document.getElementById('nsecInput').value.trim();
     const btn = document.getElementById('loginBtn');
-    if (!btn) { console.error('[Login] loginBtn not found in DOM'); return; }
 
-    function showLoginError(msg) {
-        let errEl = document.getElementById('loginError');
-        if (!errEl) {
-            errEl = document.createElement('p');
-            errEl.id = 'loginError';
-            errEl.style.cssText = 'color:#e63946;font-size:14px;text-align:center;margin:8px 0 0;font-weight:600;';
-            btn.parentNode.insertBefore(errEl, btn.nextSibling);
-        }
-        errEl.textContent = msg;
+    if (!nsecInput) {
+        showLoginError('Please enter your nsec key.');
+        return;
     }
 
-    function clearLoginError() {
-        const errEl = document.getElementById('loginError');
-        if (errEl) errEl.textContent = '';
-    }
+    clearLoginError();
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
 
-    btn.addEventListener('click', async () => {
-        const nsecInput = document.getElementById('nsecInput').value.trim();
+    setTimeout(() => {
+        try {
+            if (typeof NostrTools === 'undefined') throw new Error('App not ready — please force reload.');
 
-        if (!nsecInput) {
-            showLoginError('Please enter your nsec key.');
-            return;
-        }
+            const decoded = NostrTools.nip19.decode(nsecInput);
 
-        clearLoginError();
-        btn.disabled = true;
-        btn.textContent = 'Logging in...';
-
-        setTimeout(() => {
-            try {
-                if (typeof NostrTools === 'undefined') throw new Error('App not ready — please refresh.');
-
-                const decoded = NostrTools.nip19.decode(nsecInput);
-
-                if (decoded.type !== 'nsec') {
-                    throw new Error('Key must start with nsec1…');
-                }
-
-                const privateKey = decoded.data;
-                const publicKey = NostrTools.getPublicKey(privateKey);
-
-                userKeys = { privateKey, publicKey };
-
-                localStorage.setItem('nostr_nsec', nsecInput);
-                localStorage.setItem('nostr_pubkey', publicKey);
-
-                showLoggedInState();
-
-                document.getElementById('nsecInput').value = '';
-
-            } catch (error) {
-                showLoginError('Invalid nsec key — ' + (error.message || 'please check and try again.'));
-                btn.disabled = false;
-                btn.textContent = 'Login';
+            if (decoded.type !== 'nsec') {
+                throw new Error('Key must start with nsec1…');
             }
-        }, 300);
-    });
 
-    console.log('[Login] listener attached');
-})();
+            const privateKey = decoded.data;
+            const publicKey = NostrTools.getPublicKey(privateKey);
+
+            userKeys = { privateKey, publicKey };
+
+            localStorage.setItem('nostr_nsec', nsecInput);
+            localStorage.setItem('nostr_pubkey', publicKey);
+
+            showLoggedInState();
+
+            document.getElementById('nsecInput').value = '';
+
+        } catch (error) {
+            showLoginError('⚠️ ' + (error.message || 'Invalid nsec — please check and try again.'));
+            btn.disabled = false;
+            btn.textContent = 'Login';
+        }
+    }, 300);
+}
+
+// Also support Enter key in nsec field
 
 // Allow Enter key to login
 document.getElementById('nsecInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        document.getElementById('loginBtn').click();
+        handleLogin();
     }
 });
 

@@ -786,13 +786,32 @@ function showChecklist(type) {
         hideShiftNotesSection();
         showFindingsSection(); // findings still apply to inventory
     }
-    
+
+    // Reset summary screen visibility, show submit controls
+    const summaryEl = document.getElementById('submissionSummary');
+    if (summaryEl) summaryEl.style.display = 'none';
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) submitBtn.style.display = '';
+    const saveBtn = document.getElementById('saveProgressBtn');
+    if (saveBtn) saveBtn.style.display = '';
+
+    // Check for a saved draft (not for inventory)
+    if (type !== 'inventory') {
+        checkForDraftAndPrompt(type);
+        startAutosave();
+    } else {
+        stopAutosave();
+        const banner = document.getElementById('draftResumeBanner');
+        if (banner) banner.style.display = 'none';
+    }
+
     // Scroll to checklist
     document.getElementById('checklistSection').scrollIntoView({ behavior: 'smooth' });
 }
 
 // Close checklist
 function closeChecklist() {
+    stopAutosave();
     document.getElementById('checklistSection').style.display = 'none';
     document.getElementById('quickActions').style.display = 'grid';
     hideFindingsSection();
@@ -1159,57 +1178,24 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         // POST to local API backend with NIP-98 Nostr auth
         await submitWithFallback(contentData);
 
-        let successMsg;
-        if (currentChecklist === 'inventory') {
-            successMsg = '✅ Inventory handover saved!';
-        } else {
-            const p = contentData.passCount ?? 0;
-            const f = contentData.failCount ?? 0;
-            const t = contentData.items?.length ?? 0;
-            successMsg = `✅ ${currentChecklist.charAt(0).toUpperCase() + currentChecklist.slice(1)} checklist saved! ${p}/${p + f} passed${f > 0 ? ` · ${f} ❌ flagged` : ''}`;
+        // Clear the saved draft on successful submit
+        if (currentChecklist !== 'inventory') {
+            clearDraft(currentChecklist);
+            stopAutosave();
         }
-
-        showStatus('success', successMsg);
 
         // Refresh today's activity
         loadTodaysActivity();
 
-        // Reset after successful submission
-        setTimeout(() => {
-            if (currentChecklist === 'inventory') {
+        if (currentChecklist === 'inventory') {
+            showStatus('success', '✅ Inventory handover saved!');
+            setTimeout(() => {
                 document.querySelectorAll('#inventoryChecklist input[type="number"]').forEach(input => input.value = 0);
-            } else {
-                // Reset pass/fail items
-                const checklistDiv = document.getElementById(`${currentChecklist}Checklist`);
-                checklistDiv.querySelectorAll('.checklist-item.pf-enhanced').forEach(item => {
-                    item.dataset.status = '';
-                    item.classList.remove('status-pass', 'status-fail');
-                    item.querySelectorAll('.btn-pass, .btn-fail').forEach(b => b.classList.remove('selected'));
-                    const detail = item.querySelector('.item-detail');
-                    if (detail) detail.classList.remove('expanded');
-                    const comment = item.querySelector('.item-comment');
-                    if (comment) comment.value = '';
-                    const photoInput = item.querySelector('.item-photo-input');
-                    if (photoInput) photoInput.value = '';
-                    const photoName = item.querySelector('.item-photo-name');
-                    if (photoName) { photoName.textContent = ''; photoName.style.display = 'none'; }
-                    const photoPreview = item.querySelector('.item-photo-preview');
-                    if (photoPreview) { photoPreview.style.display = 'none'; photoPreview.src = ''; }
-                });
-            }
-            // Reset shift notes
-            const shiftNotesText = document.getElementById('shiftNotesText');
-            if (shiftNotesText) shiftNotesText.value = '';
-            // Reset findings
-            const findingsText = document.getElementById('findingsText');
-            if (findingsText) findingsText.value = '';
-            const findingsPhotoInput = document.getElementById('findingsPhotoInput');
-            if (findingsPhotoInput) findingsPhotoInput.value = '';
-            const findingsPhotoName = document.getElementById('findingsPhotoName');
-            if (findingsPhotoName) findingsPhotoName.textContent = '';
-            const findingsPhotoPreview = document.getElementById('findingsPhotoPreview');
-            if (findingsPhotoPreview) { findingsPhotoPreview.style.display = 'none'; findingsPhotoPreview.src = ''; }
-        }, 2000);
+            }, 2000);
+        } else {
+            // Show post-submit summary screen
+            showSubmissionSummary(contentData);
+        }
 
     } catch (error) {
         showStatus('error', 'Submission failed: ' + error.message);
@@ -1450,6 +1436,333 @@ function showStatus(type, message) {
             statusEl.style.display = 'none';
         }, 5000);
     }
+}
+
+// ─── Draft Autosave / Resume ──────────────────────────────────────────────────
+
+const DRAFT_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Build a draft storage key for a checklist type.
+ */
+export function draftKey(type) {
+    return `checklist_draft_${type}`;
+}
+
+/**
+ * Collect current checklist state into a draft object.
+ * @param {string} type - 'opening' | 'closing' | 'inventory'
+ * @returns {object|null}
+ */
+export function collectDraftState(type, domDocument = document) {
+    if (type === 'inventory') return null; // inventory doesn't use pass/fail items
+
+    const checklistDiv = domDocument.getElementById(`${type}Checklist`);
+    if (!checklistDiv) return null;
+
+    const pfItems = checklistDiv.querySelectorAll('.checklist-item.pf-enhanced');
+    const items = Array.from(pfItems).map(item => ({
+        taskId: item.dataset.taskId || '',
+        status: item.dataset.status || 'skipped',
+        comment: item.querySelector('.item-comment')?.value?.trim() || '',
+        photoData: null // don't store photos in localStorage (too large)
+    }));
+
+    const findings = domDocument.getElementById('findingsText')?.value?.trim() || '';
+    const shiftNotes = domDocument.getElementById('shiftNotesText')?.value?.trim() || '';
+
+    // Only save if user has actually interacted
+    const actedOn = items.filter(i => i.status !== 'skipped');
+    if (actedOn.length === 0 && !findings && !shiftNotes) return null;
+
+    return {
+        type,
+        savedAt: new Date().toISOString(),
+        items,
+        findings,
+        shiftNotes
+    };
+}
+
+/**
+ * Save current checklist draft to localStorage.
+ */
+function saveChecklistDraft(domDocument = document, storage = localStorage) {
+    const draft = collectDraftState(currentChecklist, domDocument);
+    if (!draft) {
+        // Even with no changes, show indicator if user clicked manually
+        showAutosaveIndicator(domDocument);
+        return;
+    }
+    storage.setItem(draftKey(currentChecklist), JSON.stringify(draft));
+    showAutosaveIndicator(domDocument);
+}
+
+/**
+ * Flash the "Saved ✓" indicator.
+ */
+function showAutosaveIndicator(domDocument = document) {
+    const el = domDocument.getElementById('autosaveIndicator');
+    if (!el) return;
+    el.style.display = 'block';
+    el.classList.remove('autosave-flash');
+    // Trigger reflow to restart animation
+    void el.offsetWidth;
+    el.classList.add('autosave-flash');
+    setTimeout(() => {
+        el.style.display = 'none';
+        el.classList.remove('autosave-flash');
+    }, 2100);
+}
+
+/**
+ * Load draft from localStorage. Returns null if not found or expired.
+ */
+export function loadDraft(type, storage = localStorage) {
+    try {
+        const raw = storage.getItem(draftKey(type));
+        if (!raw) return null;
+        const draft = JSON.parse(raw);
+        const age = Date.now() - new Date(draft.savedAt).getTime();
+        if (age > DRAFT_MAX_AGE_MS) {
+            storage.removeItem(draftKey(type));
+            return null;
+        }
+        return draft;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Clear draft for a checklist type.
+ */
+export function clearDraft(type, storage = localStorage) {
+    storage.removeItem(draftKey(type));
+}
+
+/**
+ * Check for a saved draft and show the resume banner if found.
+ */
+function checkForDraftAndPrompt(type) {
+    const draft = loadDraft(type);
+    const banner = document.getElementById('draftResumeBanner');
+    if (!banner) return;
+
+    if (draft) {
+        const savedAt = new Date(draft.savedAt);
+        const timeStr = savedAt.toLocaleTimeString('en-CA', {
+            hour: 'numeric', minute: '2-digit', timeZone: 'America/Vancouver'
+        });
+        const dateStr = savedAt.toLocaleDateString('en-CA', {
+            month: 'short', day: 'numeric', timeZone: 'America/Vancouver'
+        });
+        const isToday = savedAt.toDateString() === new Date().toDateString();
+        document.getElementById('draftSavedTime').textContent = isToday ? timeStr : `${dateStr} ${timeStr}`;
+        banner.style.display = 'block';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
+/**
+ * Resume a saved draft — restore all item states.
+ */
+function resumeDraft() {
+    const draft = loadDraft(currentChecklist);
+    if (!draft) return;
+
+    const checklistDiv = document.getElementById(`${currentChecklist}Checklist`);
+    if (!checklistDiv) return;
+
+    // Restore item statuses
+    for (const saved of draft.items) {
+        if (!saved.taskId || saved.status === 'skipped') continue;
+        const item = checklistDiv.querySelector(`[data-task-id="${saved.taskId}"]`);
+        if (!item) continue;
+
+        const passBtn = item.querySelector('.btn-pass');
+        const failBtn = item.querySelector('.btn-fail');
+        const detail = item.querySelector('.item-detail');
+        const commentEl = item.querySelector('.item-comment');
+
+        if (saved.status === 'pass') {
+            item.dataset.status = 'pass';
+            item.classList.add('status-pass');
+            item.classList.remove('status-fail');
+            passBtn?.classList.add('selected');
+            failBtn?.classList.remove('selected');
+            detail?.classList.remove('expanded');
+        } else if (saved.status === 'fail') {
+            item.dataset.status = 'fail';
+            item.classList.add('status-fail');
+            item.classList.remove('status-pass');
+            failBtn?.classList.add('selected');
+            passBtn?.classList.remove('selected');
+            detail?.classList.add('expanded');
+        }
+        if (commentEl && saved.comment) commentEl.value = saved.comment;
+    }
+
+    // Restore findings and shift notes
+    const findingsEl = document.getElementById('findingsText');
+    if (findingsEl && draft.findings) findingsEl.value = draft.findings;
+    const shiftEl = document.getElementById('shiftNotesText');
+    if (shiftEl && draft.shiftNotes) shiftEl.value = draft.shiftNotes;
+
+    // Hide the banner
+    document.getElementById('draftResumeBanner').style.display = 'none';
+}
+
+/**
+ * Discard the saved draft and start fresh.
+ */
+function startFresh() {
+    clearDraft(currentChecklist);
+    document.getElementById('draftResumeBanner').style.display = 'none';
+}
+
+// Autosave interval (30 seconds)
+let _autosaveInterval = null;
+
+function startAutosave() {
+    stopAutosave();
+    _autosaveInterval = setInterval(() => saveChecklistDraft(), 30000);
+}
+
+function stopAutosave() {
+    if (_autosaveInterval) {
+        clearInterval(_autosaveInterval);
+        _autosaveInterval = null;
+    }
+}
+
+// ─── Post-Submit Summary ──────────────────────────────────────────────────────
+
+/**
+ * Build summary data from a submitted contentData object.
+ * @param {object} contentData
+ * @param {string} staffName
+ * @returns {object} summary
+ */
+export function buildSubmissionSummary(contentData, staffName) {
+    const items = contentData.items || [];
+    const passed = items.filter(i => i.status === 'pass').length;
+    const failed = items.filter(i => i.status === 'fail').length;
+    const total = items.length;
+    const failedItems = items.filter(i => i.status === 'fail');
+
+    return {
+        type: contentData.checklist,
+        submittedAt: contentData.timestamp || new Date().toISOString(),
+        staffName: staffName || 'Staff',
+        passed,
+        failed,
+        total,
+        failedItems,
+        findings: contentData.findings || '',
+        findingsPhoto: contentData.findingsPhoto || null
+    };
+}
+
+/**
+ * Show the post-submit summary screen.
+ */
+function showSubmissionSummary(contentData) {
+    const summary = buildSubmissionSummary(contentData, getUserName());
+
+    const metaEl = document.getElementById('summaryMeta');
+    const passRateEl = document.getElementById('summaryPassRate');
+    const failedEl = document.getElementById('summaryFailedItems');
+    const findingsEl = document.getElementById('summaryFindings');
+
+    if (!metaEl) return;
+
+    // Meta: time + staff
+    const submittedTime = new Date(summary.submittedAt).toLocaleString('en-CA', {
+        timeZone: 'America/Vancouver',
+        month: 'short', day: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+    });
+    metaEl.innerHTML = `<strong>${summary.staffName}</strong> · ${submittedTime}`;
+
+    // Pass rate
+    const actedOn = summary.passed + summary.failed;
+    if (actedOn > 0) {
+        passRateEl.textContent = `${summary.passed}/${actedOn} tasks passed` +
+            (summary.failed > 0 ? ` · ${summary.failed} failed ❌` : ' ✅');
+    } else {
+        passRateEl.textContent = 'Submitted';
+    }
+
+    // Failed items
+    if (summary.failedItems.length > 0) {
+        let html = '<div style="font-weight:600;color:#721c24;margin-bottom:8px;">❌ Failed items:</div>';
+        html += '<div style="border:1px solid #f5c6cb;border-radius:8px;overflow:hidden;">';
+        html += summary.failedItems.map((item, i) => {
+            const border = i < summary.failedItems.length - 1 ? 'border-bottom:1px solid #f5c6cb;' : '';
+            return `<div style="padding:8px 12px;${border}background:#fff5f5;">
+                <div style="font-size:13px;font-weight:600;color:#721c24;">${item.taskLabel || item.taskId}</div>
+                ${item.comment ? `<div style="font-size:12px;color:#555;margin-top:3px;">💬 ${item.comment}</div>` : ''}
+            </div>`;
+        }).join('');
+        html += '</div>';
+        failedEl.innerHTML = html;
+    } else {
+        failedEl.innerHTML = '';
+    }
+
+    // Findings
+    if (summary.findings) {
+        findingsEl.innerHTML = `<div style="font-weight:600;color:#555;margin-bottom:6px;">📝 Findings:</div>
+            <div style="background:#f8f9fa;border-radius:8px;padding:10px;font-size:13px;color:#333;">${summary.findings}</div>`;
+    } else {
+        findingsEl.innerHTML = '';
+    }
+
+    // Show summary, hide submit section
+    document.getElementById('submissionSummary').style.display = 'block';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('saveProgressBtn').style.display = 'none';
+    const findingsSection = document.getElementById('findingsSection');
+    if (findingsSection) findingsSection.style.display = 'none';
+    const shiftSection = document.getElementById('shiftNotesSection');
+    if (shiftSection) shiftSection.style.display = 'none';
+    const checklistDivs = ['openingChecklist', 'closingChecklist'];
+    for (const id of checklistDivs) {
+        const div = document.getElementById(id);
+        if (div && div.style.display !== 'none') div.style.display = 'none';
+    }
+}
+
+/**
+ * Reset everything and go back to empty checklist.
+ */
+function startNewChecklist() {
+    document.getElementById('submissionSummary').style.display = 'none';
+    document.getElementById('submitBtn').style.display = '';
+    document.getElementById('saveProgressBtn').style.display = '';
+
+    // Reload the current checklist type from scratch
+    switchChecklist(currentChecklist);
+}
+
+/**
+ * Get the current user's display name from the nsec/pubkey.
+ */
+function getUserName() {
+    if (!userKeys) return 'Staff';
+    const pubkey = userKeys.publicKey;
+    // Look up name from known pubkeys
+    const names = {
+        'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd': 'jP',
+        '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba': 'jP',
+        'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37e0117d61f2': 'jP',
+        '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f': 'Charlene',
+        '4287e0cdcccb4789f0c1d4c27caae092f19f0c266c0d0638b571558d09317911': 'Dayana',
+        '6d3907327333dfb1b6f6100f9fdd1c6cbaa50b3acc801cf4cf5d937b838ee80b': 'Dayana'
+    };
+    return names[pubkey] || (pubkey ? pubkey.slice(0, 8) + '…' : 'Staff');
 }
 
 // Logout function

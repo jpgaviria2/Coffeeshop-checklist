@@ -419,3 +419,94 @@ export function renderSubmissionDetail(submission) {
       ${findingsHtml}
     </div>`;
 }
+
+// ─── Draft Autosave / Resume (pure functions for testing) ────────────────────
+
+export const DRAFT_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Build a draft storage key.
+ */
+export function draftKey(type) {
+  return `checklist_draft_${type}`;
+}
+
+/**
+ * Save a draft to storage. Returns false if draft is empty (no interactions).
+ * @param {string} type - 'opening' | 'closing' | 'inventory'
+ * @param {object} draftData - { items, findings, shiftNotes }
+ * @param {object} storage - localStorage-like storage
+ * @returns {boolean} true if saved, false if nothing to save
+ */
+export function saveDraft(type, draftData, storage = localStorage) {
+  const { items = [], findings = '', shiftNotes = '' } = draftData;
+  const actedOn = items.filter(i => i.status && i.status !== 'skipped');
+  if (actedOn.length === 0 && !findings && !shiftNotes) return false;
+
+  const draft = {
+    type,
+    savedAt: new Date().toISOString(),
+    items,
+    findings,
+    shiftNotes
+  };
+  storage.setItem(draftKey(type), JSON.stringify(draft));
+  return true;
+}
+
+/**
+ * Load draft from storage. Returns null if not found or expired.
+ * @param {string} type
+ * @param {object} storage
+ * @returns {object|null}
+ */
+export function loadDraftFromStorage(type, storage = localStorage) {
+  try {
+    const raw = storage.getItem(draftKey(type));
+    if (!raw) return null;
+    const draft = JSON.parse(raw);
+    if (!draft.savedAt) return null;
+    const age = Date.now() - new Date(draft.savedAt).getTime();
+    if (age > DRAFT_MAX_AGE_MS) {
+      storage.removeItem(draftKey(type));
+      return null;
+    }
+    return draft;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clear a draft from storage.
+ */
+export function clearDraftFromStorage(type, storage = localStorage) {
+  storage.removeItem(draftKey(type));
+}
+
+/**
+ * Build submission summary from a submitted contentData object.
+ * Pure function — no DOM.
+ * @param {object} contentData
+ * @param {string} staffName
+ * @returns {object}
+ */
+export function buildSubmissionSummary(contentData, staffName = 'Staff') {
+  const items = contentData.items || [];
+  const passed = items.filter(i => i.status === 'pass').length;
+  const failed = items.filter(i => i.status === 'fail').length;
+  const total = items.length;
+  const failedItems = items.filter(i => i.status === 'fail');
+
+  return {
+    type: contentData.checklist,
+    submittedAt: contentData.timestamp || new Date().toISOString(),
+    staffName,
+    passed,
+    failed,
+    total,
+    failedItems,
+    findings: contentData.findings || '',
+    findingsPhoto: contentData.findingsPhoto || null
+  };
+}

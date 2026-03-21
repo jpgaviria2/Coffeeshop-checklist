@@ -1344,13 +1344,18 @@
       }
 
       function applyUpdate() {
-        if (waitingWorker) {
-          waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-        }
-        // Reload once the new SW takes control
+        // Listener MUST be added before postMessage to avoid race on fast browsers/iOS
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           window.location.reload();
         });
+        if (waitingWorker) {
+          waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+        } else {
+          // No tracked waiting worker — reload anyway; new SW will activate
+          window.location.reload(true);
+        }
+        // Fallback: if controllerchange never fires within 3s, reload anyway
+        setTimeout(() => window.location.reload(true), 3000);
       }
 
       if ('serviceWorker' in navigator) {

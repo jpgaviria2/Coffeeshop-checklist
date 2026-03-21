@@ -718,8 +718,8 @@
     </style>
 </head>
 <body>
-    <div id="update-banner" style="background:#1a1a2e;color:white;text-align:center;padding:8px;font-size:13px;cursor:pointer" onclick="forceRefresh()">
-      🔄 Tap here to refresh & update the app
+    <div id="update-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#2d6a4f;color:white;text-align:center;padding:14px 20px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 -3px 12px rgba(0,0,0,0.3);border-top:3px solid #52b788;" onclick="applyUpdate()">
+      🆕 New version available — tap to update
     </div>
     <div class="container">
         <div class="header">
@@ -1221,24 +1221,51 @@
         window.location.reload(true);
       }
 
+      let swRegistration = null;
+      let waitingWorker = null;
+
+      function showUpdateBanner() {
+        document.getElementById('update-banner').style.display = 'block';
+      }
+
+      function applyUpdate() {
+        if (waitingWorker) {
+          waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+        }
+        // Reload once the new SW takes control
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          window.location.reload();
+        });
+      }
+
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('sw.js')
             .then(reg => {
-              console.log('SW registered:', reg.scope);
-              // Listen for new service worker waiting to activate
+              swRegistration = reg;
+              console.log('[SW] Registered:', reg.scope);
+
+              // Already a waiting worker (e.g. user opened app while update was pending)
+              if (reg.waiting) {
+                waitingWorker = reg.waiting;
+                showUpdateBanner();
+              }
+
+              // New SW found during this session
               reg.addEventListener('updatefound', () => {
                 const newWorker = reg.installing;
                 newWorker.addEventListener('statechange', () => {
                   if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // New version available — prompt user
-                    console.log('[SW] New version available — send SKIP_WAITING');
-                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    waitingWorker = newWorker;
+                    showUpdateBanner();
                   }
                 });
               });
+
+              // Periodically check for updates (every 60s while app is open)
+              setInterval(() => reg.update(), 60000);
             })
-            .catch(err => console.log('SW registration failed:', err));
+            .catch(err => console.warn('[SW] Registration failed:', err));
         });
       }
     </script>

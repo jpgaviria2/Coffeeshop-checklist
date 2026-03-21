@@ -764,6 +764,7 @@ function showChecklist(type) {
         document.getElementById('openingChecklist').style.display = 'block';
         loadOpeningPastryInfo();
         initPassFail(document.getElementById('openingChecklist'));
+        hideShiftNotesSection();
         showFindingsSection();
     } else if (type === 'closing') {
         document.getElementById('checklistTitle').textContent = 'Closing Checklist';
@@ -772,6 +773,7 @@ function showChecklist(type) {
         loadClosingFreezerPulls();
         loadClosingReconciliation();
         initPassFail(document.getElementById('closingChecklist'));
+        showShiftNotesSection();
         showFindingsSection();
     } else if (type === 'inventory') {
         document.getElementById('checklistTitle').textContent = 'Inventory Handover';
@@ -781,6 +783,7 @@ function showChecklist(type) {
         loadInventoryPredictions();
         // Inventory doesn't use pass/fail per-item — it's numeric entry
         hideFindingsSection(); // will be shown after loadInventoryPredictions if needed
+        hideShiftNotesSection();
         showFindingsSection(); // findings still apply to inventory
     }
     
@@ -899,6 +902,7 @@ document.getElementById('openingBtn').addEventListener('click', () => {
     document.getElementById('closingChecklist').style.display = 'none';
     document.getElementById('inventoryChecklist').style.display = 'none';
     initPassFail(document.getElementById('openingChecklist'));
+    hideShiftNotesSection();
     showFindingsSection();
 });
 
@@ -914,6 +918,7 @@ document.getElementById('closingBtn').addEventListener('click', () => {
     loadClosingFreezerPulls();
     loadClosingReconciliation();
     initPassFail(document.getElementById('closingChecklist'));
+    showShiftNotesSection();
     showFindingsSection();
 });
 
@@ -926,6 +931,7 @@ document.getElementById('inventoryBtn').addEventListener('click', () => {
     document.getElementById('openingChecklist').style.display = 'none';
     document.getElementById('closingChecklist').style.display = 'none';
     document.getElementById('inventoryChecklist').style.display = 'block';
+    hideShiftNotesSection();
     showFindingsSection();
 });
 
@@ -1128,6 +1134,14 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
         }
     }
     
+    // Collect Shift Handover Notes (closing checklist only)
+    if (currentChecklist === 'closing') {
+        const shiftNotesText = document.getElementById('shiftNotesText')?.value?.trim() || '';
+        if (shiftNotesText) {
+            contentData.shiftNotes = shiftNotesText;
+        }
+    }
+
     // Collect Findings & Suggestions (applies to all checklist types)
     const findingsText = document.getElementById('findingsText')?.value?.trim() || '';
     const findingsPhotoInput = document.getElementById('findingsPhotoInput');
@@ -1183,6 +1197,9 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
                     if (photoPreview) { photoPreview.style.display = 'none'; photoPreview.src = ''; }
                 });
             }
+            // Reset shift notes
+            const shiftNotesText = document.getElementById('shiftNotesText');
+            if (shiftNotesText) shiftNotesText.value = '';
             // Reset findings
             const findingsText = document.getElementById('findingsText');
             if (findingsText) findingsText.value = '';
@@ -1385,6 +1402,16 @@ function showFindingsSection() {
 
 function hideFindingsSection() {
     const section = document.getElementById('findingsSection');
+    if (section) section.style.display = 'none';
+}
+
+function showShiftNotesSection() {
+    const section = document.getElementById('shiftNotesSection');
+    if (section) section.style.display = 'block';
+}
+
+function hideShiftNotesSection() {
+    const section = document.getElementById('shiftNotesSection');
     if (section) section.style.display = 'none';
 }
 

@@ -814,6 +814,14 @@
                     <div id="openingPastryInfo"></div>
                     <h3 data-i18n="opening.title">Opening Tasks</h3>
                     <div class="checklist-item">
+                        <input type="checkbox" id="opening-0a">
+                        <label for="opening-0a" data-i18n="opening.0a">🧼 Handwash before handling any food or drinks</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-0b">
+                        <label for="opening-0b" data-i18n="opening.0b">📋 Check for any shift notes or messages from previous shift</label>
+                    </div>
+                    <div class="checklist-item">
                         <input type="checkbox" id="opening-1">
                         <label for="opening-1" data-i18n="opening.1">Turn on lights, plug in coffee brewer, turn on espresso machine</label>
                     </div>
@@ -876,6 +884,14 @@
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-15">
                         <label for="opening-15" data-i18n="opening.15">Test Quats sanitizer level — record in Health Binder</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-15b">
+                        <label for="opening-15b" data-i18n="opening.15b">🧴 Prepare sanitizer solution in spray bottle (1 tsp bleach per 1L water)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-14b">
+                        <label for="opening-14b" data-i18n="opening.14b">🥛 Check milk/dairy expiry dates — discard anything expired or off-smell</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-16">
@@ -964,11 +980,7 @@
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-16">
-                        <label for="closing-16" data-i18n="closing.16">Move tables and chairs, sweep under everything</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-16b">
-                        <label for="closing-16b" data-i18n="closing.16b">Mop floors, especially behind the counter</label>
+                        <label for="closing-16" data-i18n="closing.16">Sweep and mop floors (front of house + back of house)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-16c">
@@ -981,10 +993,6 @@
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-18">
                         <label for="closing-18" data-i18n="closing.18">Wipe down the bases of the tables and black tables, ensure legs of chairs are not wobbly</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="closing-19">
-                        <label for="closing-19" data-i18n="closing.19">Sweep up all crumbs and mop the floor</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-20">
@@ -1013,6 +1021,30 @@
                     <div class="checklist-item">
                         <input type="checkbox" id="closing-26">
                         <label for="closing-26" data-i18n="closing.26">Clean out sinks</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-fs1">
+                        <label for="closing-fs1" data-i18n="closing.fs1">🏷️ Label and date any prepped items going into fridge/freezer</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-fs2">
+                        <label for="closing-fs2" data-i18n="closing.fs2">🥛 Check all dairy expiry — discard anything expiring today</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-sec1">
+                        <label for="closing-sec1" data-i18n="closing.sec1">💰 Drop cash — leave till with only float ($XXX — confirm amount with manager)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-sec2">
+                        <label for="closing-sec2" data-i18n="closing.sec2">🔒 Lock back door and verify it is secure</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-sec3">
+                        <label for="closing-sec3" data-i18n="closing.sec3">🚨 Set alarm before leaving</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="closing-sh1">
+                        <label for="closing-sh1" data-i18n="closing.sh1">📝 Write shift notes — anything unusual, out of stock, or needed for tomorrow</label>
                     </div>
                     
                     <!-- Pastry Reconciliation Section — loaded dynamically by app.js -->
@@ -1140,6 +1172,13 @@
                     </div>
                 </div>
                 
+                <!-- Shift Handover Notes (closing checklist only) -->
+                <div id="shiftNotesSection" class="findings-section" style="display:none;">
+                    <div class="findings-header">📋 Shift Handover Notes</div>
+                    <div class="findings-sub">Anything the next shift needs to know — stock issues, equipment problems, special requests, etc.</div>
+                    <textarea id="shiftNotesText" class="findings-textarea" placeholder="e.g. We're low on oat milk (2 cartons left), the espresso machine was running hot all afternoon, customer asked us to hold a cake for tomorrow..."></textarea>
+                </div>
+
                 <!-- Findings & Suggestions (injected by app.js per checklist type) -->
                 <div id="findingsSection" class="findings-section" style="display:none;">
                     <div class="findings-header">📝 Findings &amp; Suggestions</div>

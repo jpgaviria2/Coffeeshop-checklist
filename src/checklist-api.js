@@ -346,6 +346,7 @@ export function renderSubmissionDetail(submission) {
   const items = content.items || [];
   const findings = content.findings || '';
   const findingsPhoto = content.findingsPhoto || null;
+  const shiftNotes = content.shiftNotes || '';
 
   const rate = computePassRate(items);
   const rateSummary = rate
@@ -391,6 +392,14 @@ export function renderSubmissionDetail(submission) {
     }).join('');
   }
 
+  let shiftNotesHtml = '';
+  if (shiftNotes) {
+    shiftNotesHtml = `<div style="margin-top:16px;border-top:2px solid #e0e0e0;padding-top:12px;">
+      <div style="font-weight:600;color:#555;margin-bottom:8px;">📋 Shift Handover Notes</div>
+      <div style="font-size:13px;color:#333;background:#fff9e6;padding:10px;border-radius:8px;border-left:3px solid #f0a500;">${shiftNotes}</div>
+    </div>`;
+  }
+
   let findingsHtml = '';
   if (findings || findingsPhoto) {
     findingsHtml = `<div style="margin-top:16px;border-top:2px solid #e0e0e0;padding-top:12px;">
@@ -406,6 +415,7 @@ export function renderSubmissionDetail(submission) {
       <div style="border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;">
         ${itemsHtml || '<p style="padding:12px;color:#999;">No item data available.</p>'}
       </div>
+      ${shiftNotesHtml}
       ${findingsHtml}
     </div>`;
 }

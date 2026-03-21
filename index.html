@@ -1286,14 +1286,20 @@
       let waitingWorker = null;
 
       async function forceReload() {
+        // Preserve auth keys across the forced reload
+        const savedNsec = localStorage.getItem('nostr_nsec');
+        const savedPubkey = localStorage.getItem('nostr_pubkey');
         try {
           // Unregister all service workers
           const regs = await navigator.serviceWorker.getRegistrations();
           for (const reg of regs) await reg.unregister();
-          // Clear all caches
+          // Clear all caches (Cache API only — does not affect localStorage)
           const keys = await caches.keys();
           await Promise.all(keys.map(k => caches.delete(k)));
         } catch(e) {}
+        // Restore auth keys in case anything wiped them
+        if (savedNsec) localStorage.setItem('nostr_nsec', savedNsec);
+        if (savedPubkey) localStorage.setItem('nostr_pubkey', savedPubkey);
         window.location.reload(true);
       }
 

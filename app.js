@@ -145,7 +145,9 @@ window.addEventListener('DOMContentLoaded', () => {
             // Retry any submissions that were queued while offline
             retryQueuedSubmissions();
         } catch (error) {
-            localStorage.removeItem('nostr_nsec');
+            // Don't delete the nsec on decode failure — could be a transient load error.
+            // Just fall through to show the login form; the user can re-enter if truly bad.
+            console.warn('Saved nsec failed to decode, showing login form:', error);
         }
     }
 });

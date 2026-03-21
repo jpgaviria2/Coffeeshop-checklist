@@ -715,6 +715,17 @@
             color: #666;
             font-size: 12px;
         }
+
+        /* Autosave fade-in/out */
+        @keyframes fadeInOut {
+            0%   { opacity: 0; }
+            15%  { opacity: 1; }
+            70%  { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .autosave-flash {
+            animation: fadeInOut 2s ease forwards;
+        }
     </style>
 </head>
 <body>
@@ -820,7 +831,19 @@
                     <h2 id="checklistTitle" data-i18n="index.opening.title">Opening Checklist</h2>
                     <button class="close-checklist-btn" onclick="closeChecklist()" data-i18n="index.checklist.close">✕ Close</button>
                 </div>
-                
+
+                <!-- Draft resume banner -->
+                <div id="draftResumeBanner" style="display:none;background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:14px;">
+                    <div style="margin-bottom:8px;">📂 <strong>You have a saved draft</strong> from <span id="draftSavedTime">—</span>. Resume?</div>
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="resumeDraft()" style="background:#28a745;color:white;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;">▶ Resume</button>
+                        <button onclick="startFresh()" style="background:#6c757d;color:white;border:none;border-radius:6px;padding:7px 16px;font-size:13px;cursor:pointer;">🗑 Start Fresh</button>
+                    </div>
+                </div>
+
+                <!-- Autosave indicator -->
+                <div id="autosaveIndicator" style="display:none;font-size:12px;color:#28a745;text-align:right;padding:2px 4px;margin-bottom:4px;transition:opacity 0.5s;">✓ Saved</div>
+
                 <div class="checklist-type">
                     <button id="openingBtn" class="active" data-i18n="index.tab.opening">🌅 Opening</button>
                     <button id="closingBtn" data-i18n="index.tab.closing">🌙 Closing</button>
@@ -836,15 +859,19 @@
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-0b">
-                        <label for="opening-0b" data-i18n="opening.0b">📋 Check for any shift notes or messages from previous shift</label>
+                        <label for="opening-0b" data-i18n="opening.0b">📋 Check for shift notes from previous shift — check the whiteboard in the kitchen and any messages in the staff group chat</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-1">
                         <label for="opening-1" data-i18n="opening.1">Turn on lights, plug in coffee brewer, turn on espresso machine</label>
                     </div>
                     <div class="checklist-item">
+                        <input type="checkbox" id="opening-1b">
+                        <label for="opening-1b" data-i18n="opening.1b">Turn on the grinder</label>
+                    </div>
+                    <div class="checklist-item">
                         <input type="checkbox" id="opening-2">
-                        <label for="opening-2" data-i18n="opening.2">Arrange thawed pastries from rack onto baking trays, set oven to 375°F</label>
+                        <label for="opening-2" data-i18n="opening.2">Take pastries out of fridge and place on baking trays if needed — pastries may already be arranged on trays from the previous night</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-3">
@@ -880,7 +907,7 @@
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-10">
-                        <label for="opening-10" data-i18n="opening.10">Fill water jug with ice, restock concentrates. Set out cream & milk for customer table — only ¼ full (prevents expiry since not refrigerated)</label>
+                        <label for="opening-10" data-i18n="opening.10">Restock concentrates. Set out cream &amp; milk for customer table — only ¼ full (prevents expiry)</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-11">
@@ -888,7 +915,11 @@
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-12">
-                        <label for="opening-12" data-i18n="opening.12">Empty dishwasher, verify 2 coffee batches ready, oven off</label>
+                        <label for="opening-12" data-i18n="opening.12">Verify dishwasher is empty and turn it on for the day</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="opening-12b">
+                        <label for="opening-12b" data-i18n="opening.12b">Verify fresh coffee is ready and in the top heater</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-13">
@@ -900,11 +931,11 @@
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-15">
-                        <label for="opening-15" data-i18n="opening.15">Test Quats sanitizer level — record in Health Binder</label>
+                        <label for="opening-15" data-i18n="opening.15">Test Quats sanitizer level with test strip — should read 200ppm. Record in Health Binder (shelf above sink). If low, prepare fresh solution.</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-15b">
-                        <label for="opening-15b" data-i18n="opening.15b">🧴 Prepare sanitizer solution in spray bottle (1 tsp bleach per 1L water)</label>
+                        <label for="opening-15b" data-i18n="opening.15b">🧴 Fill sanitizer spray bottle with cleaning vinegar solution — ready for counters and surfaces</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-14b">
@@ -912,7 +943,7 @@
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="opening-16">
-                        <label for="opening-16" data-i18n="opening.16">🥐 Count pastries after baking & message Manager with counts (e.g. "6 plain croissant, 4 chocolate, 3 ham cheese, 5 cinnamon bun") — inventory will be updated for online orders</label>
+                        <label for="opening-16" data-i18n="opening.16">🥐 Update Square inventory on hand for all pastries after baking (More → Items → search item → Available On Hand → Inventory Received → Save)</label>
                     </div>
                 </div>
                 
@@ -1212,8 +1243,21 @@
                 </div>
 
                 <div class="submit-section">
-                    <button class="btn" id="submitBtn" data-i18n="index.submit">Submit Checklist</button>
+                    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;">
+                        <button type="button" id="saveProgressBtn" onclick="saveChecklistDraft()" style="background:#6c757d;color:white;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;">💾 Save Progress</button>
+                        <button class="btn" id="submitBtn" data-i18n="index.submit">Submit Checklist</button>
+                    </div>
                     <div class="status" id="statusMessage"></div>
+                </div>
+
+                <!-- Post-Submit Summary Screen -->
+                <div id="submissionSummary" style="display:none;background:#f0fff4;border:2px solid #28a745;border-radius:14px;padding:20px;margin-top:16px;">
+                    <div style="font-size:22px;font-weight:800;color:#155724;margin-bottom:6px;">✅ Successfully submitted!</div>
+                    <div id="summaryMeta" style="font-size:13px;color:#555;margin-bottom:14px;"></div>
+                    <div id="summaryPassRate" style="background:#d4edda;border-radius:8px;padding:10px 14px;font-size:15px;font-weight:700;color:#155724;margin-bottom:14px;"></div>
+                    <div id="summaryFailedItems" style="margin-bottom:14px;"></div>
+                    <div id="summaryFindings" style="margin-bottom:14px;"></div>
+                    <button onclick="startNewChecklist()" style="background:#667eea;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;width:100%;">📋 Start New Checklist</button>
                 </div>
             </div>
         </div>

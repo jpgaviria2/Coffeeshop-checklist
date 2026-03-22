@@ -45,6 +45,7 @@ var OPENING_ITEMS = [
 ];
 
 var CLOSING_ITEMS = [
+    { id: 'cl-21',   text: "Pull tomorrow's pastries from freezer (based on sales forecast)" },
     { id: 'cl-1',    text: 'Put all leftover pastries into white containers, refrigerate if necessary, if not leave on top of the oven' },
     { id: 'cl-2',    text: 'Vacuum out and wipe pastries display case' },
     { id: 'cl-3',    text: 'Clean plates and put them back in the pastries case ready to be filled for the morning' },
@@ -69,7 +70,6 @@ var CLOSING_ITEMS = [
     { id: 'cl-17',   text: 'Wipe inside and outside of door and door handle, windows, windowsills, benches, tables inside and outside, customer side of counter and front of counter bar, coffee table — with Quats sanitizer' },
     { id: 'cl-18',   text: 'Wipe down the bases of the tables and black tables, ensure legs of chairs are not wobbly' },
     { id: 'cl-20',   text: 'Take out garbage and put the recycling in the blue bin in the parking lot' },
-    { id: 'cl-21',   text: "Pull tomorrow's pastries from freezer (based on sales forecast)" },
     { id: 'cl-22',   text: 'Put La Marzocco on standby' },
     { id: 'cl-23',   text: 'Bring in all tables and chairs from outside' },
     { id: 'cl-24',   text: 'Turn off lights and shut off music' },
@@ -242,6 +242,7 @@ function showChecklist(type) {
         });
         if (type === 'closing') {
             loadFreezerPulls();
+            renderLeftoverCount();
         }
     }
 }
@@ -298,6 +299,47 @@ function loadFreezerPulls() {
 function closeChecklist() {
     document.getElementById('checklistView').style.display = 'none';
     document.getElementById('homeView').style.display      = 'block';
+}
+
+// ── Leftover Pastry Count (closing checklist bottom) ─────────
+var PASTRY_ITEMS = [
+    { key: 'hamCheese',    label: 'Ham & Cheese Croissant' },
+    { key: 'chocolate',    label: 'Chocolate Croissant' },
+    { key: 'plain',        label: 'Plain Croissant' },
+    { key: 'spinachFeta',  label: 'Spinach Feta Croissant' },
+    { key: 'bananaBread',  label: 'Banana Bread' },
+    { key: 'lemonLoaf',    label: 'Lemon Cake / Loaf' },
+    { key: 'cinnamonBun',  label: 'Cinnamon Bun' },
+    { key: 'cookie',       label: 'Cookie' },
+    { key: 'macaron',      label: 'Macaron' },
+    { key: 'gfGranola',    label: 'GF Granola' },
+];
+
+function renderLeftoverCount() {
+    var container = document.getElementById('checklistItems');
+    if (!container) return;
+
+    var rows = PASTRY_ITEMS.map(function(p) {
+        return '<tr>' +
+            '<td style="padding:8px 6px;font-size:14px;">' + p.label + '</td>' +
+            '<td style="padding:8px 6px;text-align:center;">' +
+            '<input type="number" id="leftover-' + p.key + '" min="0" max="99" value="0" ' +
+            'style="width:60px;padding:6px;font-size:16px;text-align:center;border:1px solid #ccc;border-radius:6px;">' +
+            '</td>' +
+            '</tr>';
+    }).join('');
+
+    var html = '<div id="leftoverSection" style="margin-top:20px;padding:16px;background:#fff8e1;border-radius:12px;border:1px solid #f0c040;">' +
+        '<div style="font-weight:700;font-size:16px;margin-bottom:4px;">🥐 End-of-Day Pastry Leftovers</div>' +
+        '<div style="font-size:13px;color:#666;margin-bottom:12px;">Enter how many of each item are left unsold. Zero = sold out ✅</div>' +
+        '<table style="width:100%;border-collapse:collapse;">' +
+        '<thead><tr style="border-bottom:2px solid #f0c040;">' +
+        '<th style="text-align:left;padding:8px 6px;font-size:13px;color:#888;">Item</th>' +
+        '<th style="text-align:center;padding:8px 6px;font-size:13px;color:#888;">Left</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table>' +
+        '</div>';
+
+    container.insertAdjacentHTML('beforeend', html);
 }
 
 // ── Render: Pass/Fail Items ──────────────────────────────────
@@ -471,6 +513,16 @@ function submitChecklist() {
             failCount:   failCount,
             shiftNotes:  currentChecklist === 'closing'
                 ? (document.getElementById('shiftNotesText').value || '')
+                : undefined,
+            leftovers: currentChecklist === 'closing'
+                ? (function() {
+                    var out = {};
+                    PASTRY_ITEMS.forEach(function(p) {
+                        var el = document.getElementById('leftover-' + p.key);
+                        out[p.label] = el ? (parseInt(el.value) || 0) : 0;
+                    });
+                    return out;
+                })()
                 : undefined,
         }
     };

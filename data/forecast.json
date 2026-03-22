@@ -2,17 +2,17 @@
   "generated": "2026-03-21",
   "forecast": {
     "2026-03-22": {
-      "weather": "🌨️ Snow — High 1.5°C / 34°F — 52% precip chance",
-      "notes": "Snow Sunday. Expect ~15% lower traffic than average Sunday. H&C and Banana Bread sold out by noon today — pull extra.",
+      "weather": "🌧️ Morning showers, cloudy — High 10°C / RealFeel 13°C — 62% rain",
+      "notes": "Rainy Sunday = good coffee traffic. H&C + Banana Bread sold out by noon today — pull extra on both.",
       "items": {
         "Ham and Cheese Croissant": { "predicted": 12, "flag": "sold_out_early" },
-        "Chocolate Croissant":      { "predicted": 10 },
-        "Plain Croissant":          { "predicted": 8 },
-        "Banana Bread":             { "predicted": 8, "flag": "sold_out_early" },
-        "Lemon cake":               { "predicted": 7 },
-        "Cinnamon Bun":             { "predicted": 9 },
-        "Cookie":                   { "predicted": 9 },
-        "Spinach Feta Croissant":   { "predicted": 4 },
+        "Chocolate Croissant":      { "predicted": 11 },
+        "Plain Croissant":          { "predicted": 9 },
+        "Banana Bread":             { "predicted": 9, "flag": "sold_out_early" },
+        "Lemon cake":               { "predicted": 8 },
+        "Cinnamon Bun":             { "predicted": 10 },
+        "Cookie":                   { "predicted": 10 },
+        "Spinach Feta Croissant":   { "predicted": 5 },
         "Macaron":                  { "predicted": 4 },
         "Gluten Free Granola":      { "predicted": 4 }
       }

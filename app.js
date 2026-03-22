@@ -240,7 +240,59 @@ function showChecklist(type) {
         items.forEach(function(item) {
             itemState[item.id] = { status: null, comment: '', photo: null };
         });
+        if (type === 'closing') {
+            loadFreezerPulls();
+        }
     }
+}
+
+// ── Freezer Pull List (closing checklist) ────────────────────────────────────
+function loadFreezerPulls() {
+    var pullEl = document.getElementById('item-cl-21');
+    if (!pullEl) return;
+
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var tomorrowKey = tomorrow.toLocaleDateString('en-CA', { timeZone: 'America/Vancouver' });
+
+    fetch('data/forecast.json?v=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var fc = data.forecast && data.forecast[tomorrowKey];
+            if (!fc || !fc.items) return;
+
+            var rows = Object.entries(fc.items)
+                .sort(function(a, b) { return b[1].predicted - a[1].predicted; })
+                .map(function(e) {
+                    var flag = e[1].flag === 'sold_out_early' ? ' ⚠️' : '';
+                    return '<tr>' +
+                        '<td style="padding:4px 8px;">' + e[0] + flag + '</td>' +
+                        '<td style="padding:4px 8px;font-weight:700;color:#2d6a4f;">' + e[1].predicted + '</td>' +
+                        '</tr>';
+                }).join('');
+
+            var weather = fc.weather || '';
+            var notes   = fc.notes   || '';
+
+            var pullHTML = '<div style="margin-top:10px;padding:12px;background:#f0f7f4;border-radius:8px;border-left:4px solid #2d6a4f;">' +
+                '<div style="font-weight:700;color:#2d6a4f;margin-bottom:4px;">🌤️ ' + weather + '</div>' +
+                '<div style="font-size:12px;color:#555;margin-bottom:10px;">' + notes + '</div>' +
+                '<table style="width:100%;border-collapse:collapse;">' +
+                '<thead><tr style="border-bottom:1px solid #ccc;">' +
+                '<th style="text-align:left;padding:4px 8px;font-size:12px;color:#666;">Item</th>' +
+                '<th style="text-align:left;padding:4px 8px;font-size:12px;color:#666;">Pull from freezer</th>' +
+                '</tr></thead><tbody>' + rows + '</tbody></table>' +
+                '<div style="font-size:11px;color:#888;margin-top:6px;">⚠️ = sold out early today — prioritize these</div>' +
+                '</div>';
+
+            var labelEl = pullEl.querySelector('.item-label');
+            if (labelEl) {
+                labelEl.innerHTML = "🧊 Pull tomorrow's pastries from freezer" + pullHTML;
+            }
+        })
+        .catch(function() {
+            // Silently fail — item text still shows as fallback
+        });
 }
 
 function closeChecklist() {

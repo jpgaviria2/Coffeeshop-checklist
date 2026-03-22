@@ -45,7 +45,6 @@ var OPENING_ITEMS = [
 ];
 
 var CLOSING_ITEMS = [
-    { id: 'cl-21',   text: "Pull tomorrow's pastries from freezer (based on sales forecast)" },
     { id: 'cl-1',    text: 'Put all leftover pastries into white containers, refrigerate if necessary, if not leave on top of the oven' },
     { id: 'cl-2',    text: 'Vacuum out and wipe pastries display case' },
     { id: 'cl-3',    text: 'Clean plates and put them back in the pastries case ready to be filled for the morning' },
@@ -249,8 +248,8 @@ function showChecklist(type) {
 
 // ── Freezer Pull List (closing checklist) ────────────────────────────────────
 function loadFreezerPulls() {
-    var pullEl = document.getElementById('item-cl-21');
-    if (!pullEl) return;
+    var container = document.getElementById('checklistItems');
+    if (!container) return;
 
     var tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -260,39 +259,46 @@ function loadFreezerPulls() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             var fc = data.forecast && data.forecast[tomorrowKey];
-            if (!fc || !fc.items) return;
 
-            var rows = Object.entries(fc.items)
-                .sort(function(a, b) { return b[1].predicted - a[1].predicted; })
-                .map(function(e) {
-                    var flag = e[1].flag === 'sold_out_early' ? ' ⚠️' : '';
-                    return '<tr>' +
-                        '<td style="padding:4px 8px;">' + e[0] + flag + '</td>' +
-                        '<td style="padding:4px 8px;font-weight:700;color:#2d6a4f;">' + e[1].predicted + '</td>' +
-                        '</tr>';
-                }).join('');
+            var rows = '';
+            if (fc && fc.items) {
+                rows = Object.entries(fc.items)
+                    .sort(function(a, b) { return b[1].predicted - a[1].predicted; })
+                    .map(function(e) {
+                        var flag = e[1].flag === 'sold_out_early' ? ' ⚠️' : '';
+                        return '<tr style="border-bottom:1px solid #d4edda;">' +
+                            '<td style="padding:6px 8px;font-size:14px;">' + e[0] + flag + '</td>' +
+                            '<td style="padding:6px 8px;font-weight:700;font-size:18px;color:#155724;text-align:center;">' + e[1].predicted + '</td>' +
+                            '</tr>';
+                    }).join('');
+            }
 
-            var weather = fc.weather || '';
-            var notes   = fc.notes   || '';
+            var weather = (fc && fc.weather) ? fc.weather : '';
+            var notes   = (fc && fc.notes)   ? fc.notes   : '';
+            var tableHTML = rows
+                ? '<table style="width:100%;border-collapse:collapse;margin-top:10px;">' +
+                  '<thead><tr style="background:#c3e6cb;">' +
+                  '<th style="text-align:left;padding:6px 8px;font-size:12px;color:#155724;">Item</th>' +
+                  '<th style="text-align:center;padding:6px 8px;font-size:12px;color:#155724;">Pull qty</th>' +
+                  '</tr></thead><tbody>' + rows + '</tbody></table>' +
+                  '<div style="font-size:11px;color:#888;margin-top:6px;">⚠️ = sold out early today — pull these first</div>'
+                : '<p style="color:#888;font-size:13px;margin:8px 0 0;">No forecast for tomorrow yet.</p>';
 
-            var pullHTML = '<div style="margin-top:10px;padding:12px;background:#f0f7f4;border-radius:8px;border-left:4px solid #2d6a4f;">' +
-                '<div style="font-weight:700;color:#2d6a4f;margin-bottom:4px;">🌤️ ' + weather + '</div>' +
-                '<div style="font-size:12px;color:#555;margin-bottom:10px;">' + notes + '</div>' +
-                '<table style="width:100%;border-collapse:collapse;">' +
-                '<thead><tr style="border-bottom:1px solid #ccc;">' +
-                '<th style="text-align:left;padding:4px 8px;font-size:12px;color:#666;">Item</th>' +
-                '<th style="text-align:left;padding:4px 8px;font-size:12px;color:#666;">Pull from freezer</th>' +
-                '</tr></thead><tbody>' + rows + '</tbody></table>' +
-                '<div style="font-size:11px;color:#888;margin-top:6px;">⚠️ = sold out early today — prioritize these</div>' +
+            var cardHTML = '<div id="freezerPullCard" style="background:#d4edda;border:1px solid #c3e6cb;border-radius:12px;padding:14px 16px;margin-bottom:16px;">' +
+                '<div style="font-weight:700;font-size:16px;color:#155724;margin-bottom:2px;">🧊 Pull Tomorrow\'s Pastries from Freezer</div>' +
+                (weather ? '<div style="font-size:13px;color:#155724;margin-bottom:4px;">' + weather + '</div>' : '') +
+                (notes   ? '<div style="font-size:12px;color:#555;margin-bottom:6px;">' + notes + '</div>' : '') +
+                tableHTML +
                 '</div>';
 
-            var labelEl = pullEl.querySelector('.item-label');
-            if (labelEl) {
-                labelEl.innerHTML = "🧊 Pull tomorrow's pastries from freezer" + pullHTML;
-            }
+            container.insertAdjacentHTML('afterbegin', cardHTML);
         })
         .catch(function() {
-            // Silently fail — item text still shows as fallback
+            var cardHTML = '<div id="freezerPullCard" style="background:#d4edda;border:1px solid #c3e6cb;border-radius:12px;padding:14px 16px;margin-bottom:16px;">' +
+                '<div style="font-weight:700;font-size:16px;color:#155724;">🧊 Pull Tomorrow\'s Pastries from Freezer</div>' +
+                '<p style="color:#888;font-size:13px;margin:6px 0 0;">Could not load forecast — check manually.</p>' +
+                '</div>';
+            container.insertAdjacentHTML('afterbegin', cardHTML);
         });
 }
 
@@ -709,18 +715,38 @@ function loadAdminView() {
             '<th style="padding:8px;text-align:left;">Result</th>' +
             '</tr></thead><tbody>';
 
+        // Pubkey → name map (full hex keys)
+        var PUBKEY_NAMES = {
+            'c2c2cda6f2dbc736da8542d1742067de91ae287e96c9695550ff37e0117d61f2': 'JP',
+            'd4ed245d98f8867bba709f820e83f65884791076d189e92be0c595f78daf1ccd': 'JP',
+            '81bc1ef836cfa819bd589c613bdbcb6e4bdb34af4797e5edb3ccf318841a48ba': 'JP',
+            '18885710185087db597d078afd46e4ed5ce001a554694de68b53f94393f7f49f': 'Charlene',
+            '4287e0cdcccb4789f0c1d4c27caae092f19f0c266c0d0638b571558d09317911': 'Dayana',
+            '6d3907327333dfb1b6f6100f9fdd1c6cbaa50b3acc801cf4cf5d937b838ee80b': 'Dayana',
+            '5936809a3a97e3efec0ca57d1c5b755f1fd91700952ee4394d0ca9cf1a40498f': 'Aziza',
+            'c7a2da3b05233ffe91a511399fa96b1e6141d1bb2a2bb48a3becde8d2f43da93': 'Amanda',
+            'e94223ab25f9a156eb402d6e7627c8118f38285b74687a53b656d9481d3672b2': 'Ruby',
+            '2205bd42b0fdfab6ab2ecba660212ead17775fd6d4b94616b2c9ff52cfd2073a': 'Itzel',
+            '876fde9a5fccd9bb3206ac8a788fd6c42cabcc3911bc08246d8c04007147c5ce': 'Deya',
+        };
+
         subs.forEach(function(sub) {
-            var d = new Date(sub.created_at || sub.submittedAt || (sub.content && sub.content.submittedAt));
+            // API fields: staff_pubkey, staff_name, checklist_type, submitted_at, pass_count, fail_count
+            var submittedAt = sub.submitted_at || sub.created_at || sub.submittedAt || (sub.content && sub.content.submittedAt);
+            var d = new Date(submittedAt);
             var timeStr = isNaN(d.getTime()) ? '—' : d.toLocaleString('en-CA', {
                 timeZone: 'America/Vancouver', month: 'short', day: 'numeric',
                 hour: '2-digit', minute: '2-digit'
             });
-            var type      = (sub.checklist || (sub.content && sub.content.type) || '—');
+            var type = sub.checklist_type || sub.checklist || (sub.content && sub.content.type) || '—';
             type = type.charAt(0).toUpperCase() + type.slice(1);
-            var pubkey    = ((sub.pubkey || '').slice(0, 8)) + '…';
-            var failCount = (sub.content && sub.content.failCount) || 0;
-            var passCount = (sub.content && sub.content.passCount) || 0;
-            var result = sub.checklist === 'inventory'
+
+            var staffPubkey = sub.staff_pubkey || sub.pubkey || '';
+            var staffName = sub.staff_name || PUBKEY_NAMES[staffPubkey] || (staffPubkey.slice(0, 8) + '…');
+
+            var failCount = sub.fail_count || (sub.content && sub.content.failCount) || 0;
+            var passCount = sub.pass_count || (sub.content && sub.content.passCount) || 0;
+            var result = (type.toLowerCase() === 'inventory')
                 ? '<span style="color:#667eea;">📦 Counts</span>'
                 : failCount > 0
                     ? '<span style="color:#dc3545;">❌ ' + failCount + ' fail</span>'
@@ -729,7 +755,7 @@ function loadAdminView() {
             html += '<tr style="border-bottom:1px solid #f0f0f0;">' +
                 '<td style="padding:8px;">' + timeStr + '</td>' +
                 '<td style="padding:8px;">' + type + '</td>' +
-                '<td style="padding:8px;font-family:monospace;">' + pubkey + '</td>' +
+                '<td style="padding:8px;font-weight:600;">' + staffName + '</td>' +
                 '<td style="padding:8px;">' + result + '</td>' +
                 '</tr>';
         });

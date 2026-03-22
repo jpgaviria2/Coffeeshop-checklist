@@ -1,9 +1,9 @@
 {
-  "generated": "2026-03-21T15:07:03.417Z",
+  "generated": "2026-03-22T06:25:24.376Z",
   "forecast": {
     "2026-03-21": {
-      "tempMax": 7.1,
-      "tempMin": 3.8,
+      "tempMax": 9.5,
+      "tempMin": 3.9,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",
@@ -14,20 +14,20 @@
       "emoji": "⛅"
     },
     "2026-03-22": {
-      "tempMax": 6.4,
-      "tempMin": 2.5,
-      "precipitation": 1.8,
-      "weatherCode": 53,
-      "condition": "Drizzle",
-      "isRainy": true,
+      "tempMax": 6.7,
+      "tempMin": 2.8,
+      "precipitation": 0.5,
+      "weatherCode": 51,
+      "condition": "Light drizzle",
+      "isRainy": false,
       "isCold": false,
       "isVeryCold": false,
       "isWarm": false,
       "emoji": "☁️"
     },
     "2026-03-23": {
-      "tempMax": 9.2,
-      "tempMin": -0.1,
+      "tempMax": 8.1,
+      "tempMin": 1.1,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",
@@ -38,9 +38,9 @@
       "emoji": "⛅"
     },
     "2026-03-24": {
-      "tempMax": 7.2,
-      "tempMin": 3,
-      "precipitation": 20.5,
+      "tempMax": 6.5,
+      "tempMin": 3.1,
+      "precipitation": 28.2,
       "weatherCode": 63,
       "condition": "Rain",
       "isRainy": true,
@@ -50,9 +50,9 @@
       "emoji": "🌧️"
     },
     "2026-03-25": {
-      "tempMax": 6.3,
-      "tempMin": -0.5,
-      "precipitation": 9.7,
+      "tempMax": 6.6,
+      "tempMin": 1.4,
+      "precipitation": 12.6,
       "weatherCode": 85,
       "condition": "Light snow showers",
       "isRainy": true,
@@ -62,9 +62,9 @@
       "emoji": "🌦️"
     },
     "2026-03-26": {
-      "tempMax": 6.5,
-      "tempMin": -0.3,
-      "precipitation": 3.6,
+      "tempMax": 8,
+      "tempMin": 0.3,
+      "precipitation": 4.3,
       "weatherCode": 53,
       "condition": "Drizzle",
       "isRainy": true,
@@ -74,8 +74,8 @@
       "emoji": "☁️"
     },
     "2026-03-27": {
-      "tempMax": 9.3,
-      "tempMin": 1.1,
+      "tempMax": 12.5,
+      "tempMin": -0.6,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",

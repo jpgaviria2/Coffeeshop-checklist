@@ -65,9 +65,10 @@
     const items = [];
     for (const [name, thresh] of Object.entries(config.thresholds)) {
       const predicted = fc.items[name]?.predicted || 0;
-      const displayTarget = Math.max(thresh.displayMin, Math.ceil(predicted * 0.4));
-      const totalNeeded = predicted + thresh.displayMin;
-      const pullFromFreezer = Math.max(0, Math.ceil(totalNeeded * 0.6));
+      // At Trails everything comes from the freezer — pull the full forecasted qty
+      // plus a small display buffer (displayMin) to ensure we're never caught short.
+      const displayTarget = Math.max(thresh.displayMin, predicted);
+      const pullFromFreezer = Math.max(thresh.displayMin, predicted);
       const needsBaking = ['Cinnamon Bun', 'Ham and Cheese Croissant', 'Chocolate Croissant', 'Plain Croissant', 'Spinach Feta Croissant'].includes(name);
 
       items.push({

@@ -1,0 +1,45 @@
+{
+  "_comment": "Trails Coffee — Prep List config. thresholds = pastry items pulled from freezer nightly.",
+
+  "thresholds": {
+    "Ham and Cheese Croissant":  { "displayMin": 2, "freezerMin": 5 },
+    "Chocolate Croissant":       { "displayMin": 2, "freezerMin": 5 },
+    "Plain Croissant":           { "displayMin": 2, "freezerMin": 4 },
+    "Spinach Feta Croissant":    { "displayMin": 2, "freezerMin": 4 },
+    "Cinnamon Bun":              { "displayMin": 2, "freezerMin": 4 },
+    "Banana Bread":              { "displayMin": 2, "freezerMin": 5 },
+    "Lemon cake":                { "displayMin": 2, "freezerMin": 4 },
+    "Cookie":                    { "displayMin": 2, "freezerMin": 4 },
+    "GF Mini Doughnut":          { "displayMin": 1, "freezerMin": 3 },
+    "GF VEGAN brownie":          { "displayMin": 1, "freezerMin": 2 },
+    "Gluten Free Cheddar Scone": { "displayMin": 1, "freezerMin": 2 },
+    "Caprese Panini":            { "displayMin": 1, "freezerMin": 2 }
+  },
+
+  "recipes": {
+    "Latte":             { "milk_ml": 240, "shots": 2 },
+    "Cappuccino":        { "milk_ml": 120, "shots": 2 },
+    "Flat White":        { "milk_ml": 180, "shots": 2 },
+    "Cortado":           { "milk_ml": 60,  "shots": 2 },
+    "Mocha":             { "milk_ml": 240, "shots": 2 },
+    "Chai Latte":        { "milk_ml": 240, "shots": 0 },
+    "London Fog Latte":  { "milk_ml": 240, "shots": 0 },
+    "Hot Pure Matcha":   { "milk_ml": 240, "shots": 0 },
+    "Vanilla Matcha":    { "milk_ml": 240, "shots": 0 },
+    "Iced Latte":        { "milk_ml": 180, "shots": 2 },
+    "Iced Pure Matcha":  { "milk_ml": 180, "shots": 0 },
+    "Iced Vanilla Matcha": { "milk_ml": 180, "shots": 0 },
+    "Americano":         { "milk_ml": 0,   "shots": 2 },
+    "Iced Americano":    { "milk_ml": 0,   "shots": 2 },
+    "Espresso":          { "milk_ml": 0,   "shots": 1 },
+    "Drip Coffee":       { "milk_ml": 0,   "shots": 0, "beans_g": 15 },
+    "Hot Chocolate":     { "milk_ml": 240, "shots": 0, "chocolate_oz": 1.5 },
+    "Steamed Milk":      { "milk_ml": 300, "shots": 0 }
+  },
+
+  "ingredients": {
+    "beans_per_shot_g": 18,
+    "milk_jug_liters": 4,
+    "beans_per_5lb_bag_g": 2268
+  }
+}

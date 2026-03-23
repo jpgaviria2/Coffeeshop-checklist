@@ -10,6 +10,7 @@ function initNav(activePage) {
         { id: 'storage', href: 'storage.html', icon: '📦', labelKey: 'nav.storage', label: 'Storage' },
         { id: 'prep', href: 'prep.html', icon: '📝', labelKey: 'nav.prep', label: 'Prep Lists' },
         { id: 'waste', href: 'waste.html', icon: '🗑️', labelKey: 'nav.waste', label: 'Waste Tracking' },
+        { id: 'inventory', href: 'inventory-master.html', icon: '📦', labelKey: 'nav.inventory', label: 'Inventory' },
         { id: 'dashboard', href: 'dashboard.html', icon: '☕', labelKey: 'nav.dashboard', label: 'Sales Dashboard' },
     ];
 

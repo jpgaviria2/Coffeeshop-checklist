@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Inventory — Trails Coffee</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192x192.png">
+  <script src="nostr.bundle.js"></script>
+  <script src="event-cache.js"></script>
+  <script src="nav.js"></script>
+  <script src="roles.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding-bottom: 100px; }
+
+    /* ── Nav ── */
+    #navContainer { position: sticky; top: 0; z-index: 100; }
+
+    /* ── Header bar ── */
+    .page-header {
+      background: #667eea;
+      color: #fff;
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .page-header h1 { font-size: 18px; font-weight: 700; }
+    .page-header .meta { font-size: 12px; opacity: 0.85; }
+    .summary-pills { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 16px; background: #fff; border-bottom: 1px solid #e0e0e0; }
+    .pill { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+    .pill-ok     { background: #d4edda; color: #155724; }
+    .pill-warn   { background: #fff3cd; color: #856404; }
+    .pill-out    { background: #f8d7da; color: #721c24; }
+    .pill-changed { background: #cce5ff; color: #004085; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex; gap: 8px; padding: 10px 16px;
+      background: #fff; border-bottom: 1px solid #e0e0e0;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1px solid #ccc;
+      background: #fff; font-size: 13px; cursor: pointer; white-space: nowrap;
+    }
+    .filter-btn.active { background: #667eea; color: #fff; border-color: #667eea; }
+
+    /* ── Search ── */
+    .search-bar { padding: 10px 16px; background: #fff; border-bottom: 1px solid #e0e0e0; }
+    .search-bar input {
+      width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 10px;
+      font-size: 15px; outline: none;
+    }
+    .search-bar input:focus { border-color: #667eea; }
+
+    /* ── Section ── */
+    .section-card {
+      margin: 10px 12px 0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      overflow: hidden;
+    }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px; cursor: pointer;
+      background: #f8f9fa; border-bottom: 1px solid #eee;
+    }
+    .section-header h3 { font-size: 15px; font-weight: 700; }
+    .section-chevron { font-size: 12px; color: #888; transition: transform 0.2s; }
+    .section-card.collapsed .section-items { display: none; }
+    .section-card.collapsed .section-chevron { transform: rotate(-90deg); }
+
+    /* ── Item row ── */
+    .item-row {
+      display: flex; align-items: center;
+      padding: 11px 14px; border-bottom: 1px solid #f0f0f0;
+      gap: 10px;
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-row.changed { background: #f0fff4; }
+    .item-row.out     { background: #fff8f8; }
+    .item-row.reorder { background: #fffdf0; }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name {
+      font-size: 14px; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .item-meta { font-size: 11px; color: #888; margin-top: 2px; }
+    .status-badge {
+      font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 8px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .badge-ok     { background: #d4edda; color: #155724; }
+    .badge-warn   { background: #fff3cd; color: #856404; }
+    .badge-out    { background: #f8d7da; color: #721c24; }
+    .badge-na     { background: #e9ecef; color: #666; }
+
+    /* ── Qty control ── */
+    .qty-control { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .qty-btn {
+      width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer;
+      font-size: 20px; line-height: 1; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; flex-shrink: 0;
+    }
+    .qty-btn-minus { background: #f8d7da; color: #721c24; }
+    .qty-btn-plus  { background: #d4edda; color: #155724; }
+    .qty-btn:active { opacity: 0.7; }
+    .qty-display {
+      min-width: 54px; text-align: center;
+    }
+    .qty-original {
+      font-size: 11px; color: #dc3545;
+      text-decoration: line-through;
+      display: none;
+    }
+    .qty-current {
+      font-size: 16px; font-weight: 700;
+    }
+    .qty-current.changed { color: #28a745; }
+    .qty-input {
+      width: 52px; text-align: center; font-size: 15px; font-weight: 700;
+      border: 1.5px solid #667eea; border-radius: 8px; padding: 5px 4px;
+      outline: none;
+    }
+    .qty-text {
+      font-size: 13px; color: #888; font-style: italic;
+    }
+
+    /* ── Submit bar ── */
+    #submitBar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-top: 2px solid #e0e0e0;
+      padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 -2px 12px rgba(0,0,0,.1);
+      transform: translateY(100%); transition: transform 0.2s;
+    }
+    #submitBar.visible { transform: translateY(0); }
+    #submitBar .change-count { flex: 1; font-size: 14px; font-weight: 600; color: #667eea; }
+    #submitBar button {
+      padding: 12px 24px; background: #28a745; color: #fff;
+      border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+      cursor: pointer;
+    }
+    #submitBar button:disabled { background: #aaa; }
+    #discardBtn { padding: 12px 16px; background: #f8d7da; color: #721c24; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+    /* ── States ── */
+    .loading, .error-state { text-align: center; padding: 40px 20px; color: #888; }
+    .error-state { color: #dc3545; }
+    .spinner { font-size: 32px; animation: spin 1s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-100px);
+      background: #333; color: #fff; padding: 10px 20px; border-radius: 20px;
+      font-size: 14px; font-weight: 600; z-index: 999; transition: transform 0.3s;
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { background: #28a745; }
+    #toast.error   { background: #dc3545; }
+  </style>
+</head>
+<body>
+
+<div id="navContainer"></div>
+
+<div class="page-header">
+  <div>
+    <h1>📦 Master Inventory</h1>
+    <div class="meta" id="fetchedAt">Loading…</div>
+  </div>
+  <div id="summaryPills" class="summary-pills" style="padding:0;border:none;background:none;"></div>
+</div>
+
+<div class="summary-pills" id="summaryPillsRow"></div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+  <button class="filter-btn" data-filter="out" onclick="setFilter('out', this)">❌ Out</button>
+  <button class="filter-btn" data-filter="reorder" onclick="setFilter('reorder', this)">⚠️ Reorder</button>
+  <button class="filter-btn" data-filter="changed" onclick="setFilter('changed', this)">✏️ Changed</button>
+</div>
+
+<div class="search-bar">
+  <input type="search" id="searchInput" placeholder="🔍 Search items…" oninput="onSearch()" autocomplete="off">
+</div>
+
+<div id="inventoryList"></div>
+
+<div id="submitBar">
+  <div class="change-count" id="changeCount">0 changes</div>
+  <button id="discardBtn" onclick="discardChanges()">Discard</button>
+  <button id="submitBtn" onclick="submitChanges()">Submit ✅</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API_BASE = 'https://api.trailscoffee.com';
+const API_KEY  = '794ee28efee105ed74601cf0d8b7da9bd7776ac2bc5cd8a87174f04b703dab64';
+
+// State
+var inventoryData = null;  // { sections, summary, fetchedAt }
+var changes = {};           // { "row_N": { row, item, original, current } }
+var currentFilter = 'all';
+var searchQuery = '';
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function () {
+  if (typeof initNav === 'function') initNav('inventory');
+  loadInventory();
+});
+
+// ── Load ─────────────────────────────────────────────────────────────────────
+function loadInventory() {
+  document.getElementById('inventoryList').innerHTML =
+    '<div class="loading"><div class="spinner">⏳</div><p style="margin-top:12px;">Loading inventory…</p></div>';
+
+  fetch(API_BASE + '/api/inventory/master', {
+    headers: { 'Authorization': 'Bearer ' + API_KEY }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) throw new Error(data.error);
+    inventoryData = data;
+    changes = {};
+    renderSummary();
+    renderInventory();
+    document.getElementById('fetchedAt').textContent =
+      'Updated ' + new Date(data.fetchedAt).toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+  })
+  .catch(function(e) {
+    document.getElementById('inventoryList').innerHTML =
+      '<div class="error-state">❌ Could not load inventory<br><small>' + e.message + '</small></div>';
+  });
+}
+
+// ── Summary ──────────────────────────────────────────────────────────────────
+function renderSummary() {
+  var s = inventoryData.summary;
+  var changedCount = Object.keys(changes).length;
+  var html =
+    '<span class="pill pill-ok">✅ ' + (s.totalItems - s.outItems - s.reorderItems) + ' OK</span>' +
+    (s.reorderItems ? '<span class="pill pill-warn">⚠️ ' + s.reorderItems + ' reorder</span>' : '') +
+    (s.outItems     ? '<span class="pill pill-out">❌ ' + s.outItems + ' out</span>' : '') +
+    (changedCount   ? '<span class="pill pill-changed">✏️ ' + changedCount + ' changed</span>' : '');
+  document.getElementById('summaryPillsRow').innerHTML = html;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderInventory() {
+  if (!inventoryData) return;
+  var container = document.getElementById('inventoryList');
+  var sections  = inventoryData.sections;
+  var html = '';
+
+  for (var si = 0; si < sections.length; si++) {
+    var sec   = sections[si];
+    var items = filterItems(sec.items);
+    if (items.length === 0) continue;
+
+    html += '<div class="section-card" id="sec-' + si + '">';
+    html += '<div class="section-header" onclick="toggleSection(' + si + ')">';
+    html += '<h3>' + sec.title + ' <span style="font-size:12px;font-weight:400;color:#888;">(' + items.length + ')</span></h3>';
+    html += '<span class="section-chevron">▼</span></div>';
+    html += '<div class="section-items">';
+
+    for (var ii = 0; ii < items.length; ii++) {
+      html += renderItem(items[ii]);
+    }
+    html += '</div></div>';
+  }
+
+  if (!html) {
+    html = '<div class="loading" style="padding:30px;">No items match your filter.</div>';
+  }
+  container.innerHTML = html;
+}
+
+function filterItems(items) {
+  return items.filter(function(item) {
+    // Search filter
+    if (searchQuery && item.item.toLowerCase().indexOf(searchQuery) === -1) return false;
+    // Status filter
+    if (currentFilter === 'out')     return item.status && item.status.includes('OUT');
+    if (currentFilter === 'reorder') return item.status && item.status.includes('REORDER');
+    if (currentFilter === 'changed') return !!changes['row_' + item.row];
+    return true;
+  });
+}
+
+function renderItem(item) {
+  var key     = 'row_' + item.row;
+  var changed = changes[key];
+  var current = changed ? changed.current : item.qty;
+  var rowClass = '';
+  if (changed) rowClass = ' changed';
+  else if (item.status && item.status.includes('OUT'))    rowClass = ' out';
+  else if (item.status && item.status.includes('REORDER')) rowClass = ' reorder';
+
+  var badge = '';
+  if (item.status && item.status.includes('OUT')) {
+    badge = '<span class="status-badge badge-out">OUT</span>';
+  } else if (item.status && item.status.includes('REORDER')) {
+    badge = '<span class="status-badge badge-warn">REORDER</span>';
+  } else if (item.status && item.status.includes('OK')) {
+    badge = '<span class="status-badge badge-ok">OK</span>';
+  } else {
+    badge = '<span class="status-badge badge-na">—</span>';
+  }
+
+  var qtyHTML = '';
+  if (item.isNumeric) {
+    var origDisplay = changed
+      ? '<div class="qty-original" id="orig-' + item.row + '" style="display:block">' + item.qty + '</div>'
+      : '<div class="qty-original" id="orig-' + item.row + '"></div>';
+    var curClass = changed ? 'qty-current changed' : 'qty-current';
+    qtyHTML =
+      '<div class="qty-control">' +
+      '<button class="qty-btn qty-btn-minus" onclick="adjustQty(' + item.row + ', ' + item.qty + ', -1)">−</button>' +
+      '<div class="qty-display">' +
+        origDisplay +
+        '<div class="' + curClass + '" id="cur-' + item.row + '">' + current + '</div>' +
+      '</div>' +
+      '<button class="qty-btn qty-btn-plus" onclick="adjustQty(' + item.row + ', ' + item.qty + ', 1)">+</button>' +
+      '</div>';
+  } else {
+    // Non-numeric qty (e.g., "~1/3 bag") — text input
+    var val = changed ? changed.current : (item.qtyRaw || '');
+    qtyHTML =
+      '<div class="qty-control">' +
+      '<input class="qty-input" type="text" id="inp-' + item.row + '" value="' + val + '" ' +
+      'style="width:70px;" ' +
+      'onchange="setQtyText(' + item.row + ', this.value, \'' + (item.qtyRaw || '').replace(/'/g, "\\'") + '\')">' +
+      '</div>';
+  }
+
+  var meta = [];
+  if (item.unit)     meta.push(item.unit);
+  if (item.supplier) meta.push(item.supplier);
+  if (item.par)      meta.push('Par: ' + item.par);
+
+  return '<div class="item-row' + rowClass + '" id="itemrow-' + item.row + '">' +
+    '<div class="item-info">' +
+      '<div class="item-name">' + item.item + '</div>' +
+      (meta.length ? '<div class="item-meta">' + meta.join(' · ') + '</div>' : '') +
+    '</div>' +
+    badge +
+    qtyHTML +
+  '</div>';
+}
+
+// ── Qty adjustment ────────────────────────────────────────────────────────────
+function adjustQty(row, original, delta) {
+  var key = 'row_' + row;
+  var current = changes[key] ? changes[key].current : original;
+  var newVal  = Math.max(0, parseFloat(current) + delta);
+  // Round to 2 decimal places
+  newVal = Math.round(newVal * 100) / 100;
+  setQtyNumeric(row, original, newVal);
+}
+
+function setQtyNumeric(row, original, newVal) {
+  var key = 'row_' + row;
+  var curEl  = document.getElementById('cur-' + row);
+  var origEl = document.getElementById('orig-' + row);
+  var rowEl  = document.getElementById('itemrow-' + row);
+
+  if (newVal !== original) {
+    changes[key] = { row: row, original: original, current: newVal };
+    if (curEl) { curEl.textContent = newVal; curEl.className = 'qty-current changed'; }
+    if (origEl) { origEl.textContent = original; origEl.style.display = 'block'; }
+    if (rowEl) { rowEl.className = 'item-row changed'; }
+  } else {
+    delete changes[key];
+    if (curEl) { curEl.textContent = newVal; curEl.className = 'qty-current'; }
+    if (origEl) { origEl.style.display = 'none'; }
+    if (rowEl) {
+      rowEl.className = 'item-row';
+      // re-apply status class
+      var item = findItem(row);
+      if (item && item.status) {
+        if (item.status.includes('OUT')) rowEl.classList.add('out');
+        else if (item.status.includes('REORDER')) rowEl.classList.add('reorder');
+      }
+    }
+  }
+  updateSubmitBar();
+  renderSummary();
+}
+
+function setQtyText(row, newVal, original) {
+  var key = 'row_' + row;
+  if (newVal !== original) {
+    changes[key] = { row: row, original: original, current: newVal };
+    var rowEl = document.getElementById('itemrow-' + row);
+    if (rowEl) rowEl.className = 'item-row changed';
+  } else {
+    delete changes[key];
+    var rowEl2 = document.getElementById('itemrow-' + row);
+    if (rowEl2) rowEl2.className = 'item-row';
+  }
+  updateSubmitBar();
+  renderSummary();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function findItem(row) {
+  if (!inventoryData) return null;
+  for (var i = 0; i < inventoryData.sections.length; i++) {
+    var items = inventoryData.sections[i].items;
+    for (var j = 0; j < items.length; j++) {
+      if (items[j].row === row) return items[j];
+    }
+  }
+  return null;
+}
+
+// ── Submit bar ────────────────────────────────────────────────────────────────
+function updateSubmitBar() {
+  var bar   = document.getElementById('submitBar');
+  var count = Object.keys(changes).length;
+  document.getElementById('changeCount').textContent = count + ' change' + (count !== 1 ? 's' : '');
+  if (count > 0) bar.classList.add('visible');
+  else           bar.classList.remove('visible');
+}
+
+function discardChanges() {
+  changes = {};
+  renderInventory();
+  renderSummary();
+  updateSubmitBar();
+  showToast('Changes discarded', '');
+}
+
+function submitChanges() {
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving…';
+
+  var updates = Object.values(changes).map(function(c) {
+    return { row: c.row, value: c.current };
+  });
+
+  fetch(API_BASE + '/api/inventory/master', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + API_KEY,
+    },
+    body: JSON.stringify({ updates: updates })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error === 'sheets_auth_pending') {
+      showToast('⚠️ Sheets not authorized yet — contact manager', 'error');
+    } else if (data.error) {
+      throw new Error(data.error);
+    } else {
+      showToast('✅ ' + Object.keys(changes).length + ' items updated in Google Sheets!', 'success');
+      changes = {};
+      loadInventory(); // reload fresh data
+    }
+  })
+  .catch(function(e) {
+    showToast('❌ Error: ' + e.message, 'error');
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Submit ✅';
+  });
+}
+
+// ── Filters & search ──────────────────────────────────────────────────────────
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+  renderInventory();
+}
+
+function onSearch() {
+  searchQuery = document.getElementById('searchInput').value.toLowerCase();
+  renderInventory();
+}
+
+function toggleSection(si) {
+  var card = document.getElementById('sec-' + si);
+  if (card) card.classList.toggle('collapsed');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (type ? ' ' + type : '');
+  setTimeout(function() { el.className = ''; }, 3000);
+}
+</script>
+</body>
+</html>

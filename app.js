@@ -256,6 +256,16 @@ function loadFreezerPulls() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     var tomorrowKey = tomorrow.toLocaleDateString('en-CA', { timeZone: 'America/Vancouver' });
 
+    // Pastry items only — drinks are excluded from the freezer pull card
+    var PASTRY_NAMES = new Set([
+        'Ham and Cheese Croissant', 'Plain Croissant', 'Chocolate Croissant',
+        'Spinach Feta Croissant', 'Cinnamon Bun', 'Banana Bread', 'Lemon cake',
+        'Cookie', 'Gluten Free Cheddar Scone', 'GF Mini Doughnut', 'GF VEGAN brownie',
+        'Caprese Panini', 'Macaron', 'Gluten Free Granola', 'Yogurt and Granola Bowl',
+        'Sourdough Bread', 'Bagel', 'CROISSANT BREAD PUDDING', 'Chocolate Muffin',
+        'Vegan Gluten Free Everything Bagel', 'GF Mini Doughnut'
+    ]);
+
     fetch('data/forecast.json?v=' + Date.now())
         .then(function(r) { return r.json(); })
         .then(function(data) {
@@ -264,6 +274,7 @@ function loadFreezerPulls() {
             var rows = '';
             if (fc && fc.items) {
                 rows = Object.entries(fc.items)
+                    .filter(function(e) { return PASTRY_NAMES.has(e[0]) && e[1].predicted > 0; })
                     .sort(function(a, b) { return b[1].predicted - a[1].predicted; })
                     .map(function(e) {
                         var flag = e[1].flag === 'sold_out_early' ? ' ⚠️' : '';
@@ -274,8 +285,18 @@ function loadFreezerPulls() {
                     }).join('');
             }
 
-            var weather = (fc && fc.weather) ? fc.weather : '';
-            var notes   = (fc && fc.notes)   ? fc.notes   : '';
+            // Weather can be a string or object — render safely
+            var weatherObj = fc && fc.weather;
+            var weatherStr = '';
+            if (weatherObj && typeof weatherObj === 'object') {
+                weatherStr = (weatherObj.emoji || '') + ' ' + (weatherObj.condition || '') +
+                    (weatherObj.temp ? ' · ' + weatherObj.temp + '°C' : '') +
+                    (weatherObj.note ? ' — ' + weatherObj.note : '');
+            } else if (typeof weatherObj === 'string') {
+                weatherStr = weatherObj;
+            }
+
+            var notes   = (fc && fc.notes && typeof fc.notes === 'string') ? fc.notes : '';
             var tableHTML = rows
                 ? '<table style="width:100%;border-collapse:collapse;margin-top:10px;">' +
                   '<thead><tr style="background:#c3e6cb;">' +
@@ -287,8 +308,8 @@ function loadFreezerPulls() {
 
             var cardHTML = '<div id="freezerPullCard" style="background:#d4edda;border:1px solid #c3e6cb;border-radius:12px;padding:14px 16px;margin-bottom:16px;">' +
                 '<div style="font-weight:700;font-size:16px;color:#155724;margin-bottom:2px;">🧊 Pull Tomorrow\'s Pastries from Freezer</div>' +
-                (weather ? '<div style="font-size:13px;color:#155724;margin-bottom:4px;">' + weather + '</div>' : '') +
-                (notes   ? '<div style="font-size:12px;color:#555;margin-bottom:6px;">' + notes + '</div>' : '') +
+                (weatherStr ? '<div style="font-size:13px;color:#155724;margin-bottom:4px;">' + weatherStr + '</div>' : '') +
+                (notes      ? '<div style="font-size:12px;color:#555;margin-bottom:6px;">' + notes + '</div>' : '') +
                 tableHTML +
                 '</div>';
 

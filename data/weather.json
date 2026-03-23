@@ -1,9 +1,9 @@
 {
-  "generated": "2026-03-22T15:07:13.280Z",
+  "generated": "2026-03-23T06:37:04.408Z",
   "forecast": {
     "2026-03-22": {
-      "tempMax": 7,
-      "tempMin": 2.9,
+      "tempMax": 8.5,
+      "tempMin": 3,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",
@@ -14,8 +14,8 @@
       "emoji": "⛅"
     },
     "2026-03-23": {
-      "tempMax": 7.9,
-      "tempMin": 1.1,
+      "tempMax": 8.6,
+      "tempMin": 1.5,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",
@@ -26,21 +26,21 @@
       "emoji": "⛅"
     },
     "2026-03-24": {
-      "tempMax": 5.6,
-      "tempMin": 2.7,
-      "precipitation": 35.02,
-      "weatherCode": 71,
-      "condition": "Light snow",
+      "tempMax": 7.5,
+      "tempMin": 3.5,
+      "precipitation": 31.4,
+      "weatherCode": 65,
+      "condition": "Heavy rain",
       "isRainy": true,
       "isCold": false,
       "isVeryCold": false,
       "isWarm": false,
-      "emoji": "❄️"
+      "emoji": "🌧️"
     },
     "2026-03-25": {
       "tempMax": 6.4,
-      "tempMin": 1.1,
-      "precipitation": 8.4,
+      "tempMin": -0.5,
+      "precipitation": 6.1,
       "weatherCode": 85,
       "condition": "Light snow showers",
       "isRainy": true,
@@ -50,20 +50,20 @@
       "emoji": "🌦️"
     },
     "2026-03-26": {
-      "tempMax": 7.6,
-      "tempMin": -0.7,
-      "precipitation": 0.7,
-      "weatherCode": 85,
-      "condition": "Light snow showers",
+      "tempMax": 7.8,
+      "tempMin": -1.5,
+      "precipitation": 0.8,
+      "weatherCode": 51,
+      "condition": "Light drizzle",
       "isRainy": false,
       "isCold": false,
       "isVeryCold": false,
       "isWarm": false,
-      "emoji": "🌦️"
+      "emoji": "☁️"
     },
     "2026-03-27": {
-      "tempMax": 12.5,
-      "tempMin": -0.4,
+      "tempMax": 12.2,
+      "tempMin": -0.6,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",
@@ -74,8 +74,8 @@
       "emoji": "⛅"
     },
     "2026-03-28": {
-      "tempMax": 13.8,
-      "tempMin": 2.1,
+      "tempMax": 14.2,
+      "tempMin": 2.7,
       "precipitation": 0,
       "weatherCode": 3,
       "condition": "Overcast",

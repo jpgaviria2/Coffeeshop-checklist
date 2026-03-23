@@ -809,14 +809,14 @@ function loadAdminView() {
                 timeZone: 'America/Vancouver', month: 'short', day: 'numeric',
                 hour: '2-digit', minute: '2-digit'
             });
-            var type = sub.checklist_type || sub.checklist || (sub.content && sub.content.type) || '—';
+            var type = sub.checklist_type || sub.type || sub.checklist || (sub.content && (sub.content.type || sub.content.checklist)) || '—';
             type = type.charAt(0).toUpperCase() + type.slice(1);
 
-            var staffPubkey = sub.staff_pubkey || sub.pubkey || '';
-            var staffName = sub.staff_name || PUBKEY_NAMES[staffPubkey] || (staffPubkey.slice(0, 8) + '…');
+            var staffPubkey = sub.staff_pubkey || sub.staffPubkey || sub.pubkey || '';
+            var staffName = sub.staff_name || sub.staffName || PUBKEY_NAMES[staffPubkey] || (staffPubkey.slice(0, 8) + '…');
 
-            var failCount = sub.fail_count || (sub.content && sub.content.failCount) || 0;
-            var passCount = sub.pass_count || (sub.content && sub.content.passCount) || 0;
+            var failCount = sub.fail_count || sub.failCount || (sub.content && sub.content.failCount) || 0;
+            var passCount = sub.pass_count || sub.passCount || (sub.content && sub.content.passCount) || 0;
             var result = (type.toLowerCase() === 'inventory')
                 ? '<span style="color:#667eea;">📦 Counts</span>'
                 : failCount > 0

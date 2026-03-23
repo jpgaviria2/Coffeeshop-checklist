@@ -569,8 +569,9 @@ function submitChecklist() {
     var failCount = results.filter(function(r) { return r.status === 'fail'; }).length;
 
     var payload = {
-        pubkey:    userKeys.pubkey,
-        checklist: currentChecklist,
+        pubkey:     userKeys.pubkey,
+        checklist:  currentChecklist,
+        timestamp:  new Date().toISOString(),
         content: {
             type:        currentChecklist,
             submittedAt: new Date().toISOString(),

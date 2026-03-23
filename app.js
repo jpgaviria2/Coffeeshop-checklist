@@ -242,6 +242,7 @@ function showChecklist(type) {
         if (type === 'closing') {
             loadFreezerPulls();
             renderLeftoverCount();
+            renderMilkCount();
         }
     }
 }
@@ -320,6 +321,44 @@ var PASTRY_ITEMS = [
     { key: 'macaron',      label: 'Macaron' },
     { key: 'gfGranola',    label: 'GF Granola' },
 ];
+
+// ── Milk Inventory Items (closing checklist) ─────────────────
+var MILK_ITEMS = [
+    { key: 'milk4pct',   label: '🥛 4% Whole Milk (jugs)',  unit: 'jugs' },
+    { key: 'milkSkim',   label: '🥛 Skim Milk (jugs)',       unit: 'jugs' },
+    { key: 'milkAlmond', label: '🌰 Almond Milk (cartons)',  unit: 'cartons' },
+    { key: 'milkSoy',    label: '🫘 Soy Milk (cartons)',     unit: 'cartons' },
+    { key: 'milkOat',    label: '🌾 Oat Milk (cartons)',     unit: 'cartons' },
+];
+
+function renderMilkCount() {
+    var container = document.getElementById('checklistItems');
+    if (!container) return;
+
+    var rows = MILK_ITEMS.map(function(m) {
+        return '<tr>' +
+            '<td style="padding:8px 6px;font-size:14px;">' + m.label + '</td>' +
+            '<td style="padding:8px 6px;text-align:center;">' +
+            '<input type="number" id="milk-' + m.key + '" min="0" max="99" value="" placeholder="—" ' +
+            'style="width:60px;padding:6px;font-size:16px;text-align:center;border:1px solid #ccc;border-radius:6px;">' +
+            '</td>' +
+            '<td style="padding:8px 6px;font-size:12px;color:#888;">' + m.unit + '</td>' +
+            '</tr>';
+    }).join('');
+
+    var html = '<div id="milkSection" style="margin-top:16px;padding:16px;background:#e8f4fd;border-radius:12px;border:1px solid #90caf9;">' +
+        '<div style="font-weight:700;font-size:16px;margin-bottom:4px;">🥛 End-of-Day Milk Inventory</div>' +
+        '<div style="font-size:13px;color:#666;margin-bottom:12px;">Enter how many jugs / cartons remain at close. Leave blank if not counted.</div>' +
+        '<table style="width:100%;border-collapse:collapse;">' +
+        '<thead><tr style="border-bottom:2px solid #90caf9;">' +
+        '<th style="text-align:left;padding:8px 6px;font-size:13px;color:#888;">Milk Type</th>' +
+        '<th style="text-align:center;padding:8px 6px;font-size:13px;color:#888;">Qty Left</th>' +
+        '<th style="text-align:left;padding:8px 6px;font-size:13px;color:#888;">Unit</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table>' +
+        '</div>';
+
+    container.insertAdjacentHTML('beforeend', html);
+}
 
 function renderLeftoverCount() {
     var container = document.getElementById('checklistItems');
@@ -528,6 +567,17 @@ function submitChecklist() {
                         out[p.label] = el ? (parseInt(el.value) || 0) : 0;
                     });
                     return out;
+                })()
+                : undefined,
+            milkInventory: currentChecklist === 'closing'
+                ? (function() {
+                    var out = {};
+                    MILK_ITEMS.forEach(function(m) {
+                        var el = document.getElementById('milk-' + m.key);
+                        var val = el && el.value !== '' ? parseInt(el.value) : null;
+                        if (val !== null) out[m.label] = val;
+                    });
+                    return Object.keys(out).length > 0 ? out : undefined;
                 })()
                 : undefined,
         }

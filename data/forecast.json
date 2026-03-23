@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-22T15:07:13.281Z",
+  "generated": "2026-03-23T02:10:15.116403+00:00",
   "forecast": {
     "2026-03-22": {
       "dayOfWeek": "Sunday",
@@ -234,7 +234,7 @@
         "predicted": 1166
       },
       "weather": {
-        "emoji": "⛅",
+        "emoji": "\u26c5",
         "temp": 7,
         "condition": "Overcast",
         "precipitation": 0
@@ -264,9 +264,9 @@
           "weatherAdjusted": false
         },
         "Ham and Cheese Croissant": {
-          "predicted": 7,
-          "avgLastMonth": 8,
-          "weatherAdjusted": false
+          "predicted": 8,
+          "avgLastMonth": 7.3,
+          "weatherAdjusted": true
         },
         "Hot Pure Matcha": {
           "predicted": 3,
@@ -284,19 +284,19 @@
           "weatherAdjusted": false
         },
         "Banana Bread": {
-          "predicted": 2,
-          "avgLastMonth": 2.8,
-          "weatherAdjusted": false
+          "predicted": 8,
+          "avgLastMonth": 8.2,
+          "weatherAdjusted": true
         },
         "Plain Croissant": {
-          "predicted": 3,
-          "avgLastMonth": 3.3,
-          "weatherAdjusted": false
+          "predicted": 5,
+          "avgLastMonth": 5.0,
+          "weatherAdjusted": true
         },
         "Lemon cake": {
-          "predicted": 5,
-          "avgLastMonth": 5.5,
-          "weatherAdjusted": false
+          "predicted": 7,
+          "avgLastMonth": 7.7,
+          "weatherAdjusted": true
         },
         "London Fog Latte": {
           "predicted": 3,
@@ -309,9 +309,9 @@
           "weatherAdjusted": false
         },
         "Chocolate Croissant": {
-          "predicted": 4,
-          "avgLastMonth": 4.3,
-          "weatherAdjusted": false
+          "predicted": 7,
+          "avgLastMonth": 6.6,
+          "weatherAdjusted": true
         },
         "Hot Chocolate": {
           "predicted": 3,
@@ -324,9 +324,9 @@
           "weatherAdjusted": false
         },
         "Cinnamon Bun": {
-          "predicted": 4,
-          "avgLastMonth": 4.3,
-          "weatherAdjusted": false
+          "predicted": 6,
+          "avgLastMonth": 6.2,
+          "weatherAdjusted": true
         },
         "Iced Latte": {
           "predicted": 2,
@@ -354,14 +354,14 @@
           "weatherAdjusted": false
         },
         "Spinach Feta Croissant": {
-          "predicted": 2,
-          "avgLastMonth": 2.3,
-          "weatherAdjusted": false
+          "predicted": 7,
+          "avgLastMonth": 7.0,
+          "weatherAdjusted": true
         },
         "Cookie": {
-          "predicted": 3,
-          "avgLastMonth": 4.5,
-          "weatherAdjusted": false
+          "predicted": 7,
+          "avgLastMonth": 7.2,
+          "weatherAdjusted": true
         },
         "Yogurt and Granola Bowl": {
           "predicted": 1,
@@ -374,9 +374,9 @@
           "weatherAdjusted": false
         },
         "GF VEGAN brownie": {
-          "predicted": 1,
-          "avgLastMonth": 1,
-          "weatherAdjusted": false
+          "predicted": 3,
+          "avgLastMonth": 2.3,
+          "weatherAdjusted": true
         },
         "Gluten Free Granola": {
           "predicted": 0,
@@ -442,16 +442,33 @@
           "predicted": 0,
           "avgLastMonth": 0.3,
           "weatherAdjusted": false
+        },
+        "GF Mini Doughnut": {
+          "predicted": 8,
+          "avgLastMonth": 8.5,
+          "weatherAdjusted": true
+        },
+        "Gluten Free Cheddar Scone": {
+          "predicted": 2,
+          "avgLastMonth": 2.0,
+          "weatherAdjusted": true
+        },
+        "Caprese Panini": {
+          "predicted": 4,
+          "avgLastMonth": 3.5,
+          "weatherAdjusted": true
         }
       },
       "totalRevenue": {
         "predicted": 590
       },
       "weather": {
-        "emoji": "⛅",
-        "temp": 7.9,
-        "condition": "Overcast",
-        "precipitation": 0
+        "emoji": "\ud83c\udf25\ufe0f",
+        "temp": 8,
+        "condition": "Cold overcast \u2014 no rain",
+        "precipitation": 0,
+        "multiplier": 0.9,
+        "note": "Cold overcast day \u2014 traffic -10% vs normal"
       }
     },
     "2026-03-24": {
@@ -647,7 +664,7 @@
         "predicted": 193
       },
       "weather": {
-        "emoji": "❄️",
+        "emoji": "\u2744\ufe0f",
         "temp": 5.6,
         "condition": "Light snow",
         "precipitation": 35.02
@@ -881,7 +898,7 @@
         "predicted": 326
       },
       "weather": {
-        "emoji": "🌦️",
+        "emoji": "\ud83c\udf26\ufe0f",
         "temp": 6.4,
         "condition": "Light snow showers",
         "precipitation": 8.4
@@ -1095,7 +1112,7 @@
         "predicted": 481
       },
       "weather": {
-        "emoji": "🌦️",
+        "emoji": "\ud83c\udf26\ufe0f",
         "temp": 7.6,
         "condition": "Light snow showers",
         "precipitation": 0.7
@@ -1324,7 +1341,7 @@
         "predicted": 750
       },
       "weather": {
-        "emoji": "⛅",
+        "emoji": "\u26c5",
         "temp": 12.5,
         "condition": "Overcast",
         "precipitation": 0
@@ -1583,7 +1600,7 @@
         "predicted": 1208
       },
       "weather": {
-        "emoji": "⛅",
+        "emoji": "\u26c5",
         "temp": 13.8,
         "condition": "Overcast",
         "precipitation": 0
